@@ -2748,7 +2748,17 @@
                 // 객관식 보기 생성
                 const validOptions = q.options.filter(o => o && o.trim() !== '');
                 const optContainer = document.getElementById('qOptionsContainer');
-                optContainer.innerHTML = validOptions.map((optText, i) => {
+                if (validOptions.length === 0) {
+                    // 주관식(서술형): 답을 떠올리거나 노트에 적어본 뒤 모범답안을 보고 스스로 채점
+                    optContainer.innerHTML = `
+                        <div class="p-4 rounded-xl border border-dashed border-violet-300 bg-violet-50/60 text-sm text-violet-900 leading-relaxed">
+                            ✍️ <b>주관식(서술형) 문항</b>입니다. 답안을 머릿속으로 정리하거나 아래 노트에 적어본 뒤, 모범답안을 확인하고 스스로 채점하세요.
+                        </div>
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <button id="quizSelfOk" onclick="app.selfGradeSubjective(true)" class="p-3.5 rounded-xl border border-emerald-300 bg-white hover:bg-emerald-50 text-emerald-800 font-extrabold text-sm">⭕ 맞게 썼어요</button>
+                            <button id="quizSelfNg" onclick="app.selfGradeSubjective(false)" class="p-3.5 rounded-xl border border-rose-300 bg-white hover:bg-rose-50 text-rose-800 font-extrabold text-sm">❌ 부족했어요</button>
+                        </div>`;
+                } else optContainer.innerHTML = validOptions.map((optText, i) => {
                     const num = i + 1;
                     return `
                         <button id="quizOptBtn_${num}" onclick="app.selectQuizOption(${num})" class="w-full text-left p-4 rounded-xl border border-slate-200 hover:border-brand-400 hover:bg-brand-50/40 transition-all flex items-start gap-3.5 group">
@@ -2819,6 +2829,20 @@
                 this.displayAnswerFeedbackAndExplanation(choiceNum, correctNum);
             },
 
+            selfGradeSubjective(ok) {
+                const q = this.getCurrentQuizQuestion();
+                if (!q) return;
+                const currentP = this.getQuestionProgress(q.id);
+                this.setQuestionProgress(q.id, {
+                    solved: true,
+                    isCorrect: !!ok,
+                    userChoice: ok ? 'SELF_OK' : 'SELF_NG',
+                    bookmarked: !ok ? true : currentP.bookmarked
+                });
+                this.updateQuizBookmarkButtonUI(this.getQuestionProgress(q.id).bookmarked);
+                this.displayAnswerFeedbackAndExplanation(ok ? 'SELF_OK' : 'SELF_NG', Number(q.answer));
+            },
+
             revealQuizAnswerDirectly() {
                 const q = this.getCurrentQuizQuestion();
                 if (!q) return;
@@ -2850,9 +2874,14 @@
                 const expSec = document.getElementById('qExplanationSection');
                 expSec.classList.remove('hidden');
 
+                ['quizSelfOk', 'quizSelfNg'].forEach(id => { const b = document.getElementById(id); if (b) b.disabled = true; });
                 const isCorrect = (selectedNum === correctNum);
                 const resultBadge = document.getElementById('qResultStatusBadge');
-                if (selectedNum === null) {
+                if (selectedNum === 'SELF_OK' || selectedNum === 'SELF_NG') {
+                    const good = selectedNum === 'SELF_OK';
+                    resultBadge.textContent = good ? '⭕ 자가채점: 맞음' : '❌ 자가채점: 부족 (오답노트에 고정됨)';
+                    resultBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold ' + (good ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800');
+                } else if (selectedNum === null) {
                     resultBadge.textContent = '💡 해설 바로 보기';
                     resultBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-slate-100 text-slate-700';
                 } else if (isCorrect) {
@@ -3204,7 +3233,7 @@
                         <td class="py-3.5 px-3"><span class="px-2 py-1 rounded-md bg-amber-50 text-amber-800 font-bold text-xs">${this.escapeHtml(q.cohort)}</span></td>
                         <td class="py-3.5 px-4 max-w-md">
                             <p class="font-bold text-slate-800 truncate">${this.escapeHtml(q.question)}</p>
-                            <p class="text-[11px] text-emerald-700 font-semibold mt-0.5">정답: ${q.answer}번 (${this.escapeHtml(q.options[q.answer - 1] || '')})</p>
+                            <p class="text-[11px] text-emerald-700 font-semibold mt-0.5">${(q.options || []).filter(o => o && o.trim() !== '').length === 0 ? '주관식(서술형) · 모범답안은 해설 참고' : `정답: ${q.answer}번 (${this.escapeHtml(q.options[q.answer - 1] || '')})`}</p>
                         </td>
                         <td class="py-3.5 px-4 text-right whitespace-nowrap">
                             <button onclick="app.openAdminQuestionModal('${q.id}')" class="p-1.5 rounded-lg text-slate-500 hover:text-brand-600 hover:bg-brand-50" title="수정">
@@ -3511,7 +3540,7 @@
                         topic: typeof item.topic === 'string' ? item.topic.trim() : '',
                         question: item.question || '무제',
                         options: Array.isArray(item.options) ? item.options : ['1', '2', '3', '4'],
-                        answer: Number(item.answer || 1),
+                        answer: Number(item.answer ?? 1),
                         explanation: item.explanation || '해설 없음'
                     }));
 
