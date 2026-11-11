@@ -1988,8 +1988,6 @@
 
                 container.innerHTML = grades.map(grade => {
                     const qInGrade = this.questions.filter(q => q.grade === grade);
-                    const solvedInGrade = qInGrade.filter(q => this.getQuestionProgress(q.id).solved).length;
-                    const pct = qInGrade.length > 0 ? Math.round((solvedInGrade / qInGrade.length) * 100) : 0;
                     const isSelected = (this.selectedGrade === grade);
 
                     return `
@@ -2002,14 +2000,8 @@
                                 <span class="font-extrabold text-sm ${isSelected ? 'text-brand-700' : 'text-slate-800'}">${this.escapeHtml(grade)}</span>
                                 ${isSelected ? '<i class="ph-fill ph-check-circle text-brand-600 text-base"></i>' : ''}
                             </div>
-                            <div class="w-full space-y-1">
-                                <div class="flex justify-between text-[11px] font-semibold text-slate-500">
-                                    <span>${qInGrade.length}문항</span>
-                                    <span class="${isSelected ? 'text-brand-700 font-bold' : ''}">${pct}% 완료</span>
-                                </div>
-                                <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                                    <div class="h-full bg-brand-600 rounded-full" style="width: ${pct}%"></div>
-                                </div>
+                            <div class="w-full text-[11px] font-semibold text-slate-500">
+                                <span>${qInGrade.length}문항</span>
                             </div>
                         </button>
                     `;
