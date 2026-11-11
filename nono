@@ -147,9 +147,6 @@
                     <i class="ph-bold ph-sign-in text-lg"></i>
                     <span id="gateSubmitBtnText">로그인 / 가입 승인 요청하기</span>
                 </button>
-                <p class="text-[11px] text-slate-400 text-center leading-relaxed">
-                    <i class="ph-bold ph-warning-circle align-[-2px]"></i> 한 아이디는 한 개의 기기에서만 접속할 수 있으니 로그인에 주의해 주시기 바랍니다.
-                </p>
             </form>
 
             <!-- 구분선 -->

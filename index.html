@@ -160,9 +160,6 @@
                     <i class="ph-bold ph-sign-in text-lg"></i>
                     <span id="gateSubmitBtnText">로그인 / 가입 승인 요청하기</span>
                 </button>
-                <p class="text-[11px] text-slate-400 text-center leading-relaxed">
-                    <i class="ph-bold ph-warning-circle align-[-2px]"></i> 한 아이디는 한 개의 기기에서만 접속할 수 있으니 로그인에 주의해 주시기 바랍니다.
-                </p>
             </form>
 
             <!-- 구분선 -->
@@ -789,6 +786,14 @@
                         <p class="text-[11px] text-teal-700">혈액종양학_종양 300문항(교수님·주제 분류 + 야베런 기반 해설, 21학번 누락분 포함)을 아래 칸에 채웁니다. 불러온 뒤 '기존 문제 갱신 + 신규 추가'를 누르세요.</p>
                     </div>
                     <button onclick="app.loadRepoJsonIntoTextarea('data/oncology_questions_update.json')" class="shrink-0 px-3 py-2 rounded-lg text-xs font-bold bg-teal-600 text-white hover:bg-teal-700">종양 업데이트 불러오기</button>
+                </div>
+
+                <div class="bg-pink-50 p-4 rounded-xl border border-pink-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h4 class="text-xs sm:text-sm font-bold text-pink-900">모성과 신생아 기출 불러오기</h4>
+                        <p class="text-[11px] text-pink-700">솔씨 본과1-2 야베런(조해중·홍기연·최두영pf)의 학번별 야마 기출을 교수님·주제별로 분류하고 해설·개념 정리를 붙인 문항을 아래 칸에 채웁니다. 불러온 뒤 '기존 문제 갱신 + 신규 추가'를 누르세요.</p>
+                    </div>
+                    <button onclick="app.loadRepoJsonIntoTextarea('data/maternal_questions_update.json')" class="shrink-0 px-3 py-2 rounded-lg text-xs font-bold bg-pink-600 text-white hover:bg-pink-700">모성과 신생아 불러오기</button>
                 </div>
 
                 <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -1705,7 +1710,7 @@
             // 주제별 모드의 '개념 정리' (저장소 data/*_topic_notes.json, 과목별)
             topicNotes: {},
             async loadTopicNotes() {
-                const files = ['data/oncology_topic_notes.json', 'data/growth_aging_topic_notes.json'];
+                const files = ['data/oncology_topic_notes.json', 'data/maternal_topic_notes.json', 'data/growth_aging_topic_notes.json'];
                 for (const f of files) {
                     try {
                         const res = await fetch(f, { cache: 'no-cache' });
