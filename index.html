@@ -607,7 +607,19 @@
                         <h3 class="font-bold text-sm sm:text-base text-slate-900">등록된 기출문제 DB 리스트</h3>
                         <span id="adminTableCount" class="text-xs font-extrabold text-brand-700 bg-brand-50 px-2.5 py-0.5 rounded-full">0건</span>
                     </div>
-                    <div class="flex items-center gap-2">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <!-- 선택 삭제 (필터로 좁힌 뒤 체크박스로 선택해 한 번에 삭제) -->
+                        <span id="adminSelectedCount" class="text-xs font-bold text-slate-500">0개 선택</span>
+                        <button type="button" onclick="app.toggleSelectAllFilteredQuestions(true)" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors">
+                            현재 목록 전체 선택
+                        </button>
+                        <button type="button" onclick="app.clearAdminQuestionSelection()" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors">
+                            선택 해제
+                        </button>
+                        <button type="button" id="adminBulkDeleteBtn" onclick="app.confirmBulkDeleteSelectedQuestions()" disabled class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-extrabold bg-rose-600 hover:bg-rose-700 text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                            <i class="ph-bold ph-trash"></i> 선택 삭제
+                        </button>
+                        <span class="w-px h-4 bg-slate-200 mx-1"></span>
                         <button onclick="app.openAdminPasswordChangeModal()" class="text-xs font-semibold text-slate-500 hover:text-slate-800 underline">
                             관리자 비밀번호 변경
                         </button>
@@ -618,7 +630,10 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase">
-                                <th class="py-3 px-4 w-14">#</th>
+                                <th class="py-3 pl-4 pr-1 w-10">
+                                    <input type="checkbox" id="adminSelectAllChk" onchange="app.toggleSelectAllFilteredQuestions(this.checked)" title="현재 목록 전체 선택/해제" class="w-4 h-4 accent-rose-600 cursor-pointer align-middle">
+                                </th>
+                                <th class="py-3 px-3 w-14">#</th>
                                 <th class="py-3 px-3 w-28">학년</th>
                                 <th class="py-3 px-3 w-32">과목</th>
                                 <th class="py-3 px-3 w-28">기출 학번</th>
@@ -1182,11 +1197,12 @@
                     const savedQ = localStorage.getItem(STORAGE_KEYS.QUESTIONS);
                     if (savedQ) {
                         const parsed = JSON.parse(savedQ);
-                        if (Array.isArray(parsed) && parsed.length > 0) {
+                        if (Array.isArray(parsed)) {
                             this.questions = parsed;
                         }
                     }
-                    if (this.questions.length === 0) {
+                    // 저장된 기록이 아예 없을 때만 샘플 문제를 넣음 (관리자가 전부 삭제한 경우엔 다시 채우지 않음)
+                    if (savedQ === null && this.questions.length === 0) {
                         this.questions = JSON.parse(JSON.stringify(INITIAL_SAMPLE_QUESTIONS));
                         this.saveQuestionsToLocal();
                     }
@@ -1380,9 +1396,12 @@
                 if (!this.isCloudConnected || !this.isCloudAdmin()) return;
                 try {
                     const qSnap = await getDocs(collection(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'questions'));
-                    if (qSnap.empty && this.questions.length > 0) {
-                        await Promise.all(this.questions.map(q => this.syncSingleQuestionToCloud(q)));
-                        this.showToast(`이 브라우저의 기출문제 ${this.questions.length}개를 클라우드에 올렸습니다.`, 'success');
+                    // 수정하지 않은 기본 샘플 문제는 올리지 않음
+                    const sampleJson = new Map(INITIAL_SAMPLE_QUESTIONS.map(q => [q.id, JSON.stringify(q)]));
+                    const toUpload = this.questions.filter(q => sampleJson.get(q.id) !== JSON.stringify(q));
+                    if (qSnap.empty && toUpload.length > 0) {
+                        await Promise.all(toUpload.map(q => this.syncSingleQuestionToCloud(q)));
+                        this.showToast(`이 브라우저의 기출문제 ${toUpload.length}개를 클라우드에 올렸습니다.`, 'success');
                     }
                     const rSnap = await getDocs(collection(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'userRegistry'));
                     const localUsers = Object.values(this.userRegistryMap).filter(u => u && u.uid && !isAdminId(u.uid));
@@ -1405,7 +1424,15 @@
                 // (클라우드가 비어 있을 때의 업로드는 관리자 로그인 시 migrateLocalDataToCloudIfEmpty 가 담당)
                 const qColRef = collection(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'questions');
                 this._unsubs.push(onSnapshot(qColRef, (snapshot) => {
+                    // 클라우드 문제가 있다가 전부 삭제된 경우 이 브라우저 목록도 비움
+                    if (snapshot.empty && this._questionsSeenInCloud && !snapshot.metadata.fromCache) {
+                        this.questions = [];
+                        this.saveQuestionsToLocal();
+                        this.renderAll();
+                        return;
+                    }
                     if (!snapshot.empty) {
+                        this._questionsSeenInCloud = true;
                         const cloudQuestions = [];
                         snapshot.forEach(docSnap => cloudQuestions.push(docSnap.data()));
                         this.questions = cloudQuestions;
@@ -2994,14 +3021,24 @@
                 document.getElementById('adminTableCount').textContent = `${filtered.length}건`;
                 const tbody = document.getElementById('adminQuestionTableBody');
 
+                // 선택 상태는 '현재 목록(필터 결과)'에 보이는 문제로만 유지 → 안 보이는 문제가 실수로 삭제되지 않음
+                const visibleIds = new Set(filtered.map(q => q.id));
+                if (!this.adminSelectedIds) this.adminSelectedIds = new Set();
+                [...this.adminSelectedIds].forEach(id => { if (!visibleIds.has(id)) this.adminSelectedIds.delete(id); });
+                this._adminFilteredIds = filtered.map(q => q.id);
+
                 if (filtered.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="6" class="py-10 text-center text-slate-400">조건에 맞는 기출문제가 없습니다.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="7" class="py-10 text-center text-slate-400">조건에 맞는 기출문제가 없습니다.</td></tr>`;
+                    this.updateAdminSelectionUI();
                     return;
                 }
 
                 tbody.innerHTML = filtered.map((q, i) => `
-                    <tr class="hover:bg-slate-50/80">
-                        <td class="py-3.5 px-4 font-bold text-slate-400">${i + 1}</td>
+                    <tr class="hover:bg-slate-50/80 ${this.adminSelectedIds.has(q.id) ? 'bg-rose-50/60' : ''}">
+                        <td class="py-3.5 pl-4 pr-1">
+                            <input type="checkbox" class="admin-q-chk w-4 h-4 accent-rose-600 cursor-pointer align-middle" data-qid="${this.escapeHtml(q.id)}" ${this.adminSelectedIds.has(q.id) ? 'checked' : ''} onchange="app.toggleAdminQuestionSelection(this.dataset.qid, this.checked)">
+                        </td>
+                        <td class="py-3.5 px-3 font-bold text-slate-400">${i + 1}</td>
                         <td class="py-3.5 px-3"><span class="px-2 py-1 rounded-md bg-slate-100 text-slate-700 font-bold text-xs">${this.escapeHtml(q.grade)}</span></td>
                         <td class="py-3.5 px-3"><span class="px-2 py-1 rounded-md bg-indigo-50 text-indigo-700 font-bold text-xs">${this.escapeHtml(q.subject)}</span></td>
                         <td class="py-3.5 px-3"><span class="px-2 py-1 rounded-md bg-amber-50 text-amber-800 font-bold text-xs">${this.escapeHtml(q.cohort)}</span></td>
@@ -3019,6 +3056,93 @@
                         </td>
                     </tr>
                 `).join('');
+                this.updateAdminSelectionUI();
+            },
+
+            // ================= [관리자] 기출문제 다중 선택 & 일괄 삭제 =================
+            toggleAdminQuestionSelection(qId, checked) {
+                if (!this.adminSelectedIds) this.adminSelectedIds = new Set();
+                if (checked) this.adminSelectedIds.add(qId);
+                else this.adminSelectedIds.delete(qId);
+                const chk = [...document.querySelectorAll('.admin-q-chk')].find(el => el.dataset.qid === qId);
+                if (chk) chk.closest('tr').classList.toggle('bg-rose-50/60', checked);
+                this.updateAdminSelectionUI();
+            },
+
+            toggleSelectAllFilteredQuestions(checked) {
+                if (!this.requireAdmin()) return;
+                if (!this.adminSelectedIds) this.adminSelectedIds = new Set();
+                (this._adminFilteredIds || []).forEach(id => {
+                    if (checked) this.adminSelectedIds.add(id);
+                    else this.adminSelectedIds.delete(id);
+                });
+                this.renderAdminTableRows();
+            },
+
+            clearAdminQuestionSelection() {
+                if (this.adminSelectedIds) this.adminSelectedIds.clear();
+                this.renderAdminTableRows();
+            },
+
+            updateAdminSelectionUI() {
+                const n = this.adminSelectedIds ? this.adminSelectedIds.size : 0;
+                const total = (this._adminFilteredIds || []).length;
+                const countEl = document.getElementById('adminSelectedCount');
+                const btn = document.getElementById('adminBulkDeleteBtn');
+                const allChk = document.getElementById('adminSelectAllChk');
+                if (countEl) {
+                    countEl.textContent = `${n}개 선택`;
+                    countEl.className = n > 0 ? 'text-xs font-extrabold text-rose-600' : 'text-xs font-bold text-slate-500';
+                }
+                if (btn) btn.disabled = n === 0;
+                if (allChk) {
+                    allChk.checked = total > 0 && n === total;
+                    allChk.indeterminate = n > 0 && n < total;
+                }
+            },
+
+            confirmBulkDeleteSelectedQuestions() {
+                if (!this.requireAdmin()) return;
+                const ids = [...(this.adminSelectedIds || [])];
+                if (ids.length === 0) {
+                    this.showToast('삭제할 문제를 먼저 선택해 주세요.', 'info');
+                    return;
+                }
+                const g = document.getElementById('adminFilterGrade').value;
+                const sub = document.getElementById('adminFilterSubject').value;
+                const c = document.getElementById('adminFilterCohort').value;
+                const filterDesc = [g, sub, c].filter(v => v && v !== 'ALL').join(' > ') || '전체';
+                this.openConfirmDialog(
+                    '선택한 기출문제 일괄 삭제',
+                    `[${filterDesc}] 목록에서 선택한 ${ids.length}개 문제를 삭제합니다. 삭제하면 모든 사용자 화면에서 사라지며 되돌릴 수 없습니다. 계속하시겠습니까?`,
+                    () => this.bulkDeleteQuestions(ids)
+                );
+            },
+
+            async bulkDeleteQuestions(ids) {
+                if (!this.requireAdmin()) return;
+                const idSet = new Set(ids);
+                this.questions = this.questions.filter(q => !idSet.has(q.id));
+                this.saveQuestionsToLocal();
+                this.adminSelectedIds.clear();
+                this.ensureDefaultHierarchySelection();
+                this.renderAll();
+
+                if (this.isCloudConnected) {
+                    const results = await Promise.allSettled(ids.map(id => this.deleteQuestionFromCloudStrict(id)));
+                    const failed = results.filter(r => r.status === 'rejected').length;
+                    if (failed > 0) {
+                        this.showToast(`${ids.length - failed}개 삭제, ${failed}개는 서버 삭제에 실패했습니다. 새로고침 후 다시 시도해 주세요.`, 'error');
+                        return;
+                    }
+                }
+                this.showToast(`🗑️ ${ids.length}개 기출문제를 삭제했습니다.`, 'success');
+            },
+
+            // 실패 시 예외를 던지는 버전 (일괄 삭제 결과 집계용)
+            async deleteQuestionFromCloudStrict(qId) {
+                const qDocRef = doc(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'questions', qId);
+                await deleteDoc(qDocRef);
             },
 
             openAdminQuestionModal(editId = null) {
