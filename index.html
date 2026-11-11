@@ -770,7 +770,7 @@
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                 <div>
                     <h3 class="font-extrabold text-lg text-slate-900">클라우드 DB(Firebase) 연동 설정</h3>
-                    <p class="text-xs text-slate-500">GitHub Pages 배포 시 여러 사용자의 문제/기록을 실시간 공유하려면 Firebase Config를 입력하세요.</p>
+                    <p class="text-xs text-slate-500">여기에 입력한 값은 <b>이 브라우저에만</b> 적용됩니다. 모든 사용자에게 적용하려면 index.html 상단의 FIREBASE_CONFIG에 넣어 배포하세요.</p>
                 </div>
                 <button onclick="app.closeFirebaseConfigModal()" class="text-slate-400 hover:text-slate-600 p-1">
                     <i class="ph-bold ph-x text-xl"></i>
@@ -820,7 +820,7 @@
     <!-- ================= 애플리케이션 스크립트 (Firebase + 멀티유저 상태 관리) ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, signOut, updatePassword, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, deleteDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const STORAGE_KEYS = {
@@ -851,7 +851,28 @@
         // ================= [Firebase 설정 (GitHub Pages 배포용)] =================
         // 여러 기기/사용자가 승인 정보·문제·기록을 공유하려면 Firebase 콘솔의 config 객체를 여기에 붙여넣으세요.
         // (null 이면 각 브라우저의 localStorage에만 저장되어 다른 기기와 공유되지 않습니다.)
-        const FIREBASE_CONFIG = null;
+        // 예시 — Firebase 콘솔에서 복사한 값으로 아래 null 을 통째로 바꾸세요:
+        // const FIREBASE_CONFIG = {
+        //     apiKey: "AIza...",
+        //     authDomain: "프로젝트ID.firebaseapp.com",
+        //     projectId: "프로젝트ID",
+        //     storageBucket: "프로젝트ID.firebasestorage.app",
+        //     messagingSenderId: "1234567890",
+        //     appId: "1:1234567890:web:abcdef"
+        // };
+        const FIREBASE_CONFIG = {
+            apiKey: "AIzaSyAT_CgxHr04xidKZCmUv5FHg0n5ETgKPv4",
+            authDomain: "archive-3d257.firebaseapp.com",
+            projectId: "archive-3d257",
+            storageBucket: "archive-3d257.firebasestorage.app",
+            messagingSenderId: "192060185643",
+            appId: "1:192060185643:web:8888073c2815f6388d9e6e"
+        };
+
+        // Firebase 연동 시 관리자 계정 이메일 (Firebase 콘솔 > Authentication 에서 만든 이메일/비밀번호 계정)
+        // Firebase 모드에서는 로그인 화면에 아이디 'admin' + 이 계정의 비밀번호를 입력하면 관리자로 로그인됩니다.
+        // firestore.rules 파일의 관리자 이메일과 반드시 같아야 합니다.
+        const ADMIN_EMAIL = 'wd421@naver.com';
 
         // 순수 JS SHA-256 (https가 아닌 file:// 환경에서도 동작하도록 crypto.subtle 대신 사용)
         function sha256Hex(ascii) {
@@ -1072,6 +1093,7 @@
             fbAuth: null,
             appId: 'exam-master-pro',
             isCloudConnected: false,
+            _unsubs: [],
 
             async init() {
                 this.loadLocalData();
@@ -1116,7 +1138,8 @@
 
             // 관리자 전용 기능 호출 전 권한 확인 (콘솔에서 직접 호출하는 것도 차단)
             requireAdmin() {
-                if (this.currentUser && this.currentUser.isAdmin && this.isAdminUnlocked && this.isAdminUiMounted) {
+                if (this.currentUser && this.currentUser.isAdmin && this.isAdminUnlocked && this.isAdminUiMounted
+                    && (!this.isCloudConnected || this.isCloudAdmin())) {
                     return true;
                 }
                 this.showToast('권한이 없습니다.', 'error');
@@ -1282,16 +1305,30 @@
                     this.fbAuth = getAuth(this.fbApp);
                     this.fbDb = getFirestore(this.fbApp);
 
+                    // 탭을 닫으면 Firebase 로그인(관리자 포함)도 풀리도록 세션 단위로 유지
+                    try { await setPersistence(this.fbAuth, browserSessionPersistence); } catch (e) {}
+                    await this.fbAuth.authStateReady();
+
                     // RULE 3: Auth Before Queries
                     if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                         await signInWithCustomToken(this.fbAuth, __initial_auth_token);
-                    } else {
+                    } else if (!this.fbAuth.currentUser) {
                         await signInAnonymously(this.fbAuth);
                     }
 
                     if (this.fbAuth.currentUser) {
                         this.isCloudConnected = true;
                         document.getElementById('cloudStatusBadge').classList.remove('hidden');
+
+                        // 클라우드 모드에서는 관리자 여부를 오직 Firebase 관리자 계정 로그인으로만 판단
+                        if (this.isCloudAdmin()) {
+                            this.currentUser = { uid: ADMIN_ID, name: '총괄 관리자', isAdmin: true, authType: 'ADMIN' };
+                            this.isAdminUnlocked = true;
+                        } else if (this.currentUser && this.currentUser.isAdmin) {
+                            this.currentUser = null;
+                            this.isAdminUnlocked = false;
+                            try { sessionStorage.removeItem(STORAGE_KEYS.ADMIN_SESSION); } catch (e) {}
+                        }
                         this.setupFirestoreListeners();
                     }
                 } catch (e) {
@@ -1299,12 +1336,75 @@
                 }
             },
 
+            // 현재 Firebase 로그인 계정이 관리자 계정(ADMIN_EMAIL)인지
+            isCloudAdmin() {
+                const u = this.fbAuth && this.fbAuth.currentUser;
+                return !!(u && u.email && ADMIN_EMAIL && u.email.toLowerCase() === ADMIN_EMAIL.trim().toLowerCase());
+            },
+
+            async loginAdminWithFirebase(password) {
+                const passInput = document.getElementById('gateAdminPasswordInput');
+                if (!ADMIN_EMAIL) {
+                    this.showToast('코드 상단의 ADMIN_EMAIL(관리자 이메일)이 설정되지 않았습니다.', 'error');
+                    return;
+                }
+                if (!password) {
+                    this.showToast('비밀번호를 입력해 주세요.', 'error');
+                    return;
+                }
+                try {
+                    await signInWithEmailAndPassword(this.fbAuth, ADMIN_EMAIL.trim(), password);
+                } catch (e) {
+                    console.warn('관리자 Firebase 로그인 실패:', e && e.code);
+                    passInput.value = '';
+                    this.showToast('아이디 또는 비밀번호가 올바르지 않습니다.', 'error');
+                    return;
+                }
+                this.setupFirestoreListeners();
+                this.completeAdminLogin();
+                this.migrateLocalDataToCloudIfEmpty();
+            },
+
+            async signOutCloudAdmin() {
+                try {
+                    await signOut(this.fbAuth);
+                    await signInAnonymously(this.fbAuth);
+                    this.setupFirestoreListeners();
+                } catch (e) {
+                    console.warn('관리자 Firebase 로그아웃 처리 오류:', e);
+                }
+            },
+
+            // 처음 Firebase에 연결했을 때, 관리자 브라우저에 있던 문제/회원 목록을 클라우드로 옮김
+            async migrateLocalDataToCloudIfEmpty() {
+                if (!this.isCloudConnected || !this.isCloudAdmin()) return;
+                try {
+                    const qSnap = await getDocs(collection(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'questions'));
+                    if (qSnap.empty && this.questions.length > 0) {
+                        await Promise.all(this.questions.map(q => this.syncSingleQuestionToCloud(q)));
+                        this.showToast(`이 브라우저의 기출문제 ${this.questions.length}개를 클라우드에 올렸습니다.`, 'success');
+                    }
+                    const rSnap = await getDocs(collection(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'userRegistry'));
+                    const localUsers = Object.values(this.userRegistryMap).filter(u => u && u.uid && !isAdminId(u.uid));
+                    if (rSnap.empty && localUsers.length > 0) {
+                        await Promise.all(localUsers.map(u => this.syncUserAccountToCloud(u)));
+                    }
+                } catch (e) {
+                    console.warn('로컬 데이터 클라우드 이전 오류:', e);
+                }
+            },
+
             setupFirestoreListeners() {
                 if (!this.isCloudConnected || !this.fbAuth.currentUser) return;
 
+                // 로그인 계정이 바뀌면 기존 구독을 정리하고 새로 구독
+                (this._unsubs || []).forEach(fn => { try { fn(); } catch (e) {} });
+                this._unsubs = [];
+
                 // 1. 공용 기출문제 컬렉션 실시간 구독 (RULE 1 준수)
+                // (클라우드가 비어 있을 때의 업로드는 관리자 로그인 시 migrateLocalDataToCloudIfEmpty 가 담당)
                 const qColRef = collection(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'questions');
-                onSnapshot(qColRef, (snapshot) => {
+                this._unsubs.push(onSnapshot(qColRef, (snapshot) => {
                     if (!snapshot.empty) {
                         const cloudQuestions = [];
                         snapshot.forEach(docSnap => cloudQuestions.push(docSnap.data()));
@@ -1312,16 +1412,28 @@
                         this.saveQuestionsToLocal();
                         this.ensureDefaultHierarchySelection();
                         this.renderAll();
-                    } else if (this.questions.length > 0) {
-                        this.questions.forEach(q => this.syncSingleQuestionToCloud(q));
                     }
-                }, (err) => console.warn('Firestore questions listener error:', err));
+                }, (err) => console.warn('Firestore questions listener error:', err)));
 
                 // 2. 회원 승인 레지스트리 실시간 구독
+                // 클라우드가 기준: 클라우드에서 삭제된 회원은 이 브라우저 목록에서도 제거
                 const regColRef = collection(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'userRegistry');
-                onSnapshot(regColRef, (snapshot) => {
+                this._unsubs.push(onSnapshot(regColRef, (snapshot) => {
+                    // 클라우드가 처음부터 비어 있으면 로컬 목록 유지(관리자 첫 로그인 때 이전), 
+                    // 한 번이라도 회원이 있었다가 모두 삭제된 경우에는 로컬 목록도 비움
+                    if (snapshot.empty && this._registrySeenInCloud && !snapshot.metadata.fromCache) {
+                        this.userRegistryMap = {};
+                        this.saveUserRegistryToLocal();
+                        if (this.currentUser && !this.currentUser.isAdmin) {
+                            this.logout('관리자에 의해 계정 승인 상태가 변경되어 로그아웃되었습니다.');
+                            return;
+                        }
+                        this.renderAll();
+                        return;
+                    }
                     if (!snapshot.empty) {
-                        const nextMap = { ...this.userRegistryMap };
+                        this._registrySeenInCloud = true;
+                        const nextMap = {};
                         snapshot.forEach(docSnap => {
                             const d = docSnap.data();
                             if (d && d.uid) nextMap[d.uid] = d;
@@ -1339,18 +1451,18 @@
                         }
                         this.renderAll();
                     }
-                }, (err) => console.warn('Firestore userRegistry listener error:', err));
+                }, (err) => console.warn('Firestore userRegistry listener error:', err)));
 
                 // 3. 공지사항 실시간 구독
                 const noticeRef = doc(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'settings', 'notice');
-                onSnapshot(noticeRef, (snap) => {
+                this._unsubs.push(onSnapshot(noticeRef, (snap) => {
                     if (snap.exists()) {
                         const d = snap.data() || {};
                         this.applyNotice(d.text || '');
                         const ni = document.getElementById('adminNoticeInput');
                         if (ni && document.activeElement !== ni) ni.value = this.noticeText;
                     }
-                }, (err) => console.warn('Firestore notice listener error:', err));
+                }, (err) => console.warn('Firestore notice listener error:', err)));
 
                 // 4. 현재 사용자의 개인 풀이 기록 구독
                 this.loadCurrentUserProgressFromCloud();
@@ -2620,6 +2732,32 @@
             // ================= [관리자 페이지] 회원 승인 & 문제 관리 기능 =================
             openAdminPasswordChangeModal() {
                 if (!this.requireAdmin()) return;
+                // Firebase 연동 시: Firebase 관리자 계정 비밀번호를 바로 변경 (모든 기기에 즉시 적용)
+                if (this.isCloudConnected) {
+                    this.openConfirmDialog(
+                        '관리자 비밀번호 변경',
+                        '새 비밀번호(8자 이상)를 입력하세요. Firebase 관리자 계정의 비밀번호가 바뀌며 모든 기기에 바로 적용됩니다.',
+                        async (newPass) => {
+                            const pw = (newPass || '').trim();
+                            if (pw.length < 8) {
+                                this.showToast('비밀번호는 최소 8자 이상이어야 합니다.', 'error');
+                                return;
+                            }
+                            try {
+                                await updatePassword(this.fbAuth.currentUser, pw);
+                                this.showToast('관리자 비밀번호가 변경되었습니다.', 'success');
+                            } catch (e) {
+                                if (e && e.code === 'auth/requires-recent-login') {
+                                    this.showToast('보안을 위해 로그아웃 후 다시 로그인한 다음 변경해 주세요.', 'error');
+                                } else {
+                                    this.showToast('비밀번호 변경에 실패했습니다. (' + ((e && e.code) || '알 수 없는 오류') + ')', 'error');
+                                }
+                            }
+                        },
+                        true
+                    );
+                    return;
+                }
                 this.openConfirmDialog(
                     '관리자 비밀번호 변경',
                     '새 비밀번호(8자 이상)를 입력하세요. 이 브라우저에 즉시 적용되고, 새 해시값이 클립보드에 복사됩니다. 모든 기기에 적용하려면 코드 상단의 ADMIN_PASSWORD_HASH 값을 복사된 해시로 바꿔 다시 배포하세요.',
@@ -3105,6 +3243,11 @@
                 if (isAdminId(rawUid)) {
                     const passInput = document.getElementById('gateAdminPasswordInput');
                     const inputPass = passInput.value;
+                    // Firebase 연동 시: Firebase 관리자 계정(ADMIN_EMAIL)으로 실제 로그인
+                    if (this.isCloudConnected) {
+                        this.loginAdminWithFirebase(inputPass);
+                        return;
+                    }
                     if (!inputPass || sha256Hex(inputPass) !== this.getAdminPasswordHash()) {
                         passInput.value = '';
                         this.showToast('아이디 또는 비밀번호가 올바르지 않습니다.', 'error');
@@ -3153,13 +3296,29 @@
                 this.renderAll();
                 this.switchMainTab('ADMIN');
                 this.showToast('👑 관리자 계정으로 로그인되었습니다.', 'success');
-                if (this.getAdminPasswordHash() === DEFAULT_ADMIN_PASSWORD_HASH) {
+                if (!this.isCloudConnected && this.getAdminPasswordHash() === DEFAULT_ADMIN_PASSWORD_HASH) {
                     setTimeout(() => this.showToast('⚠️ 초기 비밀번호를 사용 중입니다. [관리자 비밀번호 변경]으로 바꿔 주세요.', 'error'), 600);
                 }
             },
 
-            attemptGeneralUserLogin(uid, name, authType = 'CUSTOM_ID') {
+            async attemptGeneralUserLogin(uid, name, authType = 'CUSTOM_ID') {
                 if (isAdminId(uid)) return;
+
+                // Firebase 연동 시: 이 브라우저의 기록이 아니라 서버의 최신 승인 상태로 판단
+                // (다른 기기에서 처음 로그인할 때 이미 승인된 계정이 '대기'로 덮어써지는 문제 방지)
+                if (this.isCloudConnected) {
+                    try {
+                        const snap = await getDoc(doc(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'userRegistry', uid));
+                        if (snap.exists()) this.userRegistryMap[uid] = snap.data();
+                        else delete this.userRegistryMap[uid];
+                        this.saveUserRegistryToLocal();
+                    } catch (e) {
+                        console.warn('승인 정보 서버 조회 오류:', e);
+                        this.showToast('서버에서 승인 정보를 확인하지 못했습니다. 잠시 후 다시 시도해 주세요.', 'error');
+                        return;
+                    }
+                }
+
                 const existing = this.userRegistryMap[uid];
                 const noticeBox = document.getElementById('pendingNoticeBox');
                 const noticeTitle = document.getElementById('pendingNoticeTitle');
@@ -3188,8 +3347,8 @@
                     return;
                 }
 
-                // 이름은 최신 입력값으로 업데이트
-                if (name && existing.name !== name) {
+                // 이름은 최신 입력값으로 업데이트 (Firebase 연동 시에는 승인 정보 수정 권한이 관리자에게만 있으므로 생략)
+                if (name && existing.name !== name && !this.isCloudConnected) {
                     existing.name = name;
                     this.saveUserRegistryToLocal();
                     this.syncUserAccountToCloud(existing);
@@ -3228,6 +3387,7 @@
             },
 
             logout(customMsg = null) {
+                const wasCloudAdmin = this.isCloudConnected && this.isCloudAdmin();
                 this.flushNoteText();
                 this._noteQid = null;
                 const prevName = this.currentUser ? this.currentUser.name : '';
@@ -3241,6 +3401,7 @@
                 this.renderAll();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 this.showToast(customMsg || `${prevName} 계정이 로그아웃되었습니다.`, 'info');
+                if (wasCloudAdmin) this.signOutCloudAdmin();
             },
 
             async loginWithGoogle() {
