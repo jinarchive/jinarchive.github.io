@@ -313,6 +313,13 @@
                     </div>
                 </div>
                 <div id="step3CohortContainer" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5"></div>
+                <details id="topicNotesPanel" class="hidden rounded-xl border border-teal-200 bg-teal-50/60 open:shadow-xs">
+                    <summary class="cursor-pointer select-none px-4 py-3 text-xs sm:text-sm font-extrabold text-teal-800 flex items-center gap-1.5">
+                        <i class="ph-bold ph-book-open-text text-base"></i><span id="topicNotesTitle">📘 개념 정리</span>
+                        <span class="ml-auto text-[11px] font-semibold text-teal-600">눌러서 펼치기</span>
+                    </summary>
+                    <div id="topicNotesBody" class="px-4 pb-4 text-xs sm:text-sm text-slate-800 leading-relaxed whitespace-pre-line" style="white-space: pre-line;"></div>
+                </details>
             </div>
 
             <!-- 5. 선택된 세트 & 풀이 모드 -->
@@ -781,7 +788,16 @@
                     <textarea id="jsonBulkTextarea" rows="8" placeholder='[{"grade":"본과 1학년","subject":"병리학","cohort":"23학번 기출","question":"문제 지문","options":["1번","2번","3번","4번"],"answer":1,"explanation":"해설"}]' class="w-full p-3.5 text-xs font-mono bg-slate-900 text-slate-100 rounded-xl outline-none"></textarea>
                 </div>
 
-                <div class="flex justify-end gap-2 pt-2 border-t border-slate-200">
+                <div class="bg-teal-50 p-4 rounded-xl border border-teal-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h4 class="text-xs sm:text-sm font-bold text-teal-900">저장소 업데이트 파일 불러오기</h4>
+                        <p class="text-[11px] text-teal-700">혈액종양학_종양 300문항(교수님·주제 분류 + 야베런 기반 해설, 21학번 누락분 포함)을 아래 칸에 채웁니다. 불러온 뒤 '기존 문제 갱신 + 신규 추가'를 누르세요.</p>
+                    </div>
+                    <button onclick="app.loadRepoJsonIntoTextarea('data/oncology_questions_update.json')" class="shrink-0 px-3 py-2 rounded-lg text-xs font-bold bg-teal-600 text-white hover:bg-teal-700">종양 업데이트 불러오기</button>
+                </div>
+
+                <div class="flex flex-wrap justify-end gap-2 pt-2 border-t border-slate-200">
+                    <button onclick="app.importQuestionsFromJson('UPSERT')" class="px-4 py-2 rounded-xl text-xs font-bold bg-teal-600 text-white hover:bg-teal-700">기존 문제 갱신 + 신규 추가</button>
                     <button onclick="app.importQuestionsFromJson('APPEND')" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-700">기존 문제에 추가 등록</button>
                     <button onclick="app.importQuestionsFromJson('REPLACE')" class="px-4 py-2 rounded-xl text-xs font-bold bg-rose-600 text-white hover:bg-rose-700">전체 DB 덮어쓰기</button>
                 </div>
@@ -1140,6 +1156,7 @@
                 this.ensureDefaultHierarchySelection();
                 this.bindKeyboardEvents();
                 this.renderAll();
+                this.loadTopicNotes().then(() => this.renderTopicNotesPanel());
                 if (this.currentUser && this.currentUser.isAdmin) {
                     this.switchMainTab('ADMIN');
                 }
@@ -1669,7 +1686,40 @@
 
             getUniqueTopics(grade, subject) {
                 if (!grade || !subject) return [];
-                return [...new Set(this.questions.filter(q => q.grade === grade && q.subject === subject).map(q => (q.topic || '').trim()))].filter(Boolean);
+                return [...new Set(this.questions.filter(q => q.grade === grade && q.subject === subject).map(q => (q.topic || '').trim()))]
+                    .filter(Boolean)
+                    .sort((a, b) => a.localeCompare(b, 'ko'));
+            },
+
+            // 주제별 모드의 '개념 정리' (저장소 data/*_topic_notes.json, 과목별)
+            topicNotes: {},
+            async loadTopicNotes() {
+                const files = ['data/oncology_topic_notes.json'];
+                for (const f of files) {
+                    try {
+                        const res = await fetch(f, { cache: 'no-cache' });
+                        if (!res.ok) continue;
+                        const d = await res.json();
+                        if (d && d.subject && d.notes) this.topicNotes[d.subject] = d.notes;
+                    } catch (e) { /* 개념 정리 파일이 없어도 앱은 정상 동작 */ }
+                }
+            },
+
+            renderTopicNotesPanel() {
+                const panel = document.getElementById('topicNotesPanel');
+                if (!panel) return;
+                const notes = (this.topicNotes[this.selectedSubject] || {})[this.selectedTopic];
+                if (this.viewMode !== 'TOPIC' || !notes) {
+                    panel.classList.add('hidden');
+                    return;
+                }
+                panel.classList.remove('hidden');
+                if (panel.dataset.topic !== this.selectedTopic) {
+                    panel.open = false;
+                    panel.dataset.topic = this.selectedTopic;
+                }
+                document.getElementById('topicNotesTitle').textContent = `📘 개념 정리 — ${this.selectedTopic}`;
+                document.getElementById('topicNotesBody').textContent = notes;
             },
 
             getHierarchyFilteredQuestions() {
@@ -1948,6 +1998,7 @@
                 this.renderViewModeToggle();
                 if (this.viewMode === 'TOPIC') this.renderStep3Topics();
                 else this.renderStep3Cohorts();
+                this.renderTopicNotesPanel();
 
                 // 5. 선택된 범위 요약 및 문제 미리보기 리스트 렌더링
                 this.renderSelectedTargetSummary();
@@ -3380,6 +3431,20 @@
                 document.getElementById('jsonManageModal').classList.add('hidden');
             },
 
+            async loadRepoJsonIntoTextarea(path) {
+                if (!this.requireAdmin()) return;
+                try {
+                    const res = await fetch(path, { cache: 'no-store' });
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    const data = await res.json();
+                    if (!Array.isArray(data)) throw new Error('배열 형식이 아닙니다');
+                    document.getElementById('jsonBulkTextarea').value = JSON.stringify(data, null, 1);
+                    this.showToast(`${data.length}문항을 불러왔습니다. '기존 문제 갱신 + 신규 추가'를 눌러 반영하세요.`, 'success');
+                } catch (e) {
+                    this.showToast('업데이트 파일을 불러오지 못했습니다: ' + e.message, 'error');
+                }
+            },
+
             insertSampleJsonTemplate() {
                 const template = [
                     {
@@ -3446,8 +3511,21 @@
                         explanation: item.explanation || '해설 없음'
                     }));
 
+                    let updatedCount = 0, addedCount = 0;
                     if (mode === 'REPLACE') {
                         this.questions = formatted;
+                    } else if (mode === 'UPSERT') {
+                        // 같은 id는 내용(주제·해설·정답 등)을 갱신하고, 없는 id는 새로 추가 (풀이 기록은 id 기준이라 유지됨)
+                        const indexById = new Map(this.questions.map((q, i) => [q.id, i]));
+                        formatted.forEach(q => {
+                            if (indexById.has(q.id)) {
+                                this.questions[indexById.get(q.id)] = q;
+                                updatedCount++;
+                            } else {
+                                this.questions.push(q);
+                                addedCount++;
+                            }
+                        });
                     } else {
                         const existingIds = new Set(this.questions.map(q => q.id));
                         formatted.forEach(q => {
@@ -3463,7 +3541,9 @@
                     this.ensureDefaultHierarchySelection();
                     this.closeJsonManageModal();
                     this.renderAll();
-                    this.showToast(`총 ${formatted.length}개 기출문제 등록이 완료되었습니다!`, 'success');
+                    this.showToast(mode === 'UPSERT'
+                        ? `기존 ${updatedCount}문항 갱신, 새 문항 ${addedCount}개 추가가 완료되었습니다!`
+                        : `총 ${formatted.length}개 기출문제 등록이 완료되었습니다!`, 'success');
                 } catch (e) {
                     this.showToast('JSON 파싱 오류: 올바른 배열 형식인지 확인해 주세요.', 'error');
                 }
