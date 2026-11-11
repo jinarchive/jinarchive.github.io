@@ -1,0 +1,2844 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jin 기출 archive</title>
+    <link rel="icon" type="image/png" href="data:image/png;base64,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">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Pretendard Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            200: '#c7d2fe',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 사이트 로고 (이미지를 파일 안에 직접 넣어 GitHub Pages에 index.html 하나만 올려도 표시됨) */
+        .app-logo {
+            background: #ffffff url("data:image/png;base64,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") center / 88% no-repeat;
+        }
+        body {
+            background-color: #f8fafc;
+            color: #0f172a;
+            overflow-x: hidden;
+        }
+        .fade-in {
+            animation: fadeIn 0.22s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
+
+    <!-- ================= [전체 화면 로그인 게이트 (로그인 전에는 이 화면만 노출)] ================= -->
+    <div id="authGateView" class="min-h-screen flex-1 flex flex-col justify-center items-center px-4 py-10 bg-gradient-to-br from-slate-900 via-brand-900 to-slate-900 text-slate-900 relative overflow-hidden">
+        <!-- 배경 장식 요소 -->
+        <div class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-brand-500/20 blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-indigo-500/20 blur-3xl pointer-events-none"></div>
+
+        <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-white/20 p-6 sm:p-8 space-y-6 relative z-10 fade-in">
+            <!-- 상단 브랜드 헤더 -->
+            <div class="text-center space-y-2">
+                <div class="app-logo w-20 h-20 rounded-2xl border border-slate-200 mx-auto shadow-lg shadow-brand-500/20" role="img" aria-label="Jin 기출 archive 로고"></div>
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold bg-brand-50 text-brand-700 border border-brand-200/60">
+                    <i class="ph-fill ph-graduation-cap"></i> 원광대학교 의과대학
+                </div>
+                <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Jin 기출 archive</h1>
+                <p class="text-xs text-slate-500 leading-relaxed">
+                    처음 로그인 시 관리자에게 <b class="text-slate-700">가입 승인 요청</b>이 전달되며,<br>
+                    관리자 승인 완료 후 기출문제 열람 및 학습이 가능합니다.
+                </p>
+            </div>
+
+            <!-- 승인 대기 안내 알림 박스 (승인 대기 상태일 때만 노출) -->
+            <div id="pendingNoticeBox" class="hidden rounded-2xl bg-amber-50 border border-amber-200 p-4 space-y-2 text-left">
+                <div class="flex items-start gap-2.5">
+                    <i class="ph-fill ph-clock-countdown text-amber-600 text-xl shrink-0 mt-0.5"></i>
+                    <div class="space-y-1">
+                        <p id="pendingNoticeTitle" class="text-xs font-extrabold text-amber-900">관리자 승인 대기 중인 계정입니다.</p>
+                        <p id="pendingNoticeDesc" class="text-[11px] text-amber-800 leading-relaxed">
+                            관리자가 회원 승인을 완료하면 접속하실 수 있습니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 최근 로그인한 계정 빠른 선택 영역 -->
+            <div id="recentUsersSection" class="hidden space-y-2 pt-1">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-extrabold text-slate-500">이 기기에서 최근 로그인한 계정</span>
+                    <button type="button" onclick="app.clearRecentUsers()" class="text-[11px] font-semibold text-slate-400 hover:text-rose-600">목록 지우기</button>
+                </div>
+                <div id="recentUsersList" class="flex flex-wrap gap-1.5">
+                    <!-- JS로 최근 계정 칩 렌더링 -->
+                </div>
+            </div>
+
+            <!-- 학번 / 이름 로그인 폼 -->
+            <form onsubmit="app.loginFromGate(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-extrabold text-slate-700 mb-1.5">학번 또는 아이디 *</label>
+                    <div class="relative">
+                        <i class="ph-bold ph-identification-badge absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="gateUserIdInput" oninput="app.onGateIdInputChange(this.value)" required placeholder="예: 20240101" autocomplete="username" class="w-full pl-10 pr-3.5 py-2.5 text-sm bg-slate-50 border border-slate-300 rounded-xl outline-none focus:bg-white focus:border-brand-600 transition-colors">
+                    </div>
+                </div>
+
+                <div id="gateUserNameWrapper">
+                    <label class="block text-xs font-extrabold text-slate-700 mb-1.5">이름 (실명 또는 닉네임) *</label>
+                    <div class="relative">
+                        <i class="ph-bold ph-user absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="gateUserNameInput" placeholder="예: 홍길동" class="w-full pl-10 pr-3.5 py-2.5 text-sm bg-slate-50 border border-slate-300 rounded-xl outline-none focus:bg-white focus:border-brand-600 transition-colors">
+                    </div>
+                </div>
+
+                <!-- 관리자 아이디를 입력했을 때만 나타나는 비밀번호 입력칸 (안내 문구 없음) -->
+                <div id="gateAdminPasswordWrapper" class="hidden">
+                    <label class="block text-xs font-extrabold text-slate-700 mb-1.5">비밀번호 *</label>
+                    <div class="relative">
+                        <i class="ph-bold ph-lock-key absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="password" id="gateAdminPasswordInput" placeholder="비밀번호 입력" autocomplete="current-password" class="w-full pl-10 pr-3.5 py-2.5 text-sm bg-slate-50 border border-slate-300 rounded-xl outline-none focus:bg-white focus:border-brand-600 transition-colors">
+                    </div>
+                </div>
+
+                <button type="submit" id="gateSubmitBtn" class="w-full py-3 rounded-xl text-sm font-extrabold bg-brand-600 hover:bg-brand-700 text-white shadow-md shadow-brand-600/20 transition-all flex items-center justify-center gap-2">
+                    <i class="ph-bold ph-sign-in text-lg"></i>
+                    <span id="gateSubmitBtnText">로그인 / 가입 승인 요청하기</span>
+                </button>
+            </form>
+
+            <!-- 구분선 -->
+            <div class="relative flex py-0.5 items-center">
+                <div class="flex-grow border-t border-slate-200"></div>
+                <span class="flex-shrink mx-3 text-[11px] font-semibold text-slate-400">외부 소셜 로그인</span>
+                <div class="flex-grow border-t border-slate-200"></div>
+            </div>
+
+            <!-- Google 계정 로그인 -->
+            <div class="space-y-2.5">
+                <button type="button" onclick="app.loginWithGoogle()" class="w-full py-2.5 px-4 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-colors">
+                    <i class="ph-bold ph-google-logo text-rose-500 text-base"></i>
+                    <span>Google 계정으로 로그인</span>
+                </button>
+            </div>
+        </div>
+
+        <p class="text-xs text-slate-400 mt-6 relative z-10 text-center">
+            🔒 비로그인 사용자의 문제 열람 및 무단 배포가 제한되어 있습니다.
+        </p>
+    </div>
+
+    <!-- ================= 상단 네비게이션 헤더 (로그인 시에만 표시) ================= -->
+    <header id="appHeader" class="hidden bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-2">
+            <!-- 로고 및 타이틀 -->
+            <div class="flex items-center gap-3 cursor-pointer shrink-0" onclick="app.switchMainTab('USER')">
+                <div class="app-logo w-11 h-11 rounded-xl border border-slate-200 shadow-xs shrink-0" role="img" aria-label="Jin 기출 archive 로고"></div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="font-extrabold text-base sm:text-lg text-slate-900 tracking-tight leading-none">Jin 기출 archive</h1>
+                        <span id="cloudStatusBadge" class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> 동기화 활성
+                        </span>
+                    </div>
+                    <p class="text-[11px] text-slate-500 mt-1 hidden sm:block">학년 · 과목 · 기출학번 맞춤형 학습 & 클라우드 오답노트</p>
+                </div>
+            </div>
+
+            <!-- 중앙 모드 전환 탭 (오직 admin 계정으로 로그인했을 때만 노출, 일반 사용자에게는 완전히 숨김) -->
+            <div id="adminModeSwitchBar" class="hidden items-center bg-slate-100 p-1 rounded-xl border border-slate-200/80">
+                <button id="tabBtnAdmin" onclick="app.switchMainTab('ADMIN')" class="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-white text-brand-700 shadow-xs">
+                    <i class="ph-bold ph-shield-star text-base text-amber-500"></i>
+                    <span>관리자 센터</span>
+                    <span id="headerPendingCountBadge" class="hidden px-1.5 py-0.2 rounded-full text-[10px] font-extrabold bg-rose-600 text-white">0</span>
+                </button>
+                <button id="tabBtnUser" onclick="app.switchMainTab('USER')" class="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all">
+                    <i class="ph-bold ph-book-open-text text-base"></i>
+                    <span>학습 화면 미리보기</span>
+                </button>
+            </div>
+
+            <!-- 우측 사용자 프로필 & 로그아웃/클라우드 설정 버튼 -->
+            <div class="flex items-center gap-2 shrink-0">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50">
+                    <div id="userAvatar" class="w-7 h-7 rounded-full bg-brand-600 text-white font-bold text-xs flex items-center justify-center">
+                        U
+                    </div>
+                    <div class="text-left hidden md:block">
+                        <p id="userNameDisplay" class="text-xs font-bold text-slate-800 leading-none">로그인 사용자</p>
+                        <p id="userSubDisplay" class="text-[10px] text-slate-500 mt-0.5">승인 완료</p>
+                    </div>
+                </div>
+
+                <button onclick="app.logout()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-extrabold transition-colors" title="로그아웃 후 화면 잠금">
+                    <i class="ph-bold ph-sign-out text-sm"></i>
+                    <span class="hidden sm:inline">로그아웃</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= 메인 컨텐츠 컨테이너 (로그인 시에만 표시) ================= -->
+    <main id="appMain" class="hidden flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
+
+        <!-- ======================================================================= -->
+        <!-- [VIEW 1] 학습자 메인 대시보드 (진행 상황 + 학년 > 과목 > 기출학번 선택) -->
+        <!-- ======================================================================= -->
+        <section id="userDashboardView" class="space-y-6 fade-in">
+
+            <!-- 1. 내 진행 상황 요약 -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div class="lg:col-span-2 bg-gradient-to-br from-brand-600 to-indigo-700 text-white rounded-2xl p-5 sm:p-6 shadow-md space-y-4">
+                    <div class="flex flex-wrap items-start justify-between gap-3">
+                        <div class="space-y-1">
+                            <span id="dashboardUserBadge" class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-white/15 border border-white/20">개인 학습 현황</span>
+                            <h2 class="text-lg sm:text-xl font-extrabold">전체 기출 진도율</h2>
+                        </div>
+                        <button onclick="app.confirmResetUserProgress()" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-bold bg-white/10 hover:bg-white/20 transition-colors">
+                            <i class="ph-bold ph-arrow-counter-clockwise"></i> 내 기록 초기화
+                        </button>
+                    </div>
+                    <div class="flex items-end gap-3 flex-wrap">
+                        <span id="totalProgressPercent" class="text-4xl sm:text-5xl font-extrabold leading-none">0%</span>
+                        <span id="totalProgressFraction" class="text-sm font-semibold text-white/80 pb-1">(0 / 0 문제)</span>
+                        <span id="totalUnderstoodCount" class="ml-auto text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-400/20 text-emerald-100 border border-emerald-300/30">0문제 완벽 이해</span>
+                    </div>
+                    <div class="w-full h-2.5 bg-white/20 rounded-full overflow-hidden">
+                        <div id="totalProgressBar" class="h-full bg-white rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+                        <p class="text-[11px] font-bold text-slate-500">등록 문제</p>
+                        <p id="statAllCount" class="text-2xl font-extrabold text-slate-900 mt-1">0</p>
+                    </div>
+                    <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+                        <p class="text-[11px] font-bold text-slate-500">내가 푼 문제</p>
+                        <p id="statMySolved" class="text-2xl font-extrabold text-brand-700 mt-1">0</p>
+                    </div>
+                    <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+                        <p class="text-[11px] font-bold text-slate-500">정답률</p>
+                        <p id="statMyAccuracy" class="text-2xl font-extrabold text-emerald-600 mt-1">0%</p>
+                    </div>
+                    <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+                        <p class="text-[11px] font-bold text-slate-500">복습 필요</p>
+                        <p id="statMyReview" class="text-2xl font-extrabold text-rose-600 mt-1">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Step 1 학년 선택 -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-3">
+                <div class="flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-full bg-brand-600 text-white text-xs font-extrabold flex items-center justify-center">1</span>
+                    <h3 class="font-extrabold text-sm sm:text-base text-slate-900">학년 선택</h3>
+                </div>
+                <div id="step1GradeContainer" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5"></div>
+            </div>
+
+            <!-- 3. Step 2 과목 선택 -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-3">
+                <div class="flex items-center justify-between gap-2 flex-wrap">
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-indigo-600 text-white text-xs font-extrabold flex items-center justify-center">2</span>
+                        <h3 class="font-extrabold text-sm sm:text-base text-slate-900">과목 선택</h3>
+                    </div>
+                    <span id="step2HelperText" class="text-[11px] font-semibold text-slate-500"></span>
+                </div>
+                <div id="step2SubjectContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+            </div>
+
+            <!-- 4. Step 3 기출 학번 선택 -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-3">
+                <div class="flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-full bg-amber-500 text-white text-xs font-extrabold flex items-center justify-center">3</span>
+                    <h3 class="font-extrabold text-sm sm:text-base text-slate-900">기출 학번 선택</h3>
+                </div>
+                <div id="step3CohortContainer" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5"></div>
+            </div>
+
+            <!-- 5. 선택된 세트 & 풀이 모드 -->
+            <div class="bg-slate-900 text-white rounded-2xl p-5 sm:p-6 shadow-md space-y-4">
+                <div class="space-y-1.5">
+                    <div id="selectionBreadcrumb" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-300 flex-wrap"></div>
+                    <h3 id="selectedTargetTitle" class="text-base sm:text-lg font-extrabold">🎯 선택된 기출 세트</h3>
+                </div>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+                    <button onclick="app.startFilteredQuiz('ALL')" class="p-3.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-left transition-colors">
+                        <div class="flex items-center gap-1.5 text-sm font-extrabold"><i class="ph-bold ph-play-circle text-lg"></i>전체 풀이</div>
+                        <p id="modeCountAll" class="text-[11px] font-semibold text-white/75 mt-1">0문제</p>
+                    </button>
+                    <button onclick="app.startFilteredQuiz('UNSOLVED')" class="p-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-left transition-colors">
+                        <div class="flex items-center gap-1.5 text-sm font-extrabold"><i class="ph-bold ph-circle-dashed text-lg"></i>안 푼 문제</div>
+                        <p id="modeCountUnsolved" class="text-[11px] font-semibold text-white/60 mt-1">0문제</p>
+                    </button>
+                    <button onclick="app.startFilteredQuiz('WRONG_OR_BOOKMARK')" class="p-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-left transition-colors">
+                        <div class="flex items-center gap-1.5 text-sm font-extrabold"><i class="ph-bold ph-bookmark-simple text-lg text-amber-300"></i>오답 & 오답노트</div>
+                        <p id="modeCountWrong" class="text-[11px] font-semibold text-white/60 mt-1">0문제</p>
+                    </button>
+                    <button onclick="app.startFilteredQuiz('NOT_UNDERSTOOD')" class="p-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-left transition-colors">
+                        <div class="flex items-center gap-1.5 text-sm font-extrabold"><i class="ph-bold ph-lightbulb text-lg text-emerald-300"></i>해설 미숙지</div>
+                        <p id="modeCountNotUnderstood" class="text-[11px] font-semibold text-white/60 mt-1">0문제</p>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 6. 문제 미리보기 리스트 -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+                <div class="px-5 sm:px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                    <h3 class="font-bold text-sm sm:text-base text-slate-900">문제 목록 (클릭하면 해당 문제부터 풀이)</h3>
+                    <span id="previewListCountBadge" class="text-xs font-extrabold text-brand-700 bg-brand-50 px-2.5 py-0.5 rounded-full">총 0문항</span>
+                </div>
+                <div id="userQuestionPreviewList" class="divide-y divide-slate-100"></div>
+            </div>
+        </section>
+
+        <!-- ======================================================================= -->
+        <!-- [VIEW 2] 퀴즈 풀이 화면 -->
+        <!-- ======================================================================= -->
+        <section id="quizSolveView" class="hidden space-y-4 fade-in">
+            <!-- 상단 바 -->
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <button onclick="app.exitQuizToDashboard()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 transition-colors">
+                    <i class="ph-bold ph-arrow-left"></i> 대시보드로
+                </button>
+                <div class="flex items-center gap-2 flex-wrap">
+                    <span id="quizPathBadge" class="text-[11px] font-bold px-2.5 py-1 rounded-md bg-slate-100 text-slate-600"></span>
+                    <span id="quizModeLabel" class="text-[11px] font-extrabold px-2.5 py-1 rounded-md bg-brand-50 text-brand-700"></span>
+                    <span id="quizCounterBadge" class="text-xs font-extrabold px-3 py-1 rounded-full bg-slate-900 text-white">1 / 1</span>
+                </div>
+            </div>
+
+            <!-- 문항 번호 팔레트 -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-3 shadow-xs">
+                <div id="quizPaletteContainer" class="flex flex-wrap gap-1.5"></div>
+            </div>
+
+            <!-- 문제 카드 -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-5 sm:p-7 space-y-5">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        <span id="qMetaGrade" class="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700"></span>
+                        <span id="qMetaSubject" class="text-[11px] font-bold px-2 py-0.5 rounded bg-indigo-50 text-indigo-700"></span>
+                        <span id="qMetaCohort" class="text-[11px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-800"></span>
+                        <span id="qPrevStatusBadge" class="text-xs font-semibold px-2.5 py-1 rounded-md bg-slate-100 text-slate-500">미풀이 문항</span>
+                    </div>
+                    <button id="btnQuizBookmark" onclick="app.toggleQuizBookmark()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-extrabold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors">
+                        <i class="ph-bold ph-bookmark-simple text-base"></i><span>오답노트 고정</span>
+                    </button>
+                </div>
+
+                <div class="flex gap-2.5">
+                    <span id="qIndexLabel" class="text-lg font-extrabold text-brand-600 shrink-0">Q1.</span>
+                    <p id="qTextDisplay" class="text-base sm:text-lg font-bold text-slate-900 leading-relaxed whitespace-pre-line"></p>
+                </div>
+
+                <div id="qOptionsContainer" class="space-y-2.5"></div>
+
+                <div class="flex justify-end">
+                    <button id="btnRevealAnswer" onclick="app.revealQuizAnswerDirectly()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors">
+                        <i class="ph-bold ph-eye"></i> 풀지 않고 정답·해설 보기
+                    </button>
+                </div>
+
+                <!-- 정답 / 해설 -->
+                <div id="qExplanationSection" class="hidden rounded-2xl bg-slate-50 border border-slate-200 p-4 sm:p-5 space-y-3">
+                    <span id="qResultStatusBadge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-slate-100 text-slate-700"></span>
+                    <div>
+                        <p class="text-xs font-extrabold text-slate-500 mb-1">📘 해설</p>
+                        <p id="qExplanationText" class="text-sm text-slate-800 leading-relaxed whitespace-pre-line"></p>
+                    </div>
+                    <label class="flex items-center gap-2 pt-2 border-t border-slate-200 cursor-pointer select-none">
+                        <input type="checkbox" id="chkQuizUnderstood" onchange="app.onQuizUnderstoodChange(this)" class="w-4 h-4 accent-emerald-600">
+                        <span class="text-xs sm:text-sm font-bold text-slate-700">해설을 완벽히 이해했어요</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 이전 / 다음 -->
+            <div class="flex items-center justify-between gap-2">
+                <button id="btnQuizPrev" onclick="app.goPrevQuizQuestion()" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                    <i class="ph-bold ph-caret-left"></i> 이전 문제
+                </button>
+                <span class="hidden sm:inline text-[11px] text-slate-400">키보드: 1~5 선택 · ← → 이동</span>
+                <button onclick="app.goNextQuizQuestion()" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-brand-600 hover:bg-brand-700 text-white shadow-sm transition-colors">
+                    <span id="txtQuizNext">다음 문제</span> <i class="ph-bold ph-caret-right"></i>
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+
+    <!-- ================= 관리자 전용 UI 템플릿 =================
+         <template> 안의 내용은 브라우저가 화면에 그리지 않습니다.
+         관리자 로그인에 성공했을 때만 JS(mountAdminUI)가 복제해 화면에 붙이고,
+         로그아웃하면 unmountAdminUI가 통째로 제거합니다. -->
+    <template id="adminUiTemplate">
+        <!-- ======================================================================= -->
+        <!-- [VIEW 3] 관리자 페이지 (관리자 로그인 시에만 DOM에 삽입됨) -->
+        <!-- ======================================================================= -->
+        <section id="adminPageView" class="hidden space-y-6 fade-in">
+            
+            <!-- 관리자 상단 안내 배너 -->
+            <div class="bg-slate-900 text-white rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md">
+                <div class="space-y-1">
+                    <div class="inline-flex items-center gap-1.5 text-xs font-bold text-amber-300 bg-amber-500/10 border border-amber-400/20 px-2.5 py-0.5 rounded-md">
+                        <i class="ph-fill ph-shield-check"></i> ADMIN 전용 회원 승인 & 기출 데이터베이스 관리소
+                    </div>
+                    <h2 class="text-xl font-extrabold">회원 로그인 승인 관리 & 기출문제 출제</h2>
+                    <p class="text-xs text-slate-300">이 페이지는 관리자 계정으로 로그인했을 때만 화면에 생성되며, 일반 사용자에게는 존재하지 않습니다.</p>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2 shrink-0">
+                    <button onclick="app.openAdminQuestionModal()" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-brand-500 hover:bg-brand-600 text-white shadow-sm transition-colors">
+                        <i class="ph-bold ph-plus-circle text-base"></i>
+                        <span>새 기출문제 등록</span>
+                    </button>
+                    <button onclick="app.openJsonManageModal()" class="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-white/10 hover:bg-white/20 text-white transition-colors">
+                        <i class="ph-bold ph-file-code text-base"></i>
+                        <span>JSON 대량 등록 / 백업</span>
+                    </button>
+                    <button onclick="app.openFirebaseConfigModal()" class="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 text-white transition-colors">
+                        <i class="ph-bold ph-cloud-arrow-up text-base"></i>
+                        <span>클라우드 연동</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- [신규] 3-1. 사용자 로그인 승인 요청 & 전체 회원 권한 관리 카드 -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+                <div class="px-5 py-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 bg-slate-50/70">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center">
+                            <i class="ph-bold ph-users-three text-lg"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-extrabold text-sm sm:text-base text-slate-900">사용자 로그인 승인 및 회원 관리</h3>
+                                <span id="adminPendingBadge" class="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-amber-100 text-amber-800">승인 대기 0명</span>
+                            </div>
+                            <p class="text-xs text-slate-500">로그인을 시도한 사용자를 승인해야 해당 사용자가 기출문제 페이지에 접속할 수 있습니다.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button onclick="app.approveAllPendingUsers()" class="px-3 py-1.5 rounded-xl text-xs font-extrabold bg-emerald-600 hover:bg-emerald-700 text-white transition-colors">
+                            대기 중인 회원 전체 승인
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 수동으로 승인 회원 사전 등록 폼 -->
+                <form onsubmit="app.adminRegisterApprovedUser(event)" class="px-5 py-3.5 bg-slate-50/40 border-b border-slate-100 flex flex-wrap items-center gap-2">
+                    <span class="text-xs font-extrabold text-slate-600 mr-1">➕ 회원 직접 사전 승인 등록:</span>
+                    <input type="text" id="adminPreApproveUid" required placeholder="학번 또는 아이디 (예: 20240101)" class="px-3 py-1.5 text-xs bg-white border border-slate-300 rounded-lg outline-none focus:border-brand-500">
+                    <input type="text" id="adminPreApproveName" required placeholder="이름 (예: 김의대)" class="px-3 py-1.5 text-xs bg-white border border-slate-300 rounded-lg outline-none focus:border-brand-500">
+                    <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white">즉시 승인 계정 추가</button>
+                </form>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase">
+                                <th class="py-3 px-4">상태</th>
+                                <th class="py-3 px-4">이름</th>
+                                <th class="py-3 px-4">학번 / 아이디</th>
+                                <th class="py-3 px-4">요청 일시</th>
+                                <th class="py-3 px-4">학습 진도</th>
+                                <th class="py-3 px-4 text-right">승인 / 권한 관리</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminUserApprovalTableBody" class="divide-y divide-slate-100 text-xs sm:text-sm">
+                            <!-- JS로 회원 승인 목록 렌더링 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 관리자 필터 바 (학년 / 과목 / 기출학번 / 검색어) -->
+            <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-xs grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 mb-1">학년 필터</label>
+                    <select id="adminFilterGrade" onchange="app.onAdminFilterChange()" class="w-full px-3 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl font-semibold outline-none">
+                        <option value="ALL">전체 학년</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 mb-1">과목 필터</label>
+                    <select id="adminFilterSubject" onchange="app.onAdminFilterChange()" class="w-full px-3 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl font-semibold outline-none">
+                        <option value="ALL">전체 과목</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 mb-1">기출 학번 필터</label>
+                    <select id="adminFilterCohort" onchange="app.onAdminFilterChange()" class="w-full px-3 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl font-semibold outline-none">
+                        <option value="ALL">전체 기출 학번</option>
+                    </select>
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="block text-[11px] font-bold text-slate-500 mb-1">문제/해설 키워드 검색</label>
+                    <div class="relative">
+                        <i class="ph-bold ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="adminSearchInput" oninput="app.onAdminFilterChange()" placeholder="검색할 문제 지문이나 해설 키워드 입력..." class="w-full pl-9 pr-3 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-brand-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 관리자 문제 테이블 목록 -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+                <div class="px-5 py-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                        <h3 class="font-bold text-sm sm:text-base text-slate-900">등록된 기출문제 DB 리스트</h3>
+                        <span id="adminTableCount" class="text-xs font-extrabold text-brand-700 bg-brand-50 px-2.5 py-0.5 rounded-full">0건</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="app.openAdminPasswordChangeModal()" class="text-xs font-semibold text-slate-500 hover:text-slate-800 underline">
+                            관리자 비밀번호 변경
+                        </button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase">
+                                <th class="py-3 px-4 w-14">#</th>
+                                <th class="py-3 px-3 w-28">학년</th>
+                                <th class="py-3 px-3 w-32">과목</th>
+                                <th class="py-3 px-3 w-28">기출 학번</th>
+                                <th class="py-3 px-4">문제 지문 및 정답</th>
+                                <th class="py-3 px-4 w-28 text-right">관리</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminQuestionTableBody" class="divide-y divide-slate-100 text-xs sm:text-sm">
+                            <!-- JS로 렌더링 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    <!-- ================= [모달 3] 관리자 기출문제 등록/수정 모달 ================= -->
+    <div id="adminQuestionModal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[92vh] flex flex-col shadow-xl border border-slate-200 fade-in">
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                <h3 id="adminQuestionModalTitle" class="font-extrabold text-lg text-slate-900">새 기출문제 등록</h3>
+                <button onclick="app.closeAdminQuestionModal()" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i class="ph-bold ph-x text-xl"></i>
+                </button>
+            </div>
+
+            <form id="adminQuestionForm" onsubmit="app.saveAdminQuestion(event)" class="p-6 overflow-y-auto space-y-4 flex-1">
+                <input type="hidden" id="qFormId">
+
+                <!-- 3단계 계층 입력 (학년 -> 과목 -> 기출 학번) -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200/80">
+                    <div>
+                        <label class="block text-xs font-extrabold text-slate-700 mb-1">1. 학년 *</label>
+                        <input type="text" id="qFormGrade" list="gradeSuggestions" required placeholder="예: 본과 1학년" class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-lg outline-none focus:border-brand-500">
+                        <datalist id="gradeSuggestions"></datalist>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-extrabold text-slate-700 mb-1">2. 과목 *</label>
+                        <input type="text" id="qFormSubject" list="subjectSuggestions" required placeholder="예: 병리학" class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-lg outline-none focus:border-brand-500">
+                        <datalist id="subjectSuggestions"></datalist>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-extrabold text-slate-700 mb-1">3. 기출 학번/연도 *</label>
+                        <input type="text" id="qFormCohort" list="cohortSuggestions" required placeholder="예: 23학번 기출" class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-lg outline-none focus:border-brand-500">
+                        <datalist id="cohortSuggestions"></datalist>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-extrabold text-slate-700 mb-1">문제 본문 *</label>
+                    <textarea id="qFormQuestion" required rows="3" placeholder="기출문제 지문을 입력하세요..." class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl outline-none focus:border-brand-500"></textarea>
+                </div>
+
+                <!-- 객관식 보기 1~5 -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-xs font-extrabold text-slate-700">객관식 보기 (1~4번 필수, 5번 선택)</label>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-extrabold text-brand-700">정답 번호:</span>
+                            <select id="qFormAnswer" required class="px-2.5 py-1 text-xs font-extrabold border border-brand-300 bg-brand-50 text-brand-700 rounded-lg outline-none">
+                                <option value="1">1번</option>
+                                <option value="2">2번</option>
+                                <option value="3">3번</option>
+                                <option value="4">4번</option>
+                                <option value="5">5번</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-slate-100 text-xs font-bold flex items-center justify-center shrink-0">1</span>
+                        <input type="text" id="qFormOpt1" required placeholder="1번 보기" class="w-full px-3 py-1.5 text-sm border border-slate-300 rounded-lg outline-none focus:border-brand-500">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-slate-100 text-xs font-bold flex items-center justify-center shrink-0">2</span>
+                        <input type="text" id="qFormOpt2" required placeholder="2번 보기" class="w-full px-3 py-1.5 text-sm border border-slate-300 rounded-lg outline-none focus:border-brand-500">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-slate-100 text-xs font-bold flex items-center justify-center shrink-0">3</span>
+                        <input type="text" id="qFormOpt3" required placeholder="3번 보기" class="w-full px-3 py-1.5 text-sm border border-slate-300 rounded-lg outline-none focus:border-brand-500">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-slate-100 text-xs font-bold flex items-center justify-center shrink-0">4</span>
+                        <input type="text" id="qFormOpt4" required placeholder="4번 보기" class="w-full px-3 py-1.5 text-sm border border-slate-300 rounded-lg outline-none focus:border-brand-500">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-slate-100 text-slate-400 text-xs font-bold flex items-center justify-center shrink-0">5</span>
+                        <input type="text" id="qFormOpt5" placeholder="5번 보기 (없으면 비워두세요)" class="w-full px-3 py-1.5 text-sm border border-slate-300 rounded-lg outline-none focus:border-brand-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-extrabold text-slate-700 mb-1">상세 해설 *</label>
+                    <textarea id="qFormExplanation" required rows="3" placeholder="정답 해설 및 오답 풀이를 입력하세요..." class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl outline-none focus:border-brand-500"></textarea>
+                </div>
+
+                <div class="pt-3 border-t border-slate-200 flex justify-end gap-2">
+                    <button type="button" onclick="app.closeAdminQuestionModal()" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200">취소</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-brand-600 text-white hover:bg-brand-700">기출문제 저장</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- ================= [모달 4] JSON 대량 등록 및 백업 모달 ================= -->
+    <div id="jsonManageModal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-xl border border-slate-200 fade-in">
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                <div>
+                    <h3 class="font-extrabold text-lg text-slate-900">기출문제 JSON 대량 등록 & 백업</h3>
+                    <p class="text-xs text-slate-500">학년(grade), 과목(subject), 기출학번(cohort)이 포함된 JSON 데이터를 일괄 입출력합니다.</p>
+                </div>
+                <button onclick="app.closeJsonManageModal()" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i class="ph-bold ph-x text-xl"></i>
+                </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto space-y-4 flex-1">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h4 class="text-xs sm:text-sm font-bold text-slate-800">전체 기출문제 DB 내보내기 (Export)</h4>
+                        <p class="text-[11px] text-slate-500">현재 등록된 모든 문제를 JSON으로 복사하거나 다운로드합니다.</p>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button onclick="app.exportQuestionsClipboard()" class="px-3 py-2 rounded-lg text-xs font-bold bg-white border border-slate-300 text-slate-700 hover:bg-slate-100">클립보드 복사</button>
+                        <button onclick="app.exportQuestionsFile()" class="px-3 py-2 rounded-lg text-xs font-bold bg-brand-600 text-white hover:bg-brand-700">JSON 다운로드</button>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-extrabold text-slate-700">JSON 데이터 붙여넣기 (Import)</label>
+                        <button onclick="app.insertSampleJsonTemplate()" class="text-xs font-bold text-brand-600 hover:underline">표준 JSON 양식 채우기</button>
+                    </div>
+                    <textarea id="jsonBulkTextarea" rows="8" placeholder='[{"grade":"본과 1학년","subject":"병리학","cohort":"23학번 기출","question":"문제 지문","options":["1번","2번","3번","4번"],"answer":1,"explanation":"해설"}]' class="w-full p-3.5 text-xs font-mono bg-slate-900 text-slate-100 rounded-xl outline-none"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2 border-t border-slate-200">
+                    <button onclick="app.importQuestionsFromJson('APPEND')" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-700">기존 문제에 추가 등록</button>
+                    <button onclick="app.importQuestionsFromJson('REPLACE')" class="px-4 py-2 rounded-xl text-xs font-bold bg-rose-600 text-white hover:bg-rose-700">전체 DB 덮어쓰기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= [모달 5] 외부 GitHub Pages 배포용 Firebase 설정 모달 ================= -->
+    <div id="firebaseConfigModal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-xl border border-slate-200 space-y-4 fade-in">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div>
+                    <h3 class="font-extrabold text-lg text-slate-900">클라우드 DB(Firebase) 연동 설정</h3>
+                    <p class="text-xs text-slate-500">GitHub Pages 배포 시 여러 사용자의 문제/기록을 실시간 공유하려면 Firebase Config를 입력하세요.</p>
+                </div>
+                <button onclick="app.closeFirebaseConfigModal()" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i class="ph-bold ph-x text-xl"></i>
+                </button>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block text-xs font-bold text-slate-700">Firebase Config JSON (선택사항)</label>
+                <textarea id="customFirebaseConfigInput" rows="6" placeholder='{"apiKey": "...", "authDomain": "...", "projectId": "..."}' class="w-full p-3 text-xs font-mono bg-slate-900 text-slate-100 rounded-xl outline-none"></textarea>
+                <p class="text-[11px] text-slate-500 leading-relaxed">
+                    * 별도 설정 없이도 브라우저 멀티 프로필 스토리지를 통해 즉시 모든 기능을 사용할 수 있습니다.
+                </p>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="app.closeFirebaseConfigModal()" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">닫기</button>
+                <button onclick="app.saveCustomFirebaseConfig()" class="px-4 py-2 rounded-xl text-xs font-bold bg-brand-600 text-white">설정 저장 및 재연결</button>
+            </div>
+        </div>
+    </div>
+    </template>
+
+    <!-- ================= [모달 6] 범용 확인/프롬프트 모달 (alert/confirm 대체) ================= -->
+    <div id="confirmDialogModal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl border border-slate-200 text-center space-y-4 fade-in">
+            <div class="w-12 h-12 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto text-2xl">
+                <i class="ph-bold ph-warning-circle"></i>
+            </div>
+            <div class="space-y-1">
+                <h4 id="confirmDialogTitle" class="font-extrabold text-base text-slate-900">확인</h4>
+                <p id="confirmDialogDesc" class="text-xs text-slate-500 leading-relaxed"></p>
+            </div>
+            <div id="confirmPromptWrapper" class="hidden">
+                <input type="password" id="confirmPromptInput" placeholder="새 비밀번호 입력" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-xl text-center outline-none">
+            </div>
+            <div class="flex gap-2 pt-1">
+                <button onclick="app.closeConfirmDialog()" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200">취소</button>
+                <button id="confirmDialogOkBtn" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-rose-600 text-white hover:bg-rose-700">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 우측 하단 토스트 컨테이너 -->
+    <div id="toastArea" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+
+    <!-- ================= 애플리케이션 스크립트 (Firebase + 멀티유저 상태 관리) ================= -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const STORAGE_KEYS = {
+            QUESTIONS: 'EXAM_PRO_QUESTIONS_V2',
+            USER_PROFILES: 'EXAM_PRO_USER_PROGRESS_MAP_V2',
+            USER_REGISTRY: 'EXAM_PRO_USER_REGISTRY_V2',
+            CURRENT_USER: 'EXAM_PRO_ACTIVE_USER_V2',
+            RECENT_USERS: 'EXAM_PRO_RECENT_USERS_V2',
+            ADMIN_PIN: 'EXAM_PRO_ADMIN_PIN_V2',          // (구버전 평문 비밀번호 - 자동으로 해시로 이전 후 삭제)
+            ADMIN_HASH: 'EXAM_PRO_ADMIN_PW_HASH_V3',     // 이 기기에서 변경한 관리자 비밀번호 해시
+            ADMIN_SESSION: 'EXAM_PRO_ADMIN_SESSION_V3',  // sessionStorage: 탭을 닫으면 관리자 로그인 해제
+            CUSTOM_FB: 'EXAM_PRO_CUSTOM_FB_CONFIG'
+        };
+
+        // ================= [관리자 계정 설정] =================
+        // 관리자 아이디: 로그인 화면의 '학번 또는 아이디' 칸에 이 값을 입력하면 비밀번호 칸이 나타납니다.
+        // 남들이 추측하기 어려운 값으로 바꿔 두면 더 안전합니다. (예: 'prof_kim_2026')
+        const ADMIN_ID = 'admin';
+
+        // 관리자 비밀번호의 SHA-256 해시 (코드에 비밀번호 원문을 두지 않기 위함)
+        // 현재 값 = 'admin1234' 의 해시. 반드시 바꿔 주세요!
+        // 새 해시 만드는 법: 관리자 로그인 → [관리자 비밀번호 변경] → 새 해시가 클립보드에 복사됨 → 아래에 붙여넣기
+        const ADMIN_PASSWORD_HASH = 'ac9689e2272427085e35b9d3e3e8bed88cb3434828b43b86fc0596cad4c6e270';
+        const DEFAULT_ADMIN_PASSWORD_HASH = 'ac9689e2272427085e35b9d3e3e8bed88cb3434828b43b86fc0596cad4c6e270';
+
+        // ================= [Firebase 설정 (GitHub Pages 배포용)] =================
+        // 여러 기기/사용자가 승인 정보·문제·기록을 공유하려면 Firebase 콘솔의 config 객체를 여기에 붙여넣으세요.
+        // (null 이면 각 브라우저의 localStorage에만 저장되어 다른 기기와 공유되지 않습니다.)
+        const FIREBASE_CONFIG = null;
+
+        // 순수 JS SHA-256 (https가 아닌 file:// 환경에서도 동작하도록 crypto.subtle 대신 사용)
+        function sha256Hex(ascii) {
+            const bytes = new TextEncoder().encode(ascii);
+            const K = [0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+            let H = [0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+            const l = bytes.length;
+            const withPad = new Uint8Array(((l + 9 + 63) >> 6) << 6);
+            withPad.set(bytes);
+            withPad[l] = 0x80;
+            const bitLen = l * 8;
+            const dv = new DataView(withPad.buffer);
+            dv.setUint32(withPad.length - 4, bitLen >>> 0);
+            dv.setUint32(withPad.length - 8, Math.floor(bitLen / 0x100000000));
+            const W = new Uint32Array(64);
+            const rotr = (x, n) => (x >>> n) | (x << (32 - n));
+            for (let off = 0; off < withPad.length; off += 64) {
+                for (let i = 0; i < 16; i++) W[i] = dv.getUint32(off + i * 4);
+                for (let i = 16; i < 64; i++) {
+                    const s0 = rotr(W[i-15], 7) ^ rotr(W[i-15], 18) ^ (W[i-15] >>> 3);
+                    const s1 = rotr(W[i-2], 17) ^ rotr(W[i-2], 19) ^ (W[i-2] >>> 10);
+                    W[i] = (W[i-16] + s0 + W[i-7] + s1) >>> 0;
+                }
+                let [a, b, c, d, e, f, g, h] = H;
+                for (let i = 0; i < 64; i++) {
+                    const S1 = rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25);
+                    const ch = (e & f) ^ (~e & g);
+                    const t1 = (h + S1 + ch + K[i] + W[i]) >>> 0;
+                    const S0 = rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22);
+                    const mj = (a & b) ^ (a & c) ^ (b & c);
+                    const t2 = (S0 + mj) >>> 0;
+                    h = g; g = f; f = e; e = (d + t1) >>> 0; d = c; c = b; b = a; a = (t1 + t2) >>> 0;
+                }
+                H = H.map((v, i) => (v + [a, b, c, d, e, f, g, h][i]) >>> 0);
+            }
+            return H.map(v => v.toString(16).padStart(8, '0')).join('');
+        }
+
+        const isAdminId = (uid) => String(uid || '').trim().toLowerCase() === ADMIN_ID.toLowerCase();
+
+        // 학년 -> 과목 -> 기출 학번 체계를 갖춘 초기 샘플 기출문제 8선
+        const INITIAL_SAMPLE_QUESTIONS = [
+            {
+                id: 'q_med_101',
+                grade: '본과 1학년',
+                subject: '해부학',
+                cohort: '23학번 기출',
+                question: '위팔뼈(Humerus)의 중간몸통(Mid-shaft) 골절 시 나선고랑(Radial groove)을 지나가다가 손상되기 가장 쉬운 신경과 그로 인해 나타나는 특징적인 임상 증상은?',
+                options: [
+                    '정중신경(Median nerve) - 원숭이손 변형(Ape hand)',
+                    '자신경(Ulnar nerve) - 갈퀴손 변형(Claw hand)',
+                    '노신경(Radial nerve) - 손목처짐(Wrist drop)',
+                    '겨드랑신경(Axillary nerve) - 어깨 벌림(Abduction) 장애',
+                    '근육피부신경(Musculocutaneous nerve) - 팔꿉 굽힘 장애'
+                ],
+                answer: 3,
+                explanation: '위팔뼈 몸통 뒤쪽의 노신경고랑(Radial groove)에는 노신경(Radial nerve)과 깊은위팔동맥이 주행합니다. 따라서 위팔뼈 중간몸통 골절 시 노신경이 손상되기 쉬우며, 아래팔 뒤칸의 폄근육(Extensor muscles) 마비로 인해 손목처짐(Wrist drop)이 발생합니다.'
+            },
+            {
+                id: 'q_med_102',
+                grade: '본과 1학년',
+                subject: '해부학',
+                cohort: '22학번 기출',
+                question: '심장에 혈액을 공급하는 관상동맥 중 앞심실사이가지(LAD, Left anterior descending artery)가 막혔을 때 주로 허혈이 발생하는 부위는?',
+                options: [
+                    '오른심방과 굴심방결절(SA node)',
+                    '왼심실 앞벽과 심실사이막(Interventricular septum) 앞쪽 2/3',
+                    '심실사이막 뒤쪽 1/3과 방실결절(AV node)',
+                    '오른심실 가쪽벽 전체',
+                    '왼심방 뒤벽 단독'
+                ],
+                answer: 2,
+                explanation: '왼관상동맥(LCA)의 가지인 앞심실사이가지(LAD)는 양쪽 심실의 앞벽(특히 왼심실 앞벽)과 심실사이막(Interventricular septum)의 앞쪽 2/3에 혈액을 공급합니다. 심실사이막 뒤쪽 1/3은 주로 오른관상동맥(RCA)에서 분지하는 뒤심실사이가지(PDA)가 공급합니다.'
+            },
+            {
+                id: 'q_med_103',
+                grade: '본과 1학년',
+                subject: '생리학',
+                cohort: '23학번 기출',
+                question: '심장근육세포의 활동전위(Action potential) 중 제2기 고원기(Plateau phase)를 형성하는 데 가장 핵심적인 역할을 하는 이온 통로의 변화는?',
+                options: [
+                    '전압개폐 빠른 Na+ 통로의 급격한 개방',
+                    'L-형 Ca2+ 통로를 통한 Ca2+ 유입과 K+ 유출의 균형',
+                    'Ca2+ 통로의 완전 폐쇄 및 K+ 통로의 대량 개방',
+                    'Na+-K+ ATPase 펌프의 일시적 정지',
+                    'Cl- 이온의 세포 내 대량 유입'
+                ],
+                answer: 2,
+                explanation: '심근 활동전위의 2기(Plateau phase)는 느린 L-형 칼슘 통로(L-type Ca2+ channel)가 열려 Ca2+이 세포 내로 유입되는 것과 지연성 칼륨 통로를 통해 K+이 세포 밖으로 유출되는 속도가 균형을 이루면서 막전위가 일정하게 유지되는 시기입니다.'
+            },
+            {
+                id: 'q_med_104',
+                grade: '본과 1학년',
+                subject: '생리학',
+                cohort: '21학번 기출',
+                question: '콩팥(신장)에서 사구체 여과율(GFR)을 측정하기 위한 이상적인 표지자 물질의 조건으로 옳은 것은?',
+                options: [
+                    '혈장 단백질에 90% 이상 결합해야 한다.',
+                    '세뇨관에서 전량 재흡수되어야 한다.',
+                    '사구체에서 자유롭게 여과되고 세뇨관에서 재흡수나 분비가 없어야 한다.',
+                    '세뇨관 주위 모세혈관에서 능동적으로 분비되어야 한다.',
+                    '콩팥 조직 내에서 빠르게 대사되어 사라져야 한다.'
+                ],
+                answer: 3,
+                explanation: '사구체 여과율(GFR) 측정의 표준 물질인 이눌린(Inulin)이나 내인성 지표인 크레아티닌(Creatinine)은 사구체 모세혈관을 자유롭게 여과하며, 세뇨관에서 재흡수되거나 분비되지 않아 배설량이 곧 여과량과 일치해야 합니다.'
+            },
+            {
+                id: 'q_med_105',
+                grade: '본과 1학년',
+                subject: '병리학',
+                cohort: '23학번 기출',
+                question: '비가역적 세포 손상(Irreversible cell injury)을 시사하는 가장 결정적인 형태학적(핵의 변화) 및 생화학적 소견의 조합은?',
+                options: [
+                    '세포 종창(Cellular swelling) 및 리보솜 탈락',
+                    '염색질 응집(Chromatin clumping) 및 ATP의 일시적 감소',
+                    '핵농축(Pyknosis)·핵붕괴(Karyorrhexis)·핵융해(Karyolysis) 및 세포막의 심각한 파괴',
+                    '지방 변화(Fatty change) 및 자가포식 액포 형성',
+                    '미토콘드리아의 경미한 가역적 부종'
+                ],
+                answer: 3,
+                explanation: '세포가 비가역적 손상(괴사) 단계로 넘어가면 핵에서 핵농축(Pyknosis) → 핵붕괴(Karyorrhexis) → 핵융해(Karyolysis)의 특징적 변화가 나타나며, 미토콘드리아의 비가역적 기능 부전(무정형 치밀체)과 세포막의 광범위한 손상이 발생합니다.'
+            },
+            {
+                id: 'q_med_201',
+                grade: '본과 2학년',
+                subject: '순환기학',
+                cohort: '23학번 기출',
+                question: '갑작스러운 흉통으로 내원한 58세 남성 환자의 심전도(ECG)에서 Lead II, III, aVF에서 ST 분절 상승(ST elevation)이 관찰되었다. 가장 의심되는 심근경색 부위와 원인 혈관은?',
+                options: [
+                    '앞벽 심근경색(Anterior MI) - 앞심실사이가지(LAD)',
+                    '아래벽 심근경색(Inferior MI) - 오른관상동맥(RCA)',
+                    '가쪽벽 심근경색(Lateral MI) - 휘돌이가지(LCX)',
+                    '뒤벽 심근경색(Posterior MI) - 왼관상동맥 주간부(LMCA)',
+                    '심실중격 단독 경색 - 대각가지(Diagonal branch)'
+                ],
+                answer: 2,
+                explanation: '심전도에서 Lead II, III, aVF는 심장의 아래벽(Inferior wall)을 반영하는 유도입니다. 해당 유도에서 ST 분절 상승이 나타나면 아래벽 ST절 상승 심근경색(Inferior STEMI)을 진단하며, 주된 원인 혈관은 오른관상동맥(RCA, 약 80~85%)입니다.'
+            },
+            {
+                id: 'q_med_202',
+                grade: '본과 2학년',
+                subject: '순환기학',
+                cohort: '22학번 기출',
+                question: '박출률 감소 심부전(HFrEF) 환자에서 생존율을 유의하게 개선시켜 사망률을 낮추는 것으로 입증된 표준 약제(GDMT)에 해당하지 않는 것은?',
+                options: [
+                    '안지오텐신 수용체-네프릴리신 억제제 (ARNI) 또는 ACE 억제제',
+                    '베타차단제 (Bisoprolol, Carvedilol, Metoprolol succinate)',
+                    '염류코르티코이드 수용체 길항제 (Spironolactone)',
+                    'SGLT2 억제제 (Dapagliflozin, Empagliflozin)',
+                    '비디히드로피리딘계 칼슘채널차단제 (Verapamil, Diltiazem)'
+                ],
+                answer: 5,
+                explanation: 'HFrEF의 4대 핵심 생존율 개선 약제(Fantastic 4)는 ARNI(또는 ACEi/ARB), 베타차단제, MRA(Spironolactone), SGLT2 억제제입니다. 반면 Verapamil이나 Diltiazem 같은 Non-DHP CCB는 음성 수축력 효과(Negative inotropic effect)로 인해 심부전을 악화시킬 수 있어 금기입니다.'
+            },
+            {
+                id: 'q_med_203',
+                grade: '본과 2학년',
+                subject: '호흡기학',
+                cohort: '23학번 기출',
+                question: '기관지확장제 투여 후 폐기능검사(Spirometry)에서 FEV1/FVC < 0.70 이면서 가역성이 없는 만성폐쇄성폐질환(COPD) 환자의 폐용적 변화 특징으로 옳은 것은?',
+                options: [
+                    '잔기량(RV) 감소 및 총폐용량(TLC) 감소',
+                    '기능적잔기량(FRC) 감소 및 예비호기량(ERV) 증가',
+                    '공기걸림(Air trapping)으로 인한 잔기량(RV) 및 기능적잔기량(FRC) 증가',
+                    '노력성폐활량(FVC)의 현저한 증가와 폐탄성 반동력 증가',
+                    '일산화탄소 확산능(DLCO)의 비정상적 상승'
+                ],
+                answer: 3,
+                explanation: 'COPD(특히 폐기종)에서는 폐포벽 파괴로 인해 폐 탄성 반동력이 감소하고 호기 시 기도가 조기에 폐쇄되어 공기걸림(Air trapping)과 폐 과팽창(Hyperinflation)이 발생합니다. 그 결과 잔기량(RV), 기능적잔기량(FRC), 총폐용량(TLC)이 모두 증가합니다.'
+            }
+        ];
+
+        const app = {
+            // 데이터 상태
+            questions: [],
+            // 로그인 전에는 null 상태를 유지하여 전체 화면 로그인 게이트가 작동하도록 설정
+            currentUser: null,
+            recentUsers: [],
+            // 회원 가입/승인 레지스트리 맵: { [uid]: { uid, name, status: 'PENDING' | 'APPROVED' | 'REJECTED', requestedAt } }
+            userRegistryMap: {},
+            // 사용자별 풀이 기록 맵: { [uid]: { [questionId]: { solved, isCorrect, userChoice, understood, bookmarked } } }
+            allUsersProgressMap: {},
+
+            // 3단계 계층 선택 상태 (학년 -> 과목 -> 기출학번)
+            selectedGrade: null,
+            selectedSubject: null,
+            selectedCohort: 'ALL',
+
+            // 현재 진행 중인 퀴즈 상태
+            quizQueue: [],
+            currentQuizIdx: 0,
+            currentQuizModeName: '전체 풀이',
+
+            // 관리자 인증 상태 (관리자 아이디 + 비밀번호로 로그인했을 때만 true)
+            isAdminUnlocked: false,
+            isAdminUiMounted: false,
+
+            // Firebase 인스턴스
+            fbApp: null,
+            fbDb: null,
+            fbAuth: null,
+            appId: 'exam-master-pro',
+            isCloudConnected: false,
+
+            async init() {
+                this.loadLocalData();
+                await this.initFirebaseIfAvailable();
+                this.ensureDefaultHierarchySelection();
+                this.bindKeyboardEvents();
+                this.renderAll();
+                if (this.currentUser && this.currentUser.isAdmin) {
+                    this.switchMainTab('ADMIN');
+                }
+            },
+
+            // ================= [관리자 권한 / 비밀번호 / 세션] =================
+            getAdminPasswordHash() {
+                try {
+                    // 구버전(평문 저장) 비밀번호가 있으면 해시로 이전하고 평문은 삭제
+                    const legacy = localStorage.getItem(STORAGE_KEYS.ADMIN_PIN);
+                    if (legacy) {
+                        localStorage.setItem(STORAGE_KEYS.ADMIN_HASH, sha256Hex(legacy));
+                        localStorage.removeItem(STORAGE_KEYS.ADMIN_PIN);
+                    }
+                    return localStorage.getItem(STORAGE_KEYS.ADMIN_HASH) || ADMIN_PASSWORD_HASH;
+                } catch (e) {
+                    return ADMIN_PASSWORD_HASH;
+                }
+            },
+
+            // 관리자 세션은 localStorage에 isAdmin 플래그로 저장하지 않고,
+            // sessionStorage에 '현재 비밀번호 해시 기반 토큰'으로만 보관합니다.
+            // (비밀번호가 바뀌면 기존 세션은 자동 무효)
+            makeAdminSessionToken() {
+                return sha256Hex('admin-session:' + this.getAdminPasswordHash());
+            },
+
+            hasValidAdminSession() {
+                try {
+                    return sessionStorage.getItem(STORAGE_KEYS.ADMIN_SESSION) === this.makeAdminSessionToken();
+                } catch (e) {
+                    return false;
+                }
+            },
+
+            // 관리자 전용 기능 호출 전 권한 확인 (콘솔에서 직접 호출하는 것도 차단)
+            requireAdmin() {
+                if (this.currentUser && this.currentUser.isAdmin && this.isAdminUnlocked && this.isAdminUiMounted) {
+                    return true;
+                }
+                this.showToast('권한이 없습니다.', 'error');
+                return false;
+            },
+
+            // 관리자 로그인 시에만 템플릿을 복제해 관리자 화면/모달을 DOM에 생성
+            mountAdminUI() {
+                if (this.isAdminUiMounted) return;
+                const tpl = document.getElementById('adminUiTemplate');
+                if (!tpl) return;
+                const frag = tpl.content.cloneNode(true);
+                const mainEl = document.getElementById('appMain');
+                const anchor = document.getElementById('confirmDialogModal');
+                Array.from(frag.children).forEach(el => {
+                    el.setAttribute('data-admin-ui', '1');
+                    if (el.id === 'adminPageView') {
+                        mainEl.appendChild(el);
+                    } else {
+                        document.body.insertBefore(el, anchor);
+                    }
+                });
+                this.isAdminUiMounted = true;
+            },
+
+            // 로그아웃 시 관리자 화면/모달을 DOM에서 완전히 제거
+            unmountAdminUI() {
+                document.querySelectorAll('[data-admin-ui]').forEach(el => el.remove());
+                this.isAdminUiMounted = false;
+            },
+
+            setViewVisible(id, visible) {
+                const el = document.getElementById(id);
+                if (el) el.classList.toggle('hidden', !visible);
+            },
+
+            // 로컬 스토리지 데이터 로드
+            loadLocalData() {
+                try {
+                    const savedQ = localStorage.getItem(STORAGE_KEYS.QUESTIONS);
+                    if (savedQ) {
+                        const parsed = JSON.parse(savedQ);
+                        if (Array.isArray(parsed) && parsed.length > 0) {
+                            this.questions = parsed;
+                        }
+                    }
+                    if (this.questions.length === 0) {
+                        this.questions = JSON.parse(JSON.stringify(INITIAL_SAMPLE_QUESTIONS));
+                        this.saveQuestionsToLocal();
+                    }
+
+                    const savedRecent = localStorage.getItem(STORAGE_KEYS.RECENT_USERS);
+                    if (savedRecent) {
+                        // 관리자 계정은 '최근 로그인 계정' 목록에 노출하지 않음
+                        this.recentUsers = (JSON.parse(savedRecent) || []).filter(u => u && !isAdminId(u.uid));
+                    }
+
+                    const savedRegistry = localStorage.getItem(STORAGE_KEYS.USER_REGISTRY);
+                    if (savedRegistry) {
+                        this.userRegistryMap = JSON.parse(savedRegistry) || {};
+                    }
+
+                    const savedMap = localStorage.getItem(STORAGE_KEYS.USER_PROFILES);
+                    if (savedMap) {
+                        this.allUsersProgressMap = JSON.parse(savedMap);
+                    }
+
+                    // 1) 관리자 세션: sessionStorage 토큰이 유효할 때만 복원 (localStorage의 isAdmin 값은 신뢰하지 않음)
+                    if (this.hasValidAdminSession()) {
+                        this.currentUser = { uid: ADMIN_ID, name: '총괄 관리자', isAdmin: true, authType: 'ADMIN' };
+                        this.isAdminUnlocked = true;
+                    } else {
+                        // 2) 일반 사용자 세션: 현재 승인 상태가 'APPROVED'인 경우에만 유지
+                        const savedUser = localStorage.getItem(STORAGE_KEYS.CURRENT_USER);
+                        const parsedUser = savedUser ? JSON.parse(savedUser) : null;
+                        if (parsedUser && parsedUser.uid && !isAdminId(parsedUser.uid)) {
+                            const reg = this.userRegistryMap[parsedUser.uid];
+                            if (reg && reg.status === 'APPROVED') {
+                                this.currentUser = { uid: parsedUser.uid, name: parsedUser.name, isAdmin: false, authType: parsedUser.authType };
+                            }
+                        }
+                        this.isAdminUnlocked = false;
+                    }
+                } catch (e) {
+                    console.error('로컬 데이터 초기화 오류:', e);
+                    this.questions = JSON.parse(JSON.stringify(INITIAL_SAMPLE_QUESTIONS));
+                }
+            },
+
+            saveQuestionsToLocal() {
+                try {
+                    localStorage.setItem(STORAGE_KEYS.QUESTIONS, JSON.stringify(this.questions));
+                } catch (e) {
+                    console.error(e);
+                }
+            },
+
+            saveUserRegistryToLocal() {
+                try {
+                    localStorage.setItem(STORAGE_KEYS.USER_REGISTRY, JSON.stringify(this.userRegistryMap));
+                } catch (e) {
+                    console.error(e);
+                }
+            },
+
+            saveProgressToLocal() {
+                try {
+                    localStorage.setItem(STORAGE_KEYS.USER_PROFILES, JSON.stringify(this.allUsersProgressMap));
+                    if (this.currentUser && !this.currentUser.isAdmin) {
+                        localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(this.currentUser));
+                    } else {
+                        localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
+                    }
+                    localStorage.setItem(STORAGE_KEYS.RECENT_USERS, JSON.stringify(this.recentUsers));
+                } catch (e) {
+                    console.error(e);
+                }
+            },
+
+            addRecentUser(userObj) {
+                if (!userObj || !userObj.uid || isAdminId(userObj.uid)) return;
+                this.recentUsers = [
+                    userObj,
+                    ...this.recentUsers.filter(u => u.uid !== userObj.uid)
+                ].slice(0, 5);
+                this.saveProgressToLocal();
+            },
+
+            clearRecentUsers() {
+                this.recentUsers = [];
+                localStorage.removeItem(STORAGE_KEYS.RECENT_USERS);
+                this.renderAuthGate();
+                this.showToast('최근 로그인 계정 목록을 지웠습니다.', 'info');
+            },
+
+            // Firebase 연동 초기화 (환경변수 또는 사용자 입력 Config 지원)
+            async initFirebaseIfAvailable() {
+                try {
+                    let config = null;
+                    if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                        config = JSON.parse(__firebase_config);
+                    } else if (FIREBASE_CONFIG && FIREBASE_CONFIG.apiKey) {
+                        config = FIREBASE_CONFIG;
+                    } else {
+                        const customRaw = localStorage.getItem(STORAGE_KEYS.CUSTOM_FB);
+                        if (customRaw) config = JSON.parse(customRaw);
+                    }
+
+                    if (typeof __app_id !== 'undefined' && __app_id) {
+                        this.appId = __app_id;
+                    }
+
+                    if (!config || !config.apiKey || this.fbApp) return;
+
+                    this.fbApp = initializeApp(config);
+                    this.fbAuth = getAuth(this.fbApp);
+                    this.fbDb = getFirestore(this.fbApp);
+
+                    // RULE 3: Auth Before Queries
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(this.fbAuth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(this.fbAuth);
+                    }
+
+                    if (this.fbAuth.currentUser) {
+                        this.isCloudConnected = true;
+                        document.getElementById('cloudStatusBadge').classList.remove('hidden');
+                        this.setupFirestoreListeners();
+                    }
+                } catch (e) {
+                    console.warn('클라우드 연동 대신 로컬 멀티 프로필 모드로 동작합니다:', e);
+                }
+            },
+
+            setupFirestoreListeners() {
+                if (!this.isCloudConnected || !this.fbAuth.currentUser) return;
+
+                // 1. 공용 기출문제 컬렉션 실시간 구독 (RULE 1 준수)
+                const qColRef = collection(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'questions');
+                onSnapshot(qColRef, (snapshot) => {
+                    if (!snapshot.empty) {
+                        const cloudQuestions = [];
+                        snapshot.forEach(docSnap => cloudQuestions.push(docSnap.data()));
+                        this.questions = cloudQuestions;
+                        this.saveQuestionsToLocal();
+                        this.ensureDefaultHierarchySelection();
+                        this.renderAll();
+                    } else if (this.questions.length > 0) {
+                        this.questions.forEach(q => this.syncSingleQuestionToCloud(q));
+                    }
+                }, (err) => console.warn('Firestore questions listener error:', err));
+
+                // 2. 회원 승인 레지스트리 실시간 구독
+                const regColRef = collection(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'userRegistry');
+                onSnapshot(regColRef, (snapshot) => {
+                    if (!snapshot.empty) {
+                        const nextMap = { ...this.userRegistryMap };
+                        snapshot.forEach(docSnap => {
+                            const d = docSnap.data();
+                            if (d && d.uid) nextMap[d.uid] = d;
+                        });
+                        this.userRegistryMap = nextMap;
+                        this.saveUserRegistryToLocal();
+
+                        // 만약 현재 로그인된 일반 사용자가 관리자에 의해 승인 취소된 경우 즉시 로그아웃 처리
+                        if (this.currentUser && !this.currentUser.isAdmin) {
+                            const myReg = this.userRegistryMap[this.currentUser.uid];
+                            if (!myReg || myReg.status !== 'APPROVED') {
+                                this.logout('관리자에 의해 계정 승인 상태가 변경되어 로그아웃되었습니다.');
+                                return;
+                            }
+                        }
+                        this.renderAll();
+                    }
+                }, (err) => console.warn('Firestore userRegistry listener error:', err));
+
+                // 3. 현재 사용자의 개인 풀이 기록 구독
+                this.loadCurrentUserProgressFromCloud();
+            },
+
+            async syncUserAccountToCloud(accountObj) {
+                if (!this.isCloudConnected || !this.fbAuth.currentUser || !accountObj || !accountObj.uid) return;
+                try {
+                    const docRef = doc(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'userRegistry', accountObj.uid);
+                    await setDoc(docRef, accountObj);
+                } catch (e) {
+                    console.warn('회원 승인 정보 클라우드 동기화 오류:', e);
+                }
+            },
+
+            async deleteUserAccountFromCloud(uid) {
+                if (!this.isCloudConnected || !this.fbAuth.currentUser || !uid) return;
+                try {
+                    const docRef = doc(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'userRegistry', uid);
+                    await deleteDoc(docRef);
+                } catch (e) {
+                    console.warn('회원 정보 클라우드 삭제 오류:', e);
+                }
+            },
+
+            async loadCurrentUserProgressFromCloud() {
+                if (!this.isCloudConnected || !this.fbAuth.currentUser || !this.currentUser) return;
+                try {
+                    const profileKey = this.currentUser.uid;
+                    const docRef = doc(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'userProgress', profileKey);
+                    const snap = await getDoc(docRef);
+                    if (snap.exists()) {
+                        const data = snap.data();
+                        if (data && data.progress) {
+                            this.allUsersProgressMap[profileKey] = JSON.parse(data.progress);
+                            this.saveProgressToLocal();
+                            this.renderAll();
+                        }
+                    }
+                } catch (e) {
+                    console.warn('개인 기록 클라우드 로드 오류:', e);
+                }
+            },
+
+            async syncUserProgressToCloud() {
+                if (!this.isCloudConnected || !this.fbAuth.currentUser || !this.currentUser) return;
+                try {
+                    const profileKey = this.currentUser.uid;
+                    const userMap = this.allUsersProgressMap[profileKey] || {};
+                    const docRef = doc(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'userProgress', profileKey);
+                    await setDoc(docRef, {
+                        uid: profileKey,
+                        name: this.currentUser.name,
+                        updatedAt: Date.now(),
+                        progress: JSON.stringify(userMap)
+                    });
+                } catch (e) {
+                    console.warn('개인 기록 클라우드 저장 오류:', e);
+                }
+            },
+
+            async syncSingleQuestionToCloud(qObj) {
+                if (!this.isCloudConnected || !this.fbAuth.currentUser) return;
+                try {
+                    const qDocRef = doc(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'questions', qObj.id);
+                    await setDoc(qDocRef, qObj);
+                } catch (e) {
+                    console.warn('문제 클라우드 저장 오류:', e);
+                }
+            },
+
+            async deleteQuestionFromCloud(qId) {
+                if (!this.isCloudConnected || !this.fbAuth.currentUser) return;
+                try {
+                    const qDocRef = doc(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'questions', qId);
+                    await deleteDoc(qDocRef);
+                } catch (e) {
+                    console.warn('문제 클라우드 삭제 오류:', e);
+                }
+            },
+
+            // 현재 로그인한 사용자의 특정 문제 풀이 상태 조회
+            getQuestionProgress(questionId) {
+                if (!this.currentUser) {
+                    return {
+                        solved: false,
+                        isCorrect: false,
+                        userChoice: null,
+                        understood: false,
+                        bookmarked: false
+                    };
+                }
+                const uid = this.currentUser.uid;
+                const userMap = this.allUsersProgressMap[uid] || {};
+                return userMap[questionId] || {
+                    solved: false,
+                    isCorrect: false,
+                    userChoice: null,
+                    understood: false,
+                    bookmarked: false
+                };
+            },
+
+            setQuestionProgress(questionId, newObj) {
+                if (!this.currentUser) return;
+                const uid = this.currentUser.uid;
+                if (!this.allUsersProgressMap[uid]) {
+                    this.allUsersProgressMap[uid] = {};
+                }
+                const current = this.allUsersProgressMap[uid][questionId] || { solved: false, isCorrect: false, userChoice: null, understood: false, bookmarked: false };
+                this.allUsersProgressMap[uid][questionId] = { ...current, ...newObj };
+                this.saveProgressToLocal();
+                this.syncUserProgressToCloud();
+            },
+
+            ensureDefaultHierarchySelection() {
+                const grades = this.getUniqueGrades();
+                if (grades.length === 0) return;
+
+                if (!this.selectedGrade || !grades.includes(this.selectedGrade)) {
+                    this.selectedGrade = grades[0];
+                }
+
+                const subjects = this.getUniqueSubjectsByGrade(this.selectedGrade);
+                if (!this.selectedSubject || !subjects.includes(this.selectedSubject)) {
+                    this.selectedSubject = subjects[0] || null;
+                }
+
+                const cohorts = this.getUniqueCohorts(this.selectedGrade, this.selectedSubject);
+                if (this.selectedCohort !== 'ALL' && !cohorts.includes(this.selectedCohort)) {
+                    this.selectedCohort = 'ALL';
+                }
+            },
+
+            getUniqueGrades() {
+                return [...new Set(this.questions.map(q => q.grade))].filter(Boolean);
+            },
+
+            getUniqueSubjectsByGrade(grade) {
+                if (!grade) return [];
+                return [...new Set(this.questions.filter(q => q.grade === grade).map(q => q.subject))].filter(Boolean);
+            },
+
+            getUniqueCohorts(grade, subject) {
+                if (!grade || !subject) return [];
+                return [...new Set(this.questions.filter(q => q.grade === grade && q.subject === subject).map(q => q.cohort))].filter(Boolean);
+            },
+
+            getHierarchyFilteredQuestions() {
+                return this.questions.filter(q => {
+                    if (this.selectedGrade && q.grade !== this.selectedGrade) return false;
+                    if (this.selectedSubject && q.subject !== this.selectedSubject) return false;
+                    if (this.selectedCohort && this.selectedCohort !== 'ALL' && q.cohort !== this.selectedCohort) return false;
+                    return true;
+                });
+            },
+
+            bindKeyboardEvents() {
+                window.addEventListener('keydown', (e) => {
+                    const quizSolveView = document.getElementById('quizSolveView');
+                    if (quizSolveView && !quizSolveView.classList.contains('hidden')) {
+                        if (e.key >= '1' && e.key <= '5') {
+                            const num = Number(e.key);
+                            const q = this.getCurrentQuizQuestion();
+                            if (q && q.options && num <= q.options.filter(o => o && o.trim() !== '').length) {
+                                this.selectQuizOption(num);
+                            }
+                        } else if (e.key === 'ArrowRight') {
+                            this.goNextQuizQuestion();
+                        } else if (e.key === 'ArrowLeft') {
+                            this.goPrevQuizQuestion();
+                        }
+                    }
+                });
+            },
+
+            // ================= 화면 전환 및 전체 렌더링 (엄격한 로그인 게이트 & admin 전용 분기) =================
+            renderAll() {
+                const gateEl = document.getElementById('authGateView');
+                const headerEl = document.getElementById('appHeader');
+                const mainEl = document.getElementById('appMain');
+                const adminSwitchBar = document.getElementById('adminModeSwitchBar');
+
+                // 비로그인 상태일 경우 모든 내부 콘텐츠를 숨기고 로그인 게이트만 표시
+                if (!this.currentUser) {
+                    this.unmountAdminUI();
+                    gateEl.classList.remove('hidden');
+                    headerEl.classList.add('hidden');
+                    mainEl.classList.add('hidden');
+                    this.renderAuthGate();
+                    return;
+                }
+
+                // 로그인 완료 시 게이트를 숨기고 앱 헤더 및 메인 영역 활성화
+                gateEl.classList.add('hidden');
+                headerEl.classList.remove('hidden');
+                mainEl.classList.remove('hidden');
+
+                // 관리자 화면은 관리자 로그인 상태일 때만 DOM에 생성, 일반 사용자는 존재 자체가 없음
+                const isAdminNow = !!(this.currentUser.isAdmin && this.isAdminUnlocked);
+                if (isAdminNow) {
+                    this.mountAdminUI();
+                } else {
+                    this.unmountAdminUI();
+                }
+                if (isAdminNow) {
+                    adminSwitchBar.classList.remove('hidden');
+                    adminSwitchBar.classList.add('flex');
+                } else {
+                    adminSwitchBar.classList.add('hidden');
+                    adminSwitchBar.classList.remove('flex');
+                }
+
+                this.renderHeaderUserProfile();
+                this.renderUserDashboard();
+                if (isAdminNow) {
+                    this.renderAdminPage();
+                }
+            },
+
+            onGateIdInputChange(val) {
+                const adminTyped = isAdminId(val);
+                const passWrap = document.getElementById('gateAdminPasswordWrapper');
+                const nameWrap = document.getElementById('gateUserNameWrapper');
+                const submitBtnText = document.getElementById('gateSubmitBtnText');
+
+                if (adminTyped) {
+                    passWrap.classList.remove('hidden');
+                    nameWrap.classList.add('hidden');
+                    submitBtnText.textContent = '로그인';
+                } else {
+                    passWrap.classList.add('hidden');
+                    nameWrap.classList.remove('hidden');
+                    submitBtnText.textContent = '로그인 / 가입 승인 요청하기';
+                }
+            },
+
+            renderAuthGate() {
+                const recentSec = document.getElementById('recentUsersSection');
+                const recentList = document.getElementById('recentUsersList');
+
+                if (this.recentUsers && this.recentUsers.length > 0) {
+                    recentSec.classList.remove('hidden');
+                    recentList.innerHTML = this.recentUsers.map(u => {
+                        const reg = this.userRegistryMap[u.uid];
+                        let statusTag = '';
+                        if (reg && reg.status === 'APPROVED') {
+                            statusTag = `<span class="text-[10px] font-extrabold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded">승인됨</span>`;
+                        } else {
+                            statusTag = `<span class="text-[10px] font-extrabold text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded">승인대기</span>`;
+                        }
+
+                        return `
+                            <button type="button" onclick="app.quickLogin('${this.escapeHtml(u.uid)}', '${this.escapeHtml(u.name)}')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-brand-50 hover:text-brand-700 border border-slate-200 hover:border-brand-300 text-xs font-bold text-slate-700 transition-all">
+                                <span>${this.escapeHtml(u.name)}</span>
+                                <span class="text-[10px] text-slate-400 font-mono">(${this.escapeHtml(u.uid)})</span>
+                                ${statusTag}
+                            </button>
+                        `;
+                    }).join('');
+                } else {
+                    recentSec.classList.add('hidden');
+                }
+            },
+
+            renderHeaderUserProfile() {
+                if (!this.currentUser) return;
+                const initial = (this.currentUser.name || 'U').trim().charAt(0).toUpperCase();
+                document.getElementById('userAvatar').textContent = initial;
+                document.getElementById('userNameDisplay').textContent = this.currentUser.name;
+                document.getElementById('userSubDisplay').textContent = this.currentUser.isAdmin
+                    ? '총괄 관리자'
+                    : `학번/ID: ${this.currentUser.uid} (승인됨)`;
+                document.getElementById('dashboardUserBadge').textContent = `${this.currentUser.name} (${this.currentUser.uid}) 님의 개인 학습 현황`;
+
+                // 관리자 헤더 배지에 대기 중인 인원 표시
+                const pendingCount = Object.values(this.userRegistryMap).filter(u => u.status === 'PENDING').length;
+                const badge = document.getElementById('headerPendingCountBadge');
+                if (badge) {
+                    if (pendingCount > 0) {
+                        badge.textContent = pendingCount;
+                        badge.classList.remove('hidden');
+                    } else {
+                        badge.classList.add('hidden');
+                    }
+                }
+            },
+
+            switchMainTab(tab) {
+                if (!this.currentUser) {
+                    this.renderAll();
+                    return;
+                }
+                const userTabBtn = document.getElementById('tabBtnUser');
+                const adminTabBtn = document.getElementById('tabBtnAdmin');
+
+                // 일반 사용자는 절대 ADMIN 뷰로 전환 불가
+                if (tab === 'ADMIN') {
+                    if (!this.requireAdmin()) {
+                        tab = 'USER';
+                    }
+                }
+                if (tab === 'ADMIN') {
+                    this.setViewVisible('userDashboardView', false);
+                    this.setViewVisible('quizSolveView', false);
+                    this.setViewVisible('adminPageView', true);
+
+                    if (adminTabBtn && userTabBtn) {
+                        adminTabBtn.className = 'inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-white text-brand-700 shadow-xs';
+                        userTabBtn.className = 'inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all';
+                    }
+                    this.renderAdminPage();
+                } else {
+                    this.setViewVisible('adminPageView', false);
+                    this.setViewVisible('quizSolveView', false);
+                    this.setViewVisible('userDashboardView', true);
+
+                    if (adminTabBtn && userTabBtn) {
+                        userTabBtn.className = 'inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-white text-brand-700 shadow-xs';
+                        adminTabBtn.className = 'inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all';
+                    }
+                    this.renderUserDashboard();
+                }
+            },
+
+            // ================= [사용자 대시보드] 렌더링 =================
+            renderUserDashboard() {
+                this.ensureDefaultHierarchySelection();
+
+                // 1. 전체 통계 계산
+                const totalQ = this.questions.length;
+                let solvedCount = 0;
+                let correctCount = 0;
+                let reviewCount = 0;
+                let understoodCount = 0;
+
+                this.questions.forEach(q => {
+                    const p = this.getQuestionProgress(q.id);
+                    if (p.solved) {
+                        solvedCount++;
+                        if (p.isCorrect) correctCount++;
+                    }
+                    if ((p.solved && !p.isCorrect) || p.bookmarked) reviewCount++;
+                    if (p.understood) understoodCount++;
+                });
+
+                const totalPercent = totalQ > 0 ? Math.round((solvedCount / totalQ) * 100) : 0;
+                const accuracyPercent = solvedCount > 0 ? Math.round((correctCount / solvedCount) * 100) : 0;
+
+                document.getElementById('totalProgressPercent').textContent = `${totalPercent}%`;
+                document.getElementById('totalProgressFraction').textContent = `(${solvedCount} / ${totalQ} 문제)`;
+                document.getElementById('totalUnderstoodCount').textContent = `${understoodCount}문제 완벽 이해`;
+                document.getElementById('totalProgressBar').style.width = `${totalPercent}%`;
+
+                document.getElementById('statAllCount').textContent = totalQ;
+                document.getElementById('statMySolved').textContent = solvedCount;
+                document.getElementById('statMyAccuracy').textContent = `${accuracyPercent}%`;
+                document.getElementById('statMyReview').textContent = reviewCount;
+
+                // 2. Step 1 (학년) 카드 렌더링
+                this.renderStep1Grades();
+
+                // 3. Step 2 (과목) 카드 렌더링
+                this.renderStep2Subjects();
+
+                // 4. Step 3 (기출 학번) 카드 렌더링
+                this.renderStep3Cohorts();
+
+                // 5. 선택된 범위 요약 및 문제 미리보기 리스트 렌더링
+                this.renderSelectedTargetSummary();
+            },
+
+            renderStep1Grades() {
+                const container = document.getElementById('step1GradeContainer');
+                const grades = this.getUniqueGrades();
+
+                if (grades.length === 0) {
+                    container.innerHTML = `<div class="col-span-full text-xs text-slate-400 py-3">아직 등록된 기출문제가 없습니다.</div>`;
+                    return;
+                }
+
+                container.innerHTML = grades.map(grade => {
+                    const qInGrade = this.questions.filter(q => q.grade === grade);
+                    const solvedInGrade = qInGrade.filter(q => this.getQuestionProgress(q.id).solved).length;
+                    const pct = qInGrade.length > 0 ? Math.round((solvedInGrade / qInGrade.length) * 100) : 0;
+                    const isSelected = (this.selectedGrade === grade);
+
+                    return `
+                        <button onclick="app.selectGrade('${this.escapeHtml(grade)}')" class="p-3.5 rounded-xl border text-left transition-all flex flex-col justify-between ${
+                            isSelected
+                                ? 'border-2 border-brand-600 bg-brand-50/70 shadow-xs'
+                                : 'border-slate-200 bg-white hover:border-brand-300 hover:bg-slate-50'
+                        }">
+                            <div class="flex items-center justify-between w-full mb-2">
+                                <span class="font-extrabold text-sm ${isSelected ? 'text-brand-700' : 'text-slate-800'}">${this.escapeHtml(grade)}</span>
+                                ${isSelected ? '<i class="ph-fill ph-check-circle text-brand-600 text-base"></i>' : ''}
+                            </div>
+                            <div class="w-full space-y-1">
+                                <div class="flex justify-between text-[11px] font-semibold text-slate-500">
+                                    <span>${qInGrade.length}문항</span>
+                                    <span class="${isSelected ? 'text-brand-700 font-bold' : ''}">${pct}% 완료</span>
+                                </div>
+                                <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                                    <div class="h-full bg-brand-600 rounded-full" style="width: ${pct}%"></div>
+                                </div>
+                            </div>
+                        </button>
+                    `;
+                }).join('');
+            },
+
+            renderStep2Subjects() {
+                const container = document.getElementById('step2SubjectContainer');
+                const subjects = this.getUniqueSubjectsByGrade(this.selectedGrade);
+                document.getElementById('step2HelperText').textContent = `${this.selectedGrade || ''} 개설 과목 (${subjects.length}개)`;
+
+                if (subjects.length === 0) {
+                    container.innerHTML = `<div class="col-span-full text-xs text-slate-400 py-3">해당 학년에 등록된 과목이 없습니다.</div>`;
+                    return;
+                }
+
+                container.innerHTML = subjects.map(subject => {
+                    const qInSub = this.questions.filter(q => q.grade === this.selectedGrade && q.subject === subject);
+                    const solvedList = qInSub.filter(q => this.getQuestionProgress(q.id).solved);
+                    const correctList = solvedList.filter(q => this.getQuestionProgress(q.id).isCorrect);
+                    const pct = qInSub.length > 0 ? Math.round((solvedList.length / qInSub.length) * 100) : 0;
+                    const acc = solvedList.length > 0 ? Math.round((correctList.length / solvedList.length) * 100) : 0;
+                    const isSelected = (this.selectedSubject === subject);
+
+                    return `
+                        <button onclick="app.selectSubject('${this.escapeHtml(subject)}')" class="p-4 rounded-xl border text-left transition-all flex flex-col justify-between ${
+                            isSelected
+                                ? 'border-2 border-brand-600 bg-brand-50/70 shadow-xs'
+                                : 'border-slate-200 bg-white hover:border-brand-300 hover:bg-slate-50'
+                        }">
+                            <div class="flex items-start justify-between w-full mb-3">
+                                <div>
+                                    <span class="text-[11px] font-bold text-indigo-600 block">${this.escapeHtml(this.selectedGrade)}</span>
+                                    <h4 class="font-extrabold text-base ${isSelected ? 'text-brand-800' : 'text-slate-900'} mt-0.5">${this.escapeHtml(subject)}</h4>
+                                </div>
+                                <span class="text-xs font-extrabold px-2 py-0.5 rounded-md ${isSelected ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-600'}">${qInSub.length}문제</span>
+                            </div>
+                            <div class="space-y-1.5 w-full">
+                                <div class="flex justify-between text-[11px] font-semibold text-slate-500">
+                                    <span>진도율 ${pct}% (${solvedList.length}/${qInSub.length})</span>
+                                    <span class="text-emerald-600 font-bold">정답률 ${acc}%</span>
+                                </div>
+                                <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                                    <div class="h-full bg-indigo-600 rounded-full" style="width: ${pct}%"></div>
+                                </div>
+                            </div>
+                        </button>
+                    `;
+                }).join('');
+            },
+
+            renderStep3Cohorts() {
+                const container = document.getElementById('step3CohortContainer');
+                const cohorts = this.getUniqueCohorts(this.selectedGrade, this.selectedSubject);
+                const allSubQuestions = this.questions.filter(q => q.grade === this.selectedGrade && q.subject === this.selectedSubject);
+                const allSubSolved = allSubQuestions.filter(q => this.getQuestionProgress(q.id).solved).length;
+
+                let html = `
+                    <button onclick="app.selectCohort('ALL')" class="p-3.5 rounded-xl border text-left transition-all flex flex-col justify-between ${
+                        this.selectedCohort === 'ALL'
+                            ? 'border-2 border-brand-600 bg-brand-50/70 shadow-xs'
+                            : 'border-slate-200 bg-white hover:border-brand-300'
+                    }">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="font-extrabold text-xs sm:text-sm ${this.selectedCohort === 'ALL' ? 'text-brand-700' : 'text-slate-800'}">전체 기출 학번 통합</span>
+                            ${this.selectedCohort === 'ALL' ? '<i class="ph-fill ph-check-circle text-brand-600"></i>' : ''}
+                        </div>
+                        <p class="text-[11px] font-semibold text-slate-500">총 ${allSubQuestions.length}문항 (${allSubSolved}완료)</p>
+                    </button>
+                `;
+
+                cohorts.forEach(cohort => {
+                    const qInCohort = allSubQuestions.filter(q => q.cohort === cohort);
+                    const solvedInCohort = qInCohort.filter(q => this.getQuestionProgress(q.id).solved).length;
+                    const isSelected = (this.selectedCohort === cohort);
+
+                    html += `
+                        <button onclick="app.selectCohort('${this.escapeHtml(cohort)}')" class="p-3.5 rounded-xl border text-left transition-all flex flex-col justify-between ${
+                            isSelected
+                                ? 'border-2 border-brand-600 bg-brand-50/70 shadow-xs'
+                                : 'border-slate-200 bg-white hover:border-brand-300'
+                        }">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <span class="font-extrabold text-xs sm:text-sm ${isSelected ? 'text-brand-700' : 'text-slate-800'}">🎓 ${this.escapeHtml(cohort)}</span>
+                                ${isSelected ? '<i class="ph-fill ph-check-circle text-brand-600"></i>' : ''}
+                            </div>
+                            <p class="text-[11px] font-semibold text-slate-500">${qInCohort.length}문항 (${solvedInCohort}/${qInCohort.length} 완료)</p>
+                        </button>
+                    `;
+                });
+
+                container.innerHTML = html;
+            },
+
+            renderSelectedTargetSummary() {
+                const cohortLabel = this.selectedCohort === 'ALL' ? '전체 기출 학번' : this.selectedCohort;
+                const pathStr = `${this.selectedGrade || '-'} > ${this.selectedSubject || '-'} > ${cohortLabel}`;
+
+                document.getElementById('selectionBreadcrumb').innerHTML = `
+                    <span>${this.escapeHtml(this.selectedGrade || '-')}</span>
+                    <i class="ph-bold ph-caret-right text-slate-400"></i>
+                    <span>${this.escapeHtml(this.selectedSubject || '-')}</span>
+                    <i class="ph-bold ph-caret-right text-slate-400"></i>
+                    <span class="text-amber-300">${this.escapeHtml(cohortLabel)}</span>
+                `;
+
+                document.getElementById('selectedTargetTitle').textContent = `🎯 선택된 기출 세트: [${pathStr}]`;
+
+                const targetList = this.getHierarchyFilteredQuestions();
+                const unsolvedCount = targetList.filter(q => !this.getQuestionProgress(q.id).solved).length;
+                const wrongOrBookmarkedCount = targetList.filter(q => {
+                    const p = this.getQuestionProgress(q.id);
+                    return (p.solved && !p.isCorrect) || p.bookmarked;
+                }).length;
+                const notUnderstoodCount = targetList.filter(q => !this.getQuestionProgress(q.id).understood).length;
+
+                document.getElementById('modeCountAll').textContent = `${targetList.length}문제`;
+                document.getElementById('modeCountUnsolved').textContent = `${unsolvedCount}문제`;
+                document.getElementById('modeCountWrong').textContent = `${wrongOrBookmarkedCount}문제`;
+                document.getElementById('modeCountNotUnderstood').textContent = `${notUnderstoodCount}문제`;
+                document.getElementById('previewListCountBadge').textContent = `총 ${targetList.length}문항`;
+
+                // 하단 미리보기 리스트
+                const listEl = document.getElementById('userQuestionPreviewList');
+                if (targetList.length === 0) {
+                    listEl.innerHTML = `<div class="p-8 text-center text-xs text-slate-400">선택한 조건에 등록된 기출문제가 없습니다.</div>`;
+                    return;
+                }
+
+                listEl.innerHTML = targetList.map((q, idx) => {
+                    const p = this.getQuestionProgress(q.id);
+                    let statusBadge = `<span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-slate-100 text-slate-500">미풀이</span>`;
+                    if (p.solved) {
+                        statusBadge = p.isCorrect
+                            ? `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">정답</span>`
+                            : `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">오답</span>`;
+                    }
+                    const understoodBadge = p.understood
+                        ? `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-500/10 text-emerald-700">✅ 해설숙지</span>`
+                        : '';
+                    const pinBadge = p.bookmarked
+                        ? `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200">📌 오답노트</span>`
+                        : '';
+
+                    return `
+                        <div onclick="app.startQuizFromSpecificQuestion('${q.id}')" class="p-4 sm:px-6 hover:bg-slate-50 cursor-pointer transition-colors flex items-center justify-between gap-3 group">
+                            <div class="min-w-0 flex-1 space-y-1">
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <span class="text-xs font-extrabold text-brand-600">Q${idx + 1}.</span>
+                                    <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-800">${this.escapeHtml(q.cohort)}</span>
+                                    ${statusBadge}
+                                    ${understoodBadge}
+                                    ${pinBadge}
+                                </div>
+                                <p class="text-xs sm:text-sm font-semibold text-slate-800 truncate group-hover:text-brand-600">${this.escapeHtml(q.question)}</p>
+                            </div>
+                            <i class="ph-bold ph-caret-right text-slate-400 group-hover:text-brand-600"></i>
+                        </div>
+                    `;
+                }).join('');
+            },
+
+            selectGrade(grade) {
+                this.selectedGrade = grade;
+                const subjects = this.getUniqueSubjectsByGrade(grade);
+                this.selectedSubject = subjects[0] || null;
+                this.selectedCohort = 'ALL';
+                this.renderUserDashboard();
+            },
+
+            selectSubject(subject) {
+                this.selectedSubject = subject;
+                this.selectedCohort = 'ALL';
+                this.renderUserDashboard();
+            },
+
+            selectCohort(cohort) {
+                this.selectedCohort = cohort;
+                this.renderUserDashboard();
+            },
+
+            // ================= [퀴즈 풀이] 로직 =================
+            startFilteredQuiz(mode) {
+                const baseList = this.getHierarchyFilteredQuestions();
+                let filtered = [];
+                let modeLabel = '전체 문제 풀이';
+
+                if (mode === 'ALL') {
+                    filtered = [...baseList];
+                    modeLabel = '전체 문제 풀이';
+                } else if (mode === 'UNSOLVED') {
+                    filtered = baseList.filter(q => !this.getQuestionProgress(q.id).solved);
+                    modeLabel = '안 푼 문제 집중 풀이';
+                } else if (mode === 'WRONG_OR_BOOKMARK') {
+                    filtered = baseList.filter(q => {
+                        const p = this.getQuestionProgress(q.id);
+                        return (p.solved && !p.isCorrect) || p.bookmarked;
+                    });
+                    modeLabel = '오답 & 별표 노트 복습';
+                } else if (mode === 'NOT_UNDERSTOOD') {
+                    filtered = baseList.filter(q => !this.getQuestionProgress(q.id).understood);
+                    modeLabel = '해설 미숙지 문제 복습';
+                }
+
+                if (filtered.length === 0) {
+                    this.showToast('선택하신 조건에 해당하는 기출문제가 없습니다!', 'info');
+                    return;
+                }
+
+                this.quizQueue = filtered.map(q => q.id);
+                this.currentQuizIdx = 0;
+                this.currentQuizModeName = modeLabel;
+
+                this.openQuizView();
+            },
+
+            startQuizFromSpecificQuestion(qId) {
+                const baseList = this.getHierarchyFilteredQuestions();
+                const idx = baseList.findIndex(q => q.id === qId);
+                if (idx === -1) return;
+
+                this.quizQueue = baseList.map(q => q.id);
+                this.currentQuizIdx = idx;
+                this.currentQuizModeName = '선택 문항 이어풀기';
+
+                this.openQuizView();
+            },
+
+            openQuizView() {
+                this.setViewVisible('userDashboardView', false);
+                this.setViewVisible('adminPageView', false);
+                this.setViewVisible('quizSolveView', true);
+                this.renderCurrentQuizQuestion();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            },
+
+            exitQuizToDashboard() {
+                document.getElementById('quizSolveView').classList.add('hidden');
+                document.getElementById('userDashboardView').classList.remove('hidden');
+                this.renderUserDashboard();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            },
+
+            getCurrentQuizQuestion() {
+                const qId = this.quizQueue[this.currentQuizIdx];
+                return this.questions.find(q => q.id === qId);
+            },
+
+            renderCurrentQuizQuestion() {
+                const q = this.getCurrentQuizQuestion();
+                if (!q) {
+                    this.exitQuizToDashboard();
+                    return;
+                }
+
+                const p = this.getQuestionProgress(q.id);
+                const total = this.quizQueue.length;
+                const currentNum = this.currentQuizIdx + 1;
+
+                document.getElementById('quizPathBadge').textContent = `${q.grade} > ${q.subject} > ${q.cohort}`;
+                document.getElementById('quizModeLabel').textContent = this.currentQuizModeName;
+                document.getElementById('quizCounterBadge').textContent = `${currentNum} / ${total}`;
+
+                document.getElementById('qMetaGrade').textContent = q.grade;
+                document.getElementById('qMetaSubject').textContent = q.subject;
+                document.getElementById('qMetaCohort').textContent = `🎓 ${q.cohort}`;
+
+                const prevBadge = document.getElementById('qPrevStatusBadge');
+                if (!p.solved) {
+                    prevBadge.textContent = '미풀이 문항';
+                    prevBadge.className = 'text-xs font-semibold px-2.5 py-1 rounded-md bg-slate-100 text-slate-500';
+                } else if (p.isCorrect) {
+                    prevBadge.textContent = '내 기록: 정답';
+                    prevBadge.className = 'text-xs font-bold px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700';
+                } else {
+                    prevBadge.textContent = '내 기록: 오답';
+                    prevBadge.className = 'text-xs font-bold px-2.5 py-1 rounded-md bg-rose-50 text-rose-700';
+                }
+
+                this.updateQuizBookmarkButtonUI(p.bookmarked);
+                this.renderQuizPalette();
+
+                document.getElementById('qIndexLabel').textContent = `Q${currentNum}.`;
+                document.getElementById('qTextDisplay').textContent = q.question;
+
+                // 객관식 보기 생성
+                const validOptions = q.options.filter(o => o && o.trim() !== '');
+                const optContainer = document.getElementById('qOptionsContainer');
+                optContainer.innerHTML = validOptions.map((optText, i) => {
+                    const num = i + 1;
+                    return `
+                        <button id="quizOptBtn_${num}" onclick="app.selectQuizOption(${num})" class="w-full text-left p-4 rounded-xl border border-slate-200 hover:border-brand-400 hover:bg-brand-50/40 transition-all flex items-start gap-3.5 group">
+                            <span id="quizOptCircle_${num}" class="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-brand-600 group-hover:text-white transition-colors">
+                                ${num}
+                            </span>
+                            <span class="text-sm sm:text-base font-medium text-slate-800 leading-snug flex-1">${this.escapeHtml(optText)}</span>
+                        </button>
+                    `;
+                }).join('');
+
+                // 해설 영역 초기화
+                document.getElementById('qExplanationSection').classList.add('hidden');
+                document.getElementById('btnRevealAnswer').classList.remove('hidden');
+                document.getElementById('chkQuizUnderstood').checked = !!p.understood;
+
+                document.getElementById('btnQuizPrev').disabled = (this.currentQuizIdx === 0);
+                document.getElementById('txtQuizNext').textContent = (this.currentQuizIdx === total - 1) ? '풀이 완료 (대시보드로)' : '다음 문제';
+            },
+
+            renderQuizPalette() {
+                const container = document.getElementById('quizPaletteContainer');
+                container.innerHTML = this.quizQueue.map((qId, idx) => {
+                    const p = this.getQuestionProgress(qId);
+                    const isCurrent = (idx === this.currentQuizIdx);
+                    let colorCls = 'bg-slate-100 text-slate-600 border-slate-200';
+                    if (p.solved) {
+                        colorCls = p.isCorrect
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
+                            : 'bg-rose-50 text-rose-700 border-rose-300';
+                    }
+                    const ringCls = isCurrent ? 'ring-2 ring-brand-600 font-extrabold scale-105' : 'font-semibold opacity-85 hover:opacity-100';
+
+                    return `
+                        <button onclick="app.jumpToQuizIndex(${idx})" class="w-8 h-8 rounded-lg border text-xs flex items-center justify-center transition-all ${colorCls} ${ringCls}">
+                            ${idx + 1}
+                        </button>
+                    `;
+                }).join('');
+            },
+
+            jumpToQuizIndex(idx) {
+                this.currentQuizIdx = idx;
+                this.renderCurrentQuizQuestion();
+            },
+
+            selectQuizOption(choiceNum) {
+                const q = this.getCurrentQuizQuestion();
+                if (!q) return;
+
+                const correctNum = Number(q.answer);
+                const isCorrect = (choiceNum === correctNum);
+                const currentP = this.getQuestionProgress(q.id);
+
+                this.setQuestionProgress(q.id, {
+                    solved: true,
+                    isCorrect,
+                    userChoice: choiceNum,
+                    bookmarked: !isCorrect ? true : currentP.bookmarked
+                });
+
+                const updatedP = this.getQuestionProgress(q.id);
+                this.updateQuizBookmarkButtonUI(updatedP.bookmarked);
+                this.renderQuizPalette();
+                this.displayAnswerFeedbackAndExplanation(choiceNum, correctNum);
+            },
+
+            revealQuizAnswerDirectly() {
+                const q = this.getCurrentQuizQuestion();
+                if (!q) return;
+                this.displayAnswerFeedbackAndExplanation(null, Number(q.answer));
+            },
+
+            displayAnswerFeedbackAndExplanation(selectedNum, correctNum) {
+                const q = this.getCurrentQuizQuestion();
+                const validCount = q.options.filter(o => o && o.trim() !== '').length;
+
+                for (let i = 1; i <= validCount; i++) {
+                    const btn = document.getElementById(`quizOptBtn_${i}`);
+                    const circle = document.getElementById(`quizOptCircle_${i}`);
+                    if (!btn || !circle) continue;
+
+                    btn.disabled = true;
+                    btn.className = 'w-full text-left p-4 rounded-xl border transition-all flex items-start gap-3.5 opacity-80';
+
+                    if (i === correctNum) {
+                        btn.className = 'w-full text-left p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 shadow-xs flex items-start gap-3.5';
+                        circle.className = 'w-7 h-7 rounded-lg bg-emerald-600 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5';
+                    } else if (i === selectedNum && selectedNum !== correctNum) {
+                        btn.className = 'w-full text-left p-4 rounded-xl border-2 border-rose-500 bg-rose-50 text-rose-900 shadow-xs flex items-start gap-3.5';
+                        circle.className = 'w-7 h-7 rounded-lg bg-rose-600 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5';
+                    }
+                }
+
+                document.getElementById('btnRevealAnswer').classList.add('hidden');
+                const expSec = document.getElementById('qExplanationSection');
+                expSec.classList.remove('hidden');
+
+                const isCorrect = (selectedNum === correctNum);
+                const resultBadge = document.getElementById('qResultStatusBadge');
+                if (selectedNum === null) {
+                    resultBadge.textContent = '💡 해설 바로 보기';
+                    resultBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-slate-100 text-slate-700';
+                } else if (isCorrect) {
+                    resultBadge.textContent = '🎉 정답입니다!';
+                    resultBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800';
+                } else {
+                    resultBadge.textContent = `❌ 오답입니다 (선택: ${selectedNum}번, 정답: ${correctNum}번)`;
+                    resultBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-rose-100 text-rose-800';
+                }
+
+                document.getElementById('qExplanationText').textContent = q.explanation;
+                this.renderQuizPalette();
+            },
+
+            toggleQuizBookmark() {
+                const q = this.getCurrentQuizQuestion();
+                if (!q) return;
+                const p = this.getQuestionProgress(q.id);
+                const nextState = !p.bookmarked;
+                this.setQuestionProgress(q.id, { bookmarked: nextState });
+                this.updateQuizBookmarkButtonUI(nextState);
+                this.showToast(nextState ? '📌 오답노트에 고정되었습니다.' : '오답노트 고정이 해제되었습니다.', 'info');
+            },
+
+            updateQuizBookmarkButtonUI(isBookmarked) {
+                const btn = document.getElementById('btnQuizBookmark');
+                if (!btn) return;
+                if (isBookmarked) {
+                    btn.className = 'inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-extrabold bg-amber-500 text-white shadow-xs transition-colors';
+                    btn.innerHTML = '<i class="ph-fill ph-bookmark-simple text-base"></i><span>오답노트 고정됨</span>';
+                } else {
+                    btn.className = 'inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-extrabold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors';
+                    btn.innerHTML = '<i class="ph-bold ph-bookmark-simple text-base"></i><span>오답노트 고정</span>';
+                }
+            },
+
+            onQuizUnderstoodChange(chk) {
+                const q = this.getCurrentQuizQuestion();
+                if (!q) return;
+                this.setQuestionProgress(q.id, { understood: chk.checked });
+                this.renderQuizPalette();
+                if (chk.checked) {
+                    this.showToast('✅ 해설 숙지 완료 체크되었습니다!', 'success');
+                }
+            },
+
+            goPrevQuizQuestion() {
+                if (this.currentQuizIdx > 0) {
+                    this.currentQuizIdx--;
+                    this.renderCurrentQuizQuestion();
+                }
+            },
+
+            goNextQuizQuestion() {
+                if (this.currentQuizIdx < this.quizQueue.length - 1) {
+                    this.currentQuizIdx++;
+                    this.renderCurrentQuizQuestion();
+                } else {
+                    this.showToast('모든 문제 풀이를 완료했습니다! 대시보드로 이동합니다.', 'success');
+                    this.exitQuizToDashboard();
+                }
+            },
+
+            // ================= [관리자 페이지] 회원 승인 & 문제 관리 기능 =================
+            openAdminPasswordChangeModal() {
+                if (!this.requireAdmin()) return;
+                this.openConfirmDialog(
+                    '관리자 비밀번호 변경',
+                    '새 비밀번호(8자 이상)를 입력하세요. 이 브라우저에 즉시 적용되고, 새 해시값이 클립보드에 복사됩니다. 모든 기기에 적용하려면 코드 상단의 ADMIN_PASSWORD_HASH 값을 복사된 해시로 바꿔 다시 배포하세요.',
+                    (newPass) => {
+                        const pw = (newPass || '').trim();
+                        if (pw.length < 8) {
+                            this.showToast('비밀번호는 최소 8자 이상이어야 합니다.', 'error');
+                            return;
+                        }
+                        const newHash = sha256Hex(pw);
+                        localStorage.setItem(STORAGE_KEYS.ADMIN_HASH, newHash);
+                        localStorage.removeItem(STORAGE_KEYS.ADMIN_PIN);
+                        // 현재 세션은 새 비밀번호 기준으로 갱신
+                        sessionStorage.setItem(STORAGE_KEYS.ADMIN_SESSION, this.makeAdminSessionToken());
+                        this.copyTextToClipboard(newHash);
+                        this.showToast('비밀번호가 변경되었습니다. 새 해시가 클립보드에 복사되었습니다.', 'success');
+                    },
+                    true
+                );
+            },
+
+            copyTextToClipboard(text) {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                document.body.appendChild(ta);
+                ta.select();
+                try { document.execCommand('copy'); } catch (e) { console.log('ADMIN_PASSWORD_HASH =', text); }
+                ta.remove();
+            },
+
+            renderAdminPage() {
+                if (!this.currentUser || !this.currentUser.isAdmin || !this.isAdminUiMounted) return;
+
+                // 1. 회원 승인 요청 테이블 렌더링
+                this.renderAdminUserApprovalList();
+
+                // 2. 필터 드롭다운 갱신
+                const gSelect = document.getElementById('adminFilterGrade');
+                const sSelect = document.getElementById('adminFilterSubject');
+                const cSelect = document.getElementById('adminFilterCohort');
+
+                const prevG = gSelect.value || 'ALL';
+                const prevS = sSelect.value || 'ALL';
+                const prevC = cSelect.value || 'ALL';
+
+                const grades = [...new Set(this.questions.map(q => q.grade))];
+                const subjects = [...new Set(this.questions.map(q => q.subject))];
+                const cohorts = [...new Set(this.questions.map(q => q.cohort))];
+
+                gSelect.innerHTML = `<option value="ALL">전체 학년 (${grades.length})</option>` +
+                    grades.map(g => `<option value="${this.escapeHtml(g)}" ${prevG === g ? 'selected' : ''}>${this.escapeHtml(g)}</option>`).join('');
+
+                sSelect.innerHTML = `<option value="ALL">전체 과목 (${subjects.length})</option>` +
+                    subjects.map(s => `<option value="${this.escapeHtml(s)}" ${prevS === s ? 'selected' : ''}>${this.escapeHtml(s)}</option>`).join('');
+
+                cSelect.innerHTML = `<option value="ALL">전체 기출 학번 (${cohorts.length})</option>` +
+                    cohorts.map(c => `<option value="${this.escapeHtml(c)}" ${prevC === c ? 'selected' : ''}>${this.escapeHtml(c)}</option>`).join('');
+
+                this.renderAdminTableRows();
+            },
+
+            renderAdminUserApprovalList() {
+                const tbody = document.getElementById('adminUserApprovalTableBody');
+                const pendingBadge = document.getElementById('adminPendingBadge');
+                if (!tbody) return;
+
+                const users = Object.values(this.userRegistryMap).sort((a, b) => {
+                    // PENDING 우선 정렬 후 최신 요청순
+                    if (a.status === 'PENDING' && b.status !== 'PENDING') return -1;
+                    if (a.status !== 'PENDING' && b.status === 'PENDING') return 1;
+                    return (b.requestedAt || 0) - (a.requestedAt || 0);
+                });
+
+                const pendingCount = users.filter(u => u.status === 'PENDING').length;
+                pendingBadge.textContent = `승인 대기 ${pendingCount}명`;
+                pendingBadge.className = pendingCount > 0
+                    ? 'px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-rose-100 text-rose-700 animate-pulse'
+                    : 'px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-slate-100 text-slate-600';
+
+                this.renderHeaderUserProfile();
+
+                if (users.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400 text-xs">아직 로그인 승인을 요청한 일반 사용자가 없습니다.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = users.map(u => {
+                    const userProgress = this.allUsersProgressMap[u.uid] || {};
+                    const solvedCount = Object.values(userProgress).filter(p => p && p.solved).length;
+                    const dateStr = u.requestedAt ? new Date(u.requestedAt).toLocaleString('ko-KR', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-';
+
+                    let statusBadge = '';
+                    if (u.status === 'APPROVED') {
+                        statusBadge = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>승인 완료</span>`;
+                    } else if (u.status === 'REJECTED') {
+                        statusBadge = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-rose-50 text-rose-700 border border-rose-200">승인 보류/차단</span>`;
+                    } else {
+                        statusBadge = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-amber-50 text-amber-800 border border-amber-300"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping"></span>승인 대기중</span>`;
+                    }
+
+                    return `
+                        <tr class="hover:bg-slate-50/90">
+                            <td class="py-3 px-4 whitespace-nowrap">${statusBadge}</td>
+                            <td class="py-3 px-4 font-extrabold text-slate-900">${this.escapeHtml(u.name)}</td>
+                            <td class="py-3 px-4 font-mono text-xs text-slate-600">${this.escapeHtml(u.uid)}</td>
+                            <td class="py-3 px-4 text-xs text-slate-500 whitespace-nowrap">${dateStr}</td>
+                            <td class="py-3 px-4 text-xs font-bold text-indigo-700">${solvedCount} / ${this.questions.length} 문제 풀이</td>
+                            <td class="py-3 px-4 text-right whitespace-nowrap space-x-1">
+                                ${u.status !== 'APPROVED' ? `
+                                    <button onclick="app.setUserApprovalStatus('${this.escapeHtml(u.uid)}', 'APPROVED')" class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs transition-colors">
+                                        승인하기
+                                    </button>
+                                ` : `
+                                    <button onclick="app.setUserApprovalStatus('${this.escapeHtml(u.uid)}', 'PENDING')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 transition-colors">
+                                        승인 취소(대기)
+                                    </button>
+                                `}
+                                <button onclick="app.deleteUserFromRegistry('${this.escapeHtml(u.uid)}')" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50" title="회원 목록에서 삭제">
+                                    <i class="ph-bold ph-trash text-sm"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            },
+
+            setUserApprovalStatus(uid, nextStatus) {
+                if (!this.requireAdmin()) return;
+                if (!this.userRegistryMap[uid]) return;
+                this.userRegistryMap[uid].status = nextStatus;
+                this.userRegistryMap[uid].updatedAt = Date.now();
+                this.saveUserRegistryToLocal();
+                this.syncUserAccountToCloud(this.userRegistryMap[uid]);
+                this.renderAdminUserApprovalList();
+
+                const uName = this.userRegistryMap[uid].name;
+                if (nextStatus === 'APPROVED') {
+                    this.showToast(`✅ [${uName} (${uid})] 회원의 로그인을 승인했습니다!`, 'success');
+                } else {
+                    this.showToast(`[${uName} (${uid})] 회원을 승인 대기 상태로 변경했습니다.`, 'info');
+                }
+            },
+
+            approveAllPendingUsers() {
+                if (!this.requireAdmin()) return;
+                const pendingList = Object.values(this.userRegistryMap).filter(u => u.status === 'PENDING');
+                if (pendingList.length === 0) {
+                    this.showToast('현재 승인 대기 중인 회원이 없습니다.', 'info');
+                    return;
+                }
+                pendingList.forEach(u => {
+                    u.status = 'APPROVED';
+                    u.updatedAt = Date.now();
+                    this.syncUserAccountToCloud(u);
+                });
+                this.saveUserRegistryToLocal();
+                this.renderAdminUserApprovalList();
+                this.showToast(`총 ${pendingList.length}명의 대기 회원을 모두 승인했습니다!`, 'success');
+            },
+
+            adminRegisterApprovedUser(e) {
+                e.preventDefault();
+                if (!this.requireAdmin()) return;
+                const uidInput = document.getElementById('adminPreApproveUid');
+                const nameInput = document.getElementById('adminPreApproveName');
+                const uid = uidInput.value.trim().replace(/[^a-zA-Z0-9_@.-]/g, '_');
+                const name = nameInput.value.trim();
+
+                if (!uid || !name) return;
+                if (isAdminId(uid)) {
+                    this.showToast('사용할 수 없는 아이디입니다.', 'error');
+                    return;
+                }
+
+                const accountObj = {
+                    uid,
+                    name,
+                    status: 'APPROVED',
+                    requestedAt: Date.now(),
+                    updatedAt: Date.now()
+                };
+                this.userRegistryMap[uid] = accountObj;
+                this.saveUserRegistryToLocal();
+                this.syncUserAccountToCloud(accountObj);
+
+                uidInput.value = '';
+                nameInput.value = '';
+                this.renderAdminUserApprovalList();
+                this.showToast(`✅ [${name} (${uid})] 계정이 즉시 승인 상태로 등록되었습니다.`, 'success');
+            },
+
+            deleteUserFromRegistry(uid) {
+                if (!this.requireAdmin()) return;
+                const target = this.userRegistryMap[uid];
+                if (!target) return;
+                this.openConfirmDialog(
+                    '회원 계정 삭제',
+                    `[${target.name} (${uid})] 회원을 승인 목록에서 삭제하시겠습니까? 삭제 시 해당 사용자는 다시 승인 요청을 해야 합니다.`,
+                    () => {
+                        delete this.userRegistryMap[uid];
+                        this.saveUserRegistryToLocal();
+                        this.deleteUserAccountFromCloud(uid);
+                        this.renderAdminUserApprovalList();
+                        this.showToast('회원 계정이 목록에서 삭제되었습니다.', 'info');
+                    }
+                );
+            },
+
+            onAdminFilterChange() {
+                this.renderAdminTableRows();
+            },
+
+            renderAdminTableRows() {
+                const gVal = document.getElementById('adminFilterGrade').value;
+                const sVal = document.getElementById('adminFilterSubject').value;
+                const cVal = document.getElementById('adminFilterCohort').value;
+                const keyword = (document.getElementById('adminSearchInput').value || '').trim().toLowerCase();
+
+                const filtered = this.questions.filter(q => {
+                    if (gVal !== 'ALL' && q.grade !== gVal) return false;
+                    if (sVal !== 'ALL' && q.subject !== sVal) return false;
+                    if (cVal !== 'ALL' && q.cohort !== cVal) return false;
+                    if (keyword) {
+                        const hay = `${q.question} ${q.explanation} ${q.grade} ${q.subject} ${q.cohort}`.toLowerCase();
+                        if (!hay.includes(keyword)) return false;
+                    }
+                    return true;
+                });
+
+                document.getElementById('adminTableCount').textContent = `${filtered.length}건`;
+                const tbody = document.getElementById('adminQuestionTableBody');
+
+                if (filtered.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="py-10 text-center text-slate-400">조건에 맞는 기출문제가 없습니다.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = filtered.map((q, i) => `
+                    <tr class="hover:bg-slate-50/80">
+                        <td class="py-3.5 px-4 font-bold text-slate-400">${i + 1}</td>
+                        <td class="py-3.5 px-3"><span class="px-2 py-1 rounded-md bg-slate-100 text-slate-700 font-bold text-xs">${this.escapeHtml(q.grade)}</span></td>
+                        <td class="py-3.5 px-3"><span class="px-2 py-1 rounded-md bg-indigo-50 text-indigo-700 font-bold text-xs">${this.escapeHtml(q.subject)}</span></td>
+                        <td class="py-3.5 px-3"><span class="px-2 py-1 rounded-md bg-amber-50 text-amber-800 font-bold text-xs">${this.escapeHtml(q.cohort)}</span></td>
+                        <td class="py-3.5 px-4 max-w-md">
+                            <p class="font-bold text-slate-800 truncate">${this.escapeHtml(q.question)}</p>
+                            <p class="text-[11px] text-emerald-700 font-semibold mt-0.5">정답: ${q.answer}번 (${this.escapeHtml(q.options[q.answer - 1] || '')})</p>
+                        </td>
+                        <td class="py-3.5 px-4 text-right whitespace-nowrap">
+                            <button onclick="app.openAdminQuestionModal('${q.id}')" class="p-1.5 rounded-lg text-slate-500 hover:text-brand-600 hover:bg-brand-50" title="수정">
+                                <i class="ph-bold ph-pencil-simple text-base"></i>
+                            </button>
+                            <button onclick="app.confirmDeleteAdminQuestion('${q.id}')" class="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50" title="삭제">
+                                <i class="ph-bold ph-trash text-base"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            },
+
+            openAdminQuestionModal(editId = null) {
+                if (!this.requireAdmin()) return;
+                const form = document.getElementById('adminQuestionForm');
+                form.reset();
+
+                // 자동완성 Datalist 채우기
+                const grades = [...new Set(['예과 1학년', '예과 2학년', '본과 1학년', '본과 2학년', '본과 3학년', '본과 4학년', ...this.getUniqueGrades()])];
+                const subjects = [...new Set(['해부학', '생리학', '병리학', '약리학', '생화학', '미생물학', '순환기학', '호흡기학', ...this.questions.map(q => q.subject)])];
+                const cohorts = [...new Set(['24학번 기출', '23학번 기출', '22학번 기출', '21학번 기출', '20학번 기출', ...this.questions.map(q => q.cohort)])];
+
+                document.getElementById('gradeSuggestions').innerHTML = grades.map(g => `<option value="${this.escapeHtml(g)}">`).join('');
+                document.getElementById('subjectSuggestions').innerHTML = subjects.map(s => `<option value="${this.escapeHtml(s)}">`).join('');
+                document.getElementById('cohortSuggestions').innerHTML = cohorts.map(c => `<option value="${this.escapeHtml(c)}">`).join('');
+
+                if (editId) {
+                    const q = this.questions.find(item => item.id === editId);
+                    if (!q) return;
+                    document.getElementById('adminQuestionModalTitle').textContent = '기출문제 수정';
+                    document.getElementById('qFormId').value = q.id;
+                    document.getElementById('qFormGrade').value = q.grade;
+                    document.getElementById('qFormSubject').value = q.subject;
+                    document.getElementById('qFormCohort').value = q.cohort;
+                    document.getElementById('qFormQuestion').value = q.question;
+                    document.getElementById('qFormAnswer').value = q.answer;
+                    document.getElementById('qFormOpt1').value = q.options[0] || '';
+                    document.getElementById('qFormOpt2').value = q.options[1] || '';
+                    document.getElementById('qFormOpt3').value = q.options[2] || '';
+                    document.getElementById('qFormOpt4').value = q.options[3] || '';
+                    document.getElementById('qFormOpt5').value = q.options[4] || '';
+                    document.getElementById('qFormExplanation').value = q.explanation || '';
+                } else {
+                    document.getElementById('adminQuestionModalTitle').textContent = '새 기출문제 출제 등록';
+                    document.getElementById('qFormId').value = '';
+                    document.getElementById('qFormGrade').value = this.selectedGrade || '본과 1학년';
+                    document.getElementById('qFormSubject').value = this.selectedSubject || '';
+                    document.getElementById('qFormCohort').value = (this.selectedCohort && this.selectedCohort !== 'ALL') ? this.selectedCohort : '23학번 기출';
+                }
+
+                document.getElementById('adminQuestionModal').classList.remove('hidden');
+            },
+
+            closeAdminQuestionModal() {
+                document.getElementById('adminQuestionModal').classList.add('hidden');
+            },
+
+            saveAdminQuestion(e) {
+                e.preventDefault();
+                if (!this.requireAdmin()) return;
+                const id = document.getElementById('qFormId').value;
+                const grade = document.getElementById('qFormGrade').value.trim();
+                const subject = document.getElementById('qFormSubject').value.trim();
+                const cohort = document.getElementById('qFormCohort').value.trim();
+                const question = document.getElementById('qFormQuestion').value.trim();
+                const answer = Number(document.getElementById('qFormAnswer').value);
+                const options = [
+                    document.getElementById('qFormOpt1').value.trim(),
+                    document.getElementById('qFormOpt2').value.trim(),
+                    document.getElementById('qFormOpt3').value.trim(),
+                    document.getElementById('qFormOpt4').value.trim()
+                ];
+                const opt5 = document.getElementById('qFormOpt5').value.trim();
+                if (opt5) options.push(opt5);
+                const explanation = document.getElementById('qFormExplanation').value.trim();
+
+                let targetObj = null;
+                if (id) {
+                    const idx = this.questions.findIndex(q => q.id === id);
+                    if (idx !== -1) {
+                        targetObj = { ...this.questions[idx], grade, subject, cohort, question, options, answer, explanation };
+                        this.questions[idx] = targetObj;
+                    }
+                } else {
+                    targetObj = {
+                        id: 'q_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+                        grade,
+                        subject,
+                        cohort,
+                        question,
+                        options,
+                        answer,
+                        explanation
+                    };
+                    this.questions.push(targetObj);
+                }
+
+                this.saveQuestionsToLocal();
+                if (targetObj) this.syncSingleQuestionToCloud(targetObj);
+
+                this.selectedGrade = grade;
+                this.selectedSubject = subject;
+                this.selectedCohort = cohort;
+
+                this.closeAdminQuestionModal();
+                this.renderAll();
+                this.showToast('기출문제가 성공적으로 저장되었습니다.', 'success');
+            },
+
+            confirmDeleteAdminQuestion(qId) {
+                if (!this.requireAdmin()) return;
+                this.openConfirmDialog(
+                    '기출문제 삭제',
+                    '이 문제를 기출 데이터베이스에서 삭제하시겠습니까?',
+                    () => {
+                        this.questions = this.questions.filter(q => q.id !== qId);
+                        this.saveQuestionsToLocal();
+                        this.deleteQuestionFromCloud(qId);
+                        this.ensureDefaultHierarchySelection();
+                        this.renderAll();
+                        this.showToast('기출문제가 삭제되었습니다.', 'info');
+                    }
+                );
+            },
+
+            // ================= [JSON 대량 관리] =================
+            openJsonManageModal() {
+                if (!this.requireAdmin()) return;
+                document.getElementById('jsonBulkTextarea').value = '';
+                document.getElementById('jsonManageModal').classList.remove('hidden');
+            },
+
+            closeJsonManageModal() {
+                document.getElementById('jsonManageModal').classList.add('hidden');
+            },
+
+            insertSampleJsonTemplate() {
+                const template = [
+                    {
+                        grade: "본과 1학년",
+                        subject: "해부학",
+                        cohort: "24학번 기출",
+                        question: "예시 기출문제 지문을 입력하세요.",
+                        options: ["1번보기", "2번보기", "3번보기", "4번보기", "5번보기"],
+                        answer: 1,
+                        explanation: "정답에 대한 상세 해설을 입력하세요."
+                    }
+                ];
+                document.getElementById('jsonBulkTextarea').value = JSON.stringify(template, null, 2);
+            },
+
+            exportQuestionsClipboard() {
+                const text = JSON.stringify(this.questions, null, 2);
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                document.body.appendChild(ta);
+                ta.select();
+                try {
+                    document.execCommand('copy');
+                    this.showToast('전체 기출문제 JSON이 클립보드에 복사되었습니다.', 'success');
+                } catch (e) {
+                    this.showToast('복사 실패', 'error');
+                }
+                ta.remove();
+            },
+
+            exportQuestionsFile() {
+                const text = JSON.stringify(this.questions, null, 2);
+                const blob = new Blob([text], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `exam_questions_backup_${Date.now()}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                this.showToast('기출문제 JSON 파일이 다운로드되었습니다.', 'success');
+            },
+
+            importQuestionsFromJson(mode) {
+                if (!this.requireAdmin()) return;
+                const raw = document.getElementById('jsonBulkTextarea').value.trim();
+                if (!raw) {
+                    this.showToast('JSON 데이터를 입력해 주세요.', 'error');
+                    return;
+                }
+                try {
+                    const parsed = JSON.parse(raw);
+                    if (!Array.isArray(parsed)) throw new Error('Root must be an array');
+
+                    const formatted = parsed.map((item, idx) => ({
+                        id: item.id || ('q_imported_' + Date.now() + '_' + idx),
+                        grade: item.grade || '본과 1학년',
+                        subject: item.subject || '기타과목',
+                        cohort: item.cohort || '24학번 기출',
+                        question: item.question || '무제',
+                        options: Array.isArray(item.options) ? item.options : ['1', '2', '3', '4'],
+                        answer: Number(item.answer || 1),
+                        explanation: item.explanation || '해설 없음'
+                    }));
+
+                    if (mode === 'REPLACE') {
+                        this.questions = formatted;
+                    } else {
+                        const existingIds = new Set(this.questions.map(q => q.id));
+                        formatted.forEach(q => {
+                            if (!existingIds.has(q.id)) {
+                                this.questions.push(q);
+                            }
+                        });
+                    }
+
+                    this.saveQuestionsToLocal();
+                    this.questions.forEach(q => this.syncSingleQuestionToCloud(q));
+
+                    this.ensureDefaultHierarchySelection();
+                    this.closeJsonManageModal();
+                    this.renderAll();
+                    this.showToast(`총 ${formatted.length}개 기출문제 등록이 완료되었습니다!`, 'success');
+                } catch (e) {
+                    this.showToast('JSON 파싱 오류: 올바른 배열 형식인지 확인해 주세요.', 'error');
+                }
+            },
+
+            // ================= [사용자 로그인 & 관리자 승인 체크 & admin 로그인] =================
+            loginFromGate(e) {
+                e.preventDefault();
+                const rawUid = document.getElementById('gateUserIdInput').value.trim();
+                const uid = rawUid.replace(/[^a-zA-Z0-9_@.-]/g, '_');
+                if (!uid) return;
+
+                // 1. 관리자 아이디로 로그인 시도한 경우 -> 비밀번호(해시) 검증 후 관리자 페이지로 직행
+                if (isAdminId(rawUid)) {
+                    const passInput = document.getElementById('gateAdminPasswordInput');
+                    const inputPass = passInput.value;
+                    if (!inputPass || sha256Hex(inputPass) !== this.getAdminPasswordHash()) {
+                        passInput.value = '';
+                        this.showToast('아이디 또는 비밀번호가 올바르지 않습니다.', 'error');
+                        return;
+                    }
+                    this.completeAdminLogin();
+                    return;
+                }
+
+                // 2. 일반 사용자 로그인 시도 -> 이름 확인 및 관리자 승인 여부 검사
+                const name = document.getElementById('gateUserNameInput').value.trim();
+                if (!name) {
+                    this.showToast('이름(실명 또는 닉네임)을 입력해 주세요.', 'error');
+                    document.getElementById('gateUserNameInput').focus();
+                    return;
+                }
+
+                this.attemptGeneralUserLogin(uid, name, 'CUSTOM_ID');
+            },
+
+            quickLogin(uid, name) {
+                if (!uid || isAdminId(uid)) return;
+                document.getElementById('gateUserIdInput').value = uid;
+                document.getElementById('gateUserNameInput').value = name || '';
+                this.onGateIdInputChange(uid);
+                this.attemptGeneralUserLogin(uid, name || uid, 'CUSTOM_ID');
+            },
+
+            completeAdminLogin() {
+                const adminObj = {
+                    uid: ADMIN_ID,
+                    name: '총괄 관리자',
+                    isAdmin: true,
+                    authType: 'ADMIN'
+                };
+                this.currentUser = adminObj;
+                this.isAdminUnlocked = true;
+                try { sessionStorage.setItem(STORAGE_KEYS.ADMIN_SESSION, this.makeAdminSessionToken()); } catch (e) {}
+                this.saveProgressToLocal();
+                document.getElementById('pendingNoticeBox').classList.add('hidden');
+                document.getElementById('gateAdminPasswordInput').value = '';
+                document.getElementById('gateUserIdInput').value = '';
+                this.onGateIdInputChange('');
+
+                // 관리자로 로그인하면 관리자 화면을 생성하고 즉시 메인으로 전환
+                this.renderAll();
+                this.switchMainTab('ADMIN');
+                this.showToast('👑 관리자 계정으로 로그인되었습니다.', 'success');
+                if (this.getAdminPasswordHash() === DEFAULT_ADMIN_PASSWORD_HASH) {
+                    setTimeout(() => this.showToast('⚠️ 초기 비밀번호를 사용 중입니다. [관리자 비밀번호 변경]으로 바꿔 주세요.', 'error'), 600);
+                }
+            },
+
+            attemptGeneralUserLogin(uid, name, authType = 'CUSTOM_ID') {
+                if (isAdminId(uid)) return;
+                const existing = this.userRegistryMap[uid];
+                const noticeBox = document.getElementById('pendingNoticeBox');
+                const noticeTitle = document.getElementById('pendingNoticeTitle');
+                const noticeDesc = document.getElementById('pendingNoticeDesc');
+
+                // 처음 로그인 시도하는 계정인 경우 -> PENDING(승인 대기)으로 등록 후 진입 차단
+                if (!existing) {
+                    const newAccount = {
+                        uid,
+                        name,
+                        status: 'PENDING',
+                        authType,
+                        requestedAt: Date.now(),
+                        updatedAt: Date.now()
+                    };
+                    this.userRegistryMap[uid] = newAccount;
+                    this.saveUserRegistryToLocal();
+                    this.syncUserAccountToCloud(newAccount);
+                    this.addRecentUser({ uid, name });
+                    this.renderAuthGate();
+
+                    noticeBox.classList.remove('hidden');
+                    noticeTitle.textContent = `[${name} (${uid})] 님의 가입 승인 요청이 접수되었습니다!`;
+                    noticeDesc.innerHTML = `현재 <b>관리자 승인 대기 중</b>입니다. 관리자가 승인하면 바로 접속하실 수 있습니다.`;
+                    this.showToast('관리자에게 로그인 승인 요청이 전송되었습니다.', 'info');
+                    return;
+                }
+
+                // 이름은 최신 입력값으로 업데이트
+                if (name && existing.name !== name) {
+                    existing.name = name;
+                    this.saveUserRegistryToLocal();
+                    this.syncUserAccountToCloud(existing);
+                }
+                this.addRecentUser({ uid, name: existing.name });
+
+                // 아직 PENDING 또는 REJECTED 상태인 경우 진입 차단
+                if (existing.status !== 'APPROVED') {
+                    this.renderAuthGate();
+                    noticeBox.classList.remove('hidden');
+                    noticeTitle.textContent = `[${existing.name} (${uid})] 계정은 아직 관리자 승인 대기 중입니다.`;
+                    noticeDesc.innerHTML = `관리자 승인이 완료되면 같은 학번/아이디로 다시 로그인해 주세요.`;
+                    this.showToast('관리자 승인이 완료된 후에 로그인할 수 있습니다.', 'error');
+                    return;
+                }
+
+                // 승인 완료('APPROVED')된 사용자만 로그인 성공
+                noticeBox.classList.add('hidden');
+                this.currentUser = {
+                    uid,
+                    name: existing.name,
+                    isAdmin: false,
+                    authType
+                };
+                this.isAdminUnlocked = false;
+                this.saveProgressToLocal();
+                this.loadCurrentUserProgressFromCloud();
+
+                // 일반 사용자는 오직 학습자 대시보드만 표시 (관리자 화면은 DOM에 존재하지 않음)
+                this.unmountAdminUI();
+                this.setViewVisible('quizSolveView', false);
+                this.setViewVisible('userDashboardView', true);
+
+                this.renderAll();
+                this.showToast(`환영합니다, ${existing.name}님! 기출 학습을 시작하세요.`, 'success');
+            },
+
+            logout(customMsg = null) {
+                const prevName = this.currentUser ? this.currentUser.name : '';
+                this.currentUser = null;
+                this.isAdminUnlocked = false;
+                try { sessionStorage.removeItem(STORAGE_KEYS.ADMIN_SESSION); } catch (e) {}
+                this.unmountAdminUI();
+                this.setViewVisible('quizSolveView', false);
+                this.setViewVisible('userDashboardView', true);
+                this.saveProgressToLocal();
+                this.renderAll();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                this.showToast(customMsg || `${prevName} 계정이 로그아웃되었습니다.`, 'info');
+            },
+
+            async loginWithGoogle() {
+                if (!this.fbAuth) {
+                    this.showToast('Firebase 설정이 연결되지 않은 환경입니다. 학번과 이름을 입력해 가입 승인을 요청해 주세요.', 'info');
+                    return;
+                }
+                try {
+                    const provider = new GoogleAuthProvider();
+                    const res = await signInWithPopup(this.fbAuth, provider);
+                    if (res.user) {
+                        this.attemptGeneralUserLogin(
+                            res.user.uid,
+                            res.user.displayName || res.user.email || 'Google 학습자',
+                            'GOOGLE'
+                        );
+                    }
+                } catch (e) {
+                    this.showToast('팝업 환경 제한으로 Google 로그인이 취소되었습니다. 학번/이름 로그인을 이용해 주세요.', 'info');
+                }
+            },
+
+            confirmResetUserProgress() {
+                this.openConfirmDialog(
+                    '내 풀이 기록 초기화',
+                    `${this.currentUser.name} 님의 개인 문제 풀이 기록과 오답노트만 초기화됩니다. (다른 사용자나 등록된 기출문제는 유지됨)`,
+                    () => {
+                        this.allUsersProgressMap[this.currentUser.uid] = {};
+                        this.saveProgressToLocal();
+                        this.syncUserProgressToCloud();
+                        this.renderAll();
+                        this.showToast('나의 풀이 기록이 초기화되었습니다.', 'info');
+                    }
+                );
+            },
+
+            // ================= [Firebase Config 모달 & 공통 유틸] =================
+            openFirebaseConfigModal() {
+                if (!this.requireAdmin()) return;
+                const saved = localStorage.getItem(STORAGE_KEYS.CUSTOM_FB) || '';
+                document.getElementById('customFirebaseConfigInput').value = saved;
+                document.getElementById('firebaseConfigModal').classList.remove('hidden');
+            },
+
+            closeFirebaseConfigModal() {
+                document.getElementById('firebaseConfigModal').classList.add('hidden');
+            },
+
+            saveCustomFirebaseConfig() {
+                if (!this.requireAdmin()) return;
+                const raw = document.getElementById('customFirebaseConfigInput').value.trim();
+                if (!raw) {
+                    localStorage.removeItem(STORAGE_KEYS.CUSTOM_FB);
+                    this.closeFirebaseConfigModal();
+                    this.showToast('커스텀 클라우드 설정이 해제되었습니다.', 'info');
+                    return;
+                }
+                try {
+                    const parsed = JSON.parse(raw);
+                    if (!parsed.apiKey) throw new Error('apiKey 누락');
+                    localStorage.setItem(STORAGE_KEYS.CUSTOM_FB, JSON.stringify(parsed));
+                    this.closeFirebaseConfigModal();
+                    this.showToast('Firebase 설정이 저장되었습니다. 적용을 위해 새로고침합니다.', 'success');
+                    setTimeout(() => location.reload(), 900);
+                } catch (e) {
+                    this.showToast('유효한 JSON 형식의 Firebase Config를 입력해 주세요.', 'error');
+                }
+            },
+
+            openConfirmDialog(title, desc, onOk, showPrompt = false) {
+                document.getElementById('confirmDialogTitle').textContent = title;
+                document.getElementById('confirmDialogDesc').textContent = desc;
+                const promptWrap = document.getElementById('confirmPromptWrapper');
+                const promptInput = document.getElementById('confirmPromptInput');
+
+                if (showPrompt) {
+                    promptWrap.classList.remove('hidden');
+                    promptInput.value = '';
+                } else {
+                    promptWrap.classList.add('hidden');
+                }
+
+                document.getElementById('confirmDialogOkBtn').onclick = () => {
+                    const val = promptInput.value;
+                    this.closeConfirmDialog();
+                    onOk(val);
+                };
+                document.getElementById('confirmDialogModal').classList.remove('hidden');
+            },
+
+            closeConfirmDialog() {
+                document.getElementById('confirmDialogModal').classList.add('hidden');
+            },
+
+            showToast(msg, type = 'info') {
+                const area = document.getElementById('toastArea');
+                const el = document.createElement('div');
+                let bg = 'bg-slate-900 text-white';
+                if (type === 'success') bg = 'bg-emerald-600 text-white';
+                if (type === 'error') bg = 'bg-rose-600 text-white';
+
+                el.className = `${bg} px-4 py-3 rounded-xl shadow-lg text-xs sm:text-sm font-bold fade-in`;
+                el.textContent = msg;
+                area.appendChild(el);
+
+                setTimeout(() => {
+                    el.style.opacity = '0';
+                    el.style.transition = 'opacity 0.25s ease';
+                    setTimeout(() => el.remove(), 250);
+                }, 2600);
+            },
+
+            escapeHtml(str) {
+                if (!str) return '';
+                return String(str)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+            }
+        };
+
+        window.app = app;
+        window.onload = () => app.init();
+    </script>
+</body>
+</html>
