@@ -302,9 +302,15 @@
 
             <!-- 4. Step 3 기출 학번 선택 -->
             <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-3">
-                <div class="flex items-center gap-2">
-                    <span class="w-6 h-6 rounded-full bg-amber-500 text-white text-xs font-extrabold flex items-center justify-center">3</span>
-                    <h3 class="font-extrabold text-sm sm:text-base text-slate-900">기출 학번 선택</h3>
+                <div class="flex items-center justify-between gap-2 flex-wrap">
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-amber-500 text-white text-xs font-extrabold flex items-center justify-center">3</span>
+                        <h3 id="step3Title" class="font-extrabold text-sm sm:text-base text-slate-900">기출 학번 선택</h3>
+                    </div>
+                    <div class="inline-flex p-0.5 rounded-lg bg-slate-100 border border-slate-200">
+                        <button id="viewModeBtnCohort" onclick="app.setViewMode('COHORT')" class="px-3 py-1.5 rounded-md text-xs font-extrabold transition-all">🎓 학번별</button>
+                        <button id="viewModeBtnTopic" onclick="app.setViewMode('TOPIC')" class="px-3 py-1.5 rounded-md text-xs font-extrabold transition-all">🏷️ 주제별</button>
+                    </div>
                 </div>
                 <div id="step3CohortContainer" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5"></div>
             </div>
@@ -679,6 +685,11 @@
                         <input type="text" id="qFormCohort" list="cohortSuggestions" required placeholder="예: 23학번 기출" class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-lg outline-none focus:border-brand-500">
                         <datalist id="cohortSuggestions"></datalist>
                     </div>
+                    <div class="sm:col-span-3">
+                        <label class="block text-xs font-extrabold text-slate-700 mb-1">주제 (선택) <span class="font-medium text-slate-400">- 주제별 모드에서 묶어 볼 때 사용합니다</span></label>
+                        <input type="text" id="qFormTopic" list="topicSuggestions" placeholder="예: 심부전, 상지 신경" class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-lg outline-none focus:border-brand-500">
+                        <datalist id="topicSuggestions"></datalist>
+                    </div>
                 </div>
 
                 <div>
@@ -743,7 +754,7 @@
             <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
                 <div>
                     <h3 class="font-extrabold text-lg text-slate-900">기출문제 JSON 대량 등록 & 백업</h3>
-                    <p class="text-xs text-slate-500">학년(grade), 과목(subject), 기출학번(cohort)이 포함된 JSON 데이터를 일괄 입출력합니다.</p>
+                    <p class="text-xs text-slate-500">학년(grade), 과목(subject), 기출학번(cohort), 주제(topic, 선택)가 포함된 JSON 데이터를 일괄 입출력합니다.</p>
                 </div>
                 <button onclick="app.closeJsonManageModal()" class="text-slate-400 hover:text-slate-600 p-1">
                     <i class="ph-bold ph-x text-xl"></i>
@@ -935,6 +946,7 @@
                 grade: '본과 1학년',
                 subject: '해부학',
                 cohort: '23학번 기출',
+                topic: '상지 신경',
                 question: '위팔뼈(Humerus)의 중간몸통(Mid-shaft) 골절 시 나선고랑(Radial groove)을 지나가다가 손상되기 가장 쉬운 신경과 그로 인해 나타나는 특징적인 임상 증상은?',
                 options: [
                     '정중신경(Median nerve) - 원숭이손 변형(Ape hand)',
@@ -951,6 +963,7 @@
                 grade: '본과 1학년',
                 subject: '해부학',
                 cohort: '22학번 기출',
+                topic: '관상동맥',
                 question: '심장에 혈액을 공급하는 관상동맥 중 앞심실사이가지(LAD, Left anterior descending artery)가 막혔을 때 주로 허혈이 발생하는 부위는?',
                 options: [
                     '오른심방과 굴심방결절(SA node)',
@@ -967,6 +980,7 @@
                 grade: '본과 1학년',
                 subject: '생리학',
                 cohort: '23학번 기출',
+                topic: '심장 전기생리',
                 question: '심장근육세포의 활동전위(Action potential) 중 제2기 고원기(Plateau phase)를 형성하는 데 가장 핵심적인 역할을 하는 이온 통로의 변화는?',
                 options: [
                     '전압개폐 빠른 Na+ 통로의 급격한 개방',
@@ -983,6 +997,7 @@
                 grade: '본과 1학년',
                 subject: '생리학',
                 cohort: '21학번 기출',
+                topic: '신장 기능',
                 question: '콩팥(신장)에서 사구체 여과율(GFR)을 측정하기 위한 이상적인 표지자 물질의 조건으로 옳은 것은?',
                 options: [
                     '혈장 단백질에 90% 이상 결합해야 한다.',
@@ -999,6 +1014,7 @@
                 grade: '본과 1학년',
                 subject: '병리학',
                 cohort: '23학번 기출',
+                topic: '세포 손상',
                 question: '비가역적 세포 손상(Irreversible cell injury)을 시사하는 가장 결정적인 형태학적(핵의 변화) 및 생화학적 소견의 조합은?',
                 options: [
                     '세포 종창(Cellular swelling) 및 리보솜 탈락',
@@ -1015,6 +1031,7 @@
                 grade: '본과 2학년',
                 subject: '순환기학',
                 cohort: '23학번 기출',
+                topic: '허혈성 심질환',
                 question: '갑작스러운 흉통으로 내원한 58세 남성 환자의 심전도(ECG)에서 Lead II, III, aVF에서 ST 분절 상승(ST elevation)이 관찰되었다. 가장 의심되는 심근경색 부위와 원인 혈관은?',
                 options: [
                     '앞벽 심근경색(Anterior MI) - 앞심실사이가지(LAD)',
@@ -1031,6 +1048,7 @@
                 grade: '본과 2학년',
                 subject: '순환기학',
                 cohort: '22학번 기출',
+                topic: '심부전',
                 question: '박출률 감소 심부전(HFrEF) 환자에서 생존율을 유의하게 개선시켜 사망률을 낮추는 것으로 입증된 표준 약제(GDMT)에 해당하지 않는 것은?',
                 options: [
                     '안지오텐신 수용체-네프릴리신 억제제 (ARNI) 또는 ACE 억제제',
@@ -1047,6 +1065,7 @@
                 grade: '본과 2학년',
                 subject: '호흡기학',
                 cohort: '23학번 기출',
+                topic: 'COPD',
                 question: '기관지확장제 투여 후 폐기능검사(Spirometry)에서 FEV1/FVC < 0.70 이면서 가역성이 없는 만성폐쇄성폐질환(COPD) 환자의 폐용적 변화 특징으로 옳은 것은?',
                 options: [
                     '잔기량(RV) 감소 및 총폐용량(TLC) 감소',
@@ -1092,6 +1111,10 @@
             selectedGrade: null,
             selectedSubject: null,
             selectedCohort: 'ALL',
+            // 보기 방식: 'COHORT'(학번별) | 'TOPIC'(주제별)
+            viewMode: 'COHORT',
+            selectedTopic: 'ALL',
+            NO_TOPIC: '__NO_TOPIC__',
 
             // 현재 진행 중인 퀴즈 상태
             quizQueue: [],
@@ -1113,6 +1136,7 @@
             async init() {
                 this.loadLocalData();
                 await this.initFirebaseIfAvailable();
+                try { if (localStorage.getItem('jin_view_mode') === 'TOPIC') this.viewMode = 'TOPIC'; } catch (e) {}
                 this.ensureDefaultHierarchySelection();
                 this.bindKeyboardEvents();
                 this.renderAll();
@@ -1623,6 +1647,10 @@
                 if (this.selectedCohort !== 'ALL' && !cohorts.includes(this.selectedCohort)) {
                     this.selectedCohort = 'ALL';
                 }
+
+                const topics = this.getUniqueTopics(this.selectedGrade, this.selectedSubject);
+                const validTopic = this.selectedTopic === 'ALL' || this.selectedTopic === this.NO_TOPIC || topics.includes(this.selectedTopic);
+                if (!validTopic) this.selectedTopic = 'ALL';
             },
 
             getUniqueGrades() {
@@ -1639,10 +1667,21 @@
                 return [...new Set(this.questions.filter(q => q.grade === grade && q.subject === subject).map(q => q.cohort))].filter(Boolean);
             },
 
+            getUniqueTopics(grade, subject) {
+                if (!grade || !subject) return [];
+                return [...new Set(this.questions.filter(q => q.grade === grade && q.subject === subject).map(q => (q.topic || '').trim()))].filter(Boolean);
+            },
+
             getHierarchyFilteredQuestions() {
                 return this.questions.filter(q => {
                     if (this.selectedGrade && q.grade !== this.selectedGrade) return false;
                     if (this.selectedSubject && q.subject !== this.selectedSubject) return false;
+                    if (this.viewMode === 'TOPIC') {
+                        const t = (q.topic || '').trim();
+                        if (this.selectedTopic === this.NO_TOPIC) return !t;
+                        if (this.selectedTopic && this.selectedTopic !== 'ALL' && t !== this.selectedTopic) return false;
+                        return true;
+                    }
                     if (this.selectedCohort && this.selectedCohort !== 'ALL' && q.cohort !== this.selectedCohort) return false;
                     return true;
                 });
@@ -1906,7 +1945,9 @@
                 this.renderStep2Subjects();
 
                 // 4. Step 3 (기출 학번) 카드 렌더링
-                this.renderStep3Cohorts();
+                this.renderViewModeToggle();
+                if (this.viewMode === 'TOPIC') this.renderStep3Topics();
+                else this.renderStep3Cohorts();
 
                 // 5. 선택된 범위 요약 및 문제 미리보기 리스트 렌더링
                 this.renderSelectedTargetSummary();
@@ -1996,6 +2037,50 @@
                 }).join('');
             },
 
+            renderViewModeToggle() {
+                const on = 'bg-white text-brand-700 shadow-xs';
+                const off = 'text-slate-500 hover:text-slate-700';
+                const isTopic = this.viewMode === 'TOPIC';
+                document.getElementById('viewModeBtnCohort').className = `px-3 py-1.5 rounded-md text-xs font-extrabold transition-all ${isTopic ? off : on}`;
+                document.getElementById('viewModeBtnTopic').className = `px-3 py-1.5 rounded-md text-xs font-extrabold transition-all ${isTopic ? on : off}`;
+                document.getElementById('step3Title').textContent = isTopic ? '주제 선택' : '기출 학번 선택';
+            },
+
+            renderStep3Topics() {
+                const container = document.getElementById('step3CohortContainer');
+                const topics = this.getUniqueTopics(this.selectedGrade, this.selectedSubject);
+                const subQs = this.questions.filter(q => q.grade === this.selectedGrade && q.subject === this.selectedSubject);
+                const noTopicQs = subQs.filter(q => !(q.topic || '').trim());
+
+                const card = (value, label, qs) => {
+                    const solved = qs.filter(q => this.getQuestionProgress(q.id).solved).length;
+                    const isSelected = this.selectedTopic === value;
+                    return `
+                        <button onclick="app.selectTopic('${this.escapeHtml(value)}')" class="p-3.5 rounded-xl border text-left transition-all flex flex-col justify-between ${
+                            isSelected ? 'border-2 border-brand-600 bg-brand-50/70 shadow-xs' : 'border-slate-200 bg-white hover:border-brand-300'
+                        }">
+                            <div class="flex items-center justify-between mb-1.5 gap-1">
+                                <span class="font-extrabold text-xs sm:text-sm ${isSelected ? 'text-brand-700' : 'text-slate-800'}">${label}</span>
+                                ${isSelected ? '<i class="ph-fill ph-check-circle text-brand-600"></i>' : ''}
+                            </div>
+                            <p class="text-[11px] font-semibold text-slate-500">${qs.length}문항 (${solved}/${qs.length} 완료)</p>
+                        </button>
+                    `;
+                };
+
+                let html = card('ALL', '전체 주제 통합', subQs);
+                topics.forEach(t => {
+                    html += card(t, '🏷️ ' + this.escapeHtml(t), subQs.filter(q => (q.topic || '').trim() === t));
+                });
+                if (noTopicQs.length > 0 && topics.length > 0) {
+                    html += card(this.NO_TOPIC, '주제 미지정', noTopicQs);
+                }
+                if (topics.length === 0) {
+                    html += `<div class="col-span-full text-[11px] font-semibold text-slate-400 self-center">이 과목에는 주제가 지정된 문제가 아직 없습니다. 관리자 화면에서 문제에 주제를 입력하면 여기에 나타납니다.</div>`;
+                }
+                container.innerHTML = html;
+            },
+
             renderStep3Cohorts() {
                 const container = document.getElementById('step3CohortContainer');
                 const cohorts = this.getUniqueCohorts(this.selectedGrade, this.selectedSubject);
@@ -2040,7 +2125,13 @@
             },
 
             renderSelectedTargetSummary() {
-                const cohortLabel = this.selectedCohort === 'ALL' ? '전체 기출 학번' : this.selectedCohort;
+                let cohortLabel;
+                if (this.viewMode === 'TOPIC') {
+                    cohortLabel = this.selectedTopic === 'ALL' ? '전체 주제'
+                        : this.selectedTopic === this.NO_TOPIC ? '주제 미지정' : this.selectedTopic;
+                } else {
+                    cohortLabel = this.selectedCohort === 'ALL' ? '전체 기출 학번' : this.selectedCohort;
+                }
                 const pathStr = `${this.selectedGrade || '-'} > ${this.selectedSubject || '-'} > ${cohortLabel}`;
 
                 document.getElementById('selectionBreadcrumb').innerHTML = `
@@ -2098,6 +2189,7 @@
                                 <div class="flex items-center gap-1.5 flex-wrap">
                                     <span class="text-xs font-extrabold text-brand-600">Q${idx + 1}.</span>
                                     <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-800">${this.escapeHtml(q.cohort)}</span>
+                                    ${q.topic ? `<span class="text-[11px] font-bold px-2 py-0.5 rounded bg-teal-50 text-teal-700">🏷️ ${this.escapeHtml(q.topic)}</span>` : ''}
                                     ${statusBadge}
                                     ${understoodBadge}
                                     ${pinBadge}
@@ -2116,12 +2208,25 @@
                 const subjects = this.getUniqueSubjectsByGrade(grade);
                 this.selectedSubject = subjects[0] || null;
                 this.selectedCohort = 'ALL';
+                this.selectedTopic = 'ALL';
                 this.renderUserDashboard();
             },
 
             selectSubject(subject) {
                 this.selectedSubject = subject;
                 this.selectedCohort = 'ALL';
+                this.selectedTopic = 'ALL';
+                this.renderUserDashboard();
+            },
+
+            selectTopic(topic) {
+                this.selectedTopic = topic;
+                this.renderUserDashboard();
+            },
+
+            setViewMode(mode) {
+                this.viewMode = mode === 'TOPIC' ? 'TOPIC' : 'COHORT';
+                try { localStorage.setItem('jin_view_mode', this.viewMode); } catch (e) {}
                 this.renderUserDashboard();
             },
 
@@ -3158,6 +3263,8 @@
                 document.getElementById('gradeSuggestions').innerHTML = grades.map(g => `<option value="${this.escapeHtml(g)}">`).join('');
                 document.getElementById('subjectSuggestions').innerHTML = subjects.map(s => `<option value="${this.escapeHtml(s)}">`).join('');
                 document.getElementById('cohortSuggestions').innerHTML = cohorts.map(c => `<option value="${this.escapeHtml(c)}">`).join('');
+                const topics = [...new Set(this.questions.map(q => (q.topic || '').trim()).filter(Boolean))];
+                document.getElementById('topicSuggestions').innerHTML = topics.map(t => `<option value="${this.escapeHtml(t)}">`).join('');
 
                 if (editId) {
                     const q = this.questions.find(item => item.id === editId);
@@ -3167,6 +3274,7 @@
                     document.getElementById('qFormGrade').value = q.grade;
                     document.getElementById('qFormSubject').value = q.subject;
                     document.getElementById('qFormCohort').value = q.cohort;
+                    document.getElementById('qFormTopic').value = q.topic || '';
                     document.getElementById('qFormQuestion').value = q.question;
                     document.getElementById('qFormAnswer').value = q.answer;
                     document.getElementById('qFormOpt1').value = q.options[0] || '';
@@ -3197,6 +3305,7 @@
                 const grade = document.getElementById('qFormGrade').value.trim();
                 const subject = document.getElementById('qFormSubject').value.trim();
                 const cohort = document.getElementById('qFormCohort').value.trim();
+                const topic = document.getElementById('qFormTopic').value.trim();
                 const question = document.getElementById('qFormQuestion').value.trim();
                 const answer = Number(document.getElementById('qFormAnswer').value);
                 const options = [
@@ -3213,7 +3322,7 @@
                 if (id) {
                     const idx = this.questions.findIndex(q => q.id === id);
                     if (idx !== -1) {
-                        targetObj = { ...this.questions[idx], grade, subject, cohort, question, options, answer, explanation };
+                        targetObj = { ...this.questions[idx], grade, subject, cohort, topic, question, options, answer, explanation };
                         this.questions[idx] = targetObj;
                     }
                 } else {
@@ -3222,6 +3331,7 @@
                         grade,
                         subject,
                         cohort,
+                        topic,
                         question,
                         options,
                         answer,
@@ -3236,6 +3346,7 @@
                 this.selectedGrade = grade;
                 this.selectedSubject = subject;
                 this.selectedCohort = cohort;
+                this.selectedTopic = 'ALL';
 
                 this.closeAdminQuestionModal();
                 this.renderAll();
@@ -3275,6 +3386,7 @@
                         grade: "본과 1학년",
                         subject: "해부학",
                         cohort: "24학번 기출",
+                        topic: "상지 신경",
                         question: "예시 기출문제 지문을 입력하세요.",
                         options: ["1번보기", "2번보기", "3번보기", "4번보기", "5번보기"],
                         answer: 1,
@@ -3327,6 +3439,7 @@
                         grade: item.grade || '본과 1학년',
                         subject: item.subject || '기타과목',
                         cohort: item.cohort || '24학번 기출',
+                        topic: typeof item.topic === 'string' ? item.topic.trim() : '',
                         question: item.question || '무제',
                         options: Array.isArray(item.options) ? item.options : ['1', '2', '3', '4'],
                         answer: Number(item.answer || 1),
