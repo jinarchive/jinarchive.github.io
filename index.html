@@ -796,6 +796,14 @@
                     <button onclick="app.loadRepoJsonIntoTextarea('data/maternal_questions_update.json')" class="shrink-0 px-3 py-2 rounded-lg text-xs font-bold bg-pink-600 text-white hover:bg-pink-700">모성과 신생아 불러오기</button>
                 </div>
 
+                <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h4 class="text-xs sm:text-sm font-bold text-amber-900">성장과 노화 기출 불러오기</h4>
+                        <p class="text-[11px] text-amber-700">성장과 노화 304문항(22·21·20·19·18·17·16·15학번 기출, 현재 교수님별 주제 분류 + 야베런 기반 해설·개념 정리)을 아래 칸에 채웁니다. 불러온 뒤 '기존 문제 갱신 + 신규 추가'를 누르세요.</p>
+                    </div>
+                    <button onclick="app.loadRepoJsonIntoTextarea('data/growth_aging_questions.json')" class="shrink-0 px-3 py-2 rounded-lg text-xs font-bold bg-amber-600 text-white hover:bg-amber-700">성장과 노화 불러오기</button>
+                </div>
+
                 <div class="flex flex-wrap justify-end gap-2 pt-2 border-t border-slate-200">
                     <button onclick="app.importQuestionsFromJson('UPSERT')" class="px-4 py-2 rounded-xl text-xs font-bold bg-teal-600 text-white hover:bg-teal-700">기존 문제 갱신 + 신규 추가</button>
                     <button onclick="app.importQuestionsFromJson('APPEND')" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-700">기존 문제에 추가 등록</button>
@@ -1702,7 +1710,7 @@
             // 주제별 모드의 '개념 정리' (저장소 data/*_topic_notes.json, 과목별)
             topicNotes: {},
             async loadTopicNotes() {
-                const files = ['data/oncology_topic_notes.json', 'data/maternal_topic_notes.json'];
+                const files = ['data/oncology_topic_notes.json', 'data/maternal_topic_notes.json', 'data/growth_aging_topic_notes.json'];
                 for (const f of files) {
                     try {
                         const res = await fetch(f, { cache: 'no-cache' });
