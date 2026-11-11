@@ -2134,6 +2134,26 @@
                 document.getElementById('step3Title').textContent = isTopic ? '주제 선택' : '기출 학번 선택';
             },
 
+            // 정답(초록) / 오답(빨강) / 미풀이(회색) 누적 진행 막대
+            renderStackedBar(qs) {
+                const total = qs.length;
+                let correct = 0, wrong = 0;
+                qs.forEach(q => {
+                    const p = this.getQuestionProgress(q.id);
+                    if (p.solved) { if (p.isCorrect) correct++; else wrong++; }
+                });
+                const unsolved = total - correct - wrong;
+                const w = n => total > 0 ? (n / total * 100) : 0;
+                return `
+                    <div class="w-full mt-2 space-y-1">
+                        <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden flex" title="정답 ${correct} · 오답 ${wrong} · 미풀이 ${unsolved}">
+                            <div class="h-full bg-emerald-500" style="width:${w(correct)}%"></div>
+                            <div class="h-full bg-rose-500" style="width:${w(wrong)}%"></div>
+                            <div class="h-full bg-slate-300" style="width:${w(unsolved)}%"></div>
+                        </div>
+                    </div>`;
+            },
+
             renderStep3Topics() {
                 const container = document.getElementById('step3CohortContainer');
                 const topics = this.getUniqueTopics(this.selectedGrade, this.selectedSubject);
@@ -2152,6 +2172,7 @@
                                 ${isSelected ? '<i class="ph-fill ph-check-circle text-brand-600"></i>' : ''}
                             </div>
                             <p class="text-[11px] font-semibold text-slate-500">${qs.length}문항 (${solved}/${qs.length} 완료)</p>
+                            ${this.renderStackedBar(qs)}
                         </button>
                     `;
                 };
@@ -2192,6 +2213,7 @@
                                 ${isSelected ? '<i class="ph-fill ph-check-circle text-brand-600"></i>' : ''}
                             </div>
                             <p class="text-[11px] font-semibold text-slate-500">${qInCohort.length}문항 (${solvedInCohort}/${qInCohort.length} 완료)</p>
+                            ${this.renderStackedBar(qInCohort)}
                         </button>
                     `;
                 });
