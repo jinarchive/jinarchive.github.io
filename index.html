@@ -448,6 +448,17 @@
 
                             <div id="qOptionsContainer" class="space-y-2.5"></div>
 
+            <!-- 이전 / 다음 -->
+            <div class="relative z-20 flex items-center justify-between gap-2 pt-1">
+                <button id="btnQuizPrev" onclick="app.goPrevQuizQuestion()" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                    <i class="ph-bold ph-caret-left"></i> 이전 문제
+                </button>
+                <span class="hidden sm:inline text-[11px] text-slate-400">키보드: 1~5 선택 · ← → 이동</span>
+                <button onclick="app.goNextQuizQuestion()" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-brand-600 hover:bg-brand-700 text-white shadow-sm transition-colors">
+                    <span id="txtQuizNext">다음 문제</span> <i class="ph-bold ph-caret-right"></i>
+                </button>
+            </div>
+
                             <div class="flex justify-end">
                                 <button id="btnRevealAnswer" onclick="app.revealQuizAnswerDirectly()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors">
                                     <i class="ph-bold ph-eye"></i> 풀지 않고 정답·해설 보기
@@ -493,16 +504,6 @@
                 </div>
             </div>
 
-            <!-- 이전 / 다음 -->
-            <div class="flex items-center justify-between gap-2">
-                <button id="btnQuizPrev" onclick="app.goPrevQuizQuestion()" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
-                    <i class="ph-bold ph-caret-left"></i> 이전 문제
-                </button>
-                <span class="hidden sm:inline text-[11px] text-slate-400">키보드: 1~5 선택 · ← → 이동</span>
-                <button onclick="app.goNextQuizQuestion()" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-brand-600 hover:bg-brand-700 text-white shadow-sm transition-colors">
-                    <span id="txtQuizNext">다음 문제</span> <i class="ph-bold ph-caret-right"></i>
-                </button>
-            </div>
         </section>
 
     </main>
