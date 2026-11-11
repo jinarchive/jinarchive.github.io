@@ -1594,12 +1594,15 @@
             },
 
             async syncSingleQuestionToCloud(qObj) {
-                if (!this.isCloudConnected || !this.fbAuth.currentUser) return;
+                if (!this.isCloudConnected || !this.fbAuth.currentUser) return false;
                 try {
                     const qDocRef = doc(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'questions', qObj.id);
                     await setDoc(qDocRef, qObj);
+                    return true;
                 } catch (e) {
                     console.warn('문제 클라우드 저장 오류:', e);
+                    this._lastCloudError = (e && (e.code || e.message)) || String(e);
+                    return false;
                 }
             },
 
@@ -3509,7 +3512,7 @@
                 this.showToast('기출문제 JSON 파일이 다운로드되었습니다.', 'success');
             },
 
-            importQuestionsFromJson(mode) {
+            async importQuestionsFromJson(mode) {
                 if (!this.requireAdmin()) return;
                 const raw = document.getElementById('jsonBulkTextarea').value.trim();
                 if (!raw) {
@@ -3557,14 +3560,31 @@
                     }
 
                     this.saveQuestionsToLocal();
-                    this.questions.forEach(q => this.syncSingleQuestionToCloud(q));
-
                     this.ensureDefaultHierarchySelection();
                     this.closeJsonManageModal();
                     this.renderAll();
-                    this.showToast(mode === 'UPSERT'
-                        ? `기존 ${updatedCount}문항 갱신, 새 문항 ${addedCount}개 추가가 완료되었습니다!`
-                        : `총 ${formatted.length}개 기출문제 등록이 완료되었습니다!`, 'success');
+                    const doneMsg = mode === 'UPSERT'
+                        ? `기존 ${updatedCount}문항 갱신, 새 문항 ${addedCount}개 추가`
+                        : `총 ${formatted.length}개 기출문제 등록`;
+
+                    // 클라우드(Firestore)에 실제로 저장되어야 모든 사용자 화면에 반영됨 → 결과를 확인해서 알려줌
+                    if (!this.isCloudConnected || !this.fbAuth || !this.fbAuth.currentUser) {
+                        this.showToast(`${doneMsg} — ⚠️ 클라우드에 연결되어 있지 않아 이 브라우저에만 저장되었습니다. 관리자 계정으로 다시 로그인한 뒤 다시 시도해 주세요.`, 'error');
+                        return;
+                    }
+                    this.showToast(`${doneMsg} — 클라우드에 저장 중입니다… (창을 닫지 마세요)`, 'info');
+                    this._lastCloudError = null;
+                    const targets = mode === 'REPLACE' ? this.questions : formatted;
+                    let ok = 0, fail = 0;
+                    for (let i = 0; i < targets.length; i += 50) {
+                        const res = await Promise.all(targets.slice(i, i + 50).map(q => this.syncSingleQuestionToCloud(q)));
+                        res.forEach(r => r ? ok++ : fail++);
+                    }
+                    if (fail === 0) {
+                        this.showToast(`${doneMsg} 및 클라우드 저장(${ok}문항)이 완료되었습니다!`, 'success');
+                    } else {
+                        this.showToast(`⚠️ 클라우드 저장 실패 ${fail}문항 (성공 ${ok}) — ${this._lastCloudError || '권한/네트워크 오류'}. 관리자 로그인 상태를 확인하고 다시 시도해 주세요.`, 'error');
+                    }
                 } catch (e) {
                     this.showToast('JSON 파싱 오류: 올바른 배열 형식인지 확인해 주세요.', 'error');
                 }
