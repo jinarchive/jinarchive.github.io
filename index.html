@@ -1681,7 +1681,11 @@
 
             getUniqueCohorts(grade, subject) {
                 if (!grade || !subject) return [];
-                return [...new Set(this.questions.filter(q => q.grade === grade && q.subject === subject).map(q => q.cohort))].filter(Boolean);
+                const num = c => { const m = String(c).match(/\d+/); return m ? parseInt(m[0], 10) : -1; };
+                // 최신 학번이 먼저 오도록 정렬 (같은 학번이면 '16학번 기출'이 '16학번(서남) 기출'보다 앞)
+                return [...new Set(this.questions.filter(q => q.grade === grade && q.subject === subject).map(q => q.cohort))]
+                    .filter(Boolean)
+                    .sort((a, b) => (num(b) - num(a)) || (a.length - b.length) || a.localeCompare(b, 'ko'));
             },
 
             getUniqueTopics(grade, subject) {
