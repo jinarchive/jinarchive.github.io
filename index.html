@@ -1644,13 +1644,14 @@
                 }
 
                 const cohorts = this.getUniqueCohorts(this.selectedGrade, this.selectedSubject);
-                if (this.selectedCohort !== 'ALL' && !cohorts.includes(this.selectedCohort)) {
-                    this.selectedCohort = 'ALL';
+                if (!cohorts.includes(this.selectedCohort)) {
+                    this.selectedCohort = cohorts[0] || 'ALL';
                 }
 
                 const topics = this.getUniqueTopics(this.selectedGrade, this.selectedSubject);
-                const validTopic = this.selectedTopic === 'ALL' || this.selectedTopic === this.NO_TOPIC || topics.includes(this.selectedTopic);
-                if (!validTopic) this.selectedTopic = 'ALL';
+                const hasNoTopicQs = this.questions.some(q => q.grade === this.selectedGrade && q.subject === this.selectedSubject && !(q.topic || '').trim());
+                const validTopic = topics.includes(this.selectedTopic) || (this.selectedTopic === this.NO_TOPIC && hasNoTopicQs);
+                if (!validTopic) this.selectedTopic = topics[0] || (hasNoTopicQs ? this.NO_TOPIC : 'ALL');
             },
 
             getUniqueGrades() {
@@ -2068,11 +2069,11 @@
                     `;
                 };
 
-                let html = card('ALL', '전체 주제 통합', subQs);
+                let html = '';
                 topics.forEach(t => {
                     html += card(t, '🏷️ ' + this.escapeHtml(t), subQs.filter(q => (q.topic || '').trim() === t));
                 });
-                if (noTopicQs.length > 0 && topics.length > 0) {
+                if (noTopicQs.length > 0) {
                     html += card(this.NO_TOPIC, '주제 미지정', noTopicQs);
                 }
                 if (topics.length === 0) {
@@ -2085,21 +2086,8 @@
                 const container = document.getElementById('step3CohortContainer');
                 const cohorts = this.getUniqueCohorts(this.selectedGrade, this.selectedSubject);
                 const allSubQuestions = this.questions.filter(q => q.grade === this.selectedGrade && q.subject === this.selectedSubject);
-                const allSubSolved = allSubQuestions.filter(q => this.getQuestionProgress(q.id).solved).length;
 
-                let html = `
-                    <button onclick="app.selectCohort('ALL')" class="p-3.5 rounded-xl border text-left transition-all flex flex-col justify-between ${
-                        this.selectedCohort === 'ALL'
-                            ? 'border-2 border-brand-600 bg-brand-50/70 shadow-xs'
-                            : 'border-slate-200 bg-white hover:border-brand-300'
-                    }">
-                        <div class="flex items-center justify-between mb-1.5">
-                            <span class="font-extrabold text-xs sm:text-sm ${this.selectedCohort === 'ALL' ? 'text-brand-700' : 'text-slate-800'}">전체 기출 학번 통합</span>
-                            ${this.selectedCohort === 'ALL' ? '<i class="ph-fill ph-check-circle text-brand-600"></i>' : ''}
-                        </div>
-                        <p class="text-[11px] font-semibold text-slate-500">총 ${allSubQuestions.length}문항 (${allSubSolved}완료)</p>
-                    </button>
-                `;
+                let html = '';
 
                 cohorts.forEach(cohort => {
                     const qInCohort = allSubQuestions.filter(q => q.cohort === cohort);
