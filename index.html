@@ -418,8 +418,18 @@
 
                             <div id="qOptionsContainer" class="space-y-2.5"></div>
 
+                            <!-- 정답 확인: 보기 바로 아래 -->
+                            <div id="qAnswerActions" class="relative z-20 flex flex-col items-center gap-1.5">
+                                <button id="btnConfirmAnswer" onclick="app.confirmQuizAnswer()" disabled class="w-full inline-flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl text-sm sm:text-base font-extrabold bg-brand-600 hover:bg-brand-700 text-white shadow-sm transition-colors disabled:bg-slate-100 disabled:text-slate-400 disabled:shadow-none disabled:cursor-not-allowed">
+                                    <i class="ph-bold ph-check-circle text-lg"></i> <span id="txtConfirmAnswer">보기를 먼저 선택하세요</span>
+                                </button>
+                                <button id="btnRevealAnswer" onclick="app.revealQuizAnswerDirectly()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors">
+                                    <i class="ph-bold ph-eye"></i> 풀지 않고 정답·해설 보기
+                                </button>
+                            </div>
+
             <!-- 이전 / 다음 -->
-            <div class="relative z-20 flex items-center justify-between gap-2 pt-1">
+            <div class="relative z-20 flex items-center justify-between gap-2 pt-4 border-t border-slate-100">
                 <button id="btnQuizPrev" onclick="app.goPrevQuizQuestion()" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
                     <i class="ph-bold ph-caret-left"></i> 이전 문제
                 </button>
@@ -428,15 +438,6 @@
                     <span id="txtQuizNext">다음 문제</span> <i class="ph-bold ph-caret-right"></i>
                 </button>
             </div>
-
-                            <div class="flex justify-end items-center gap-2">
-                                <button id="btnConfirmAnswer" onclick="app.confirmQuizAnswer()" disabled class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold bg-brand-600 hover:bg-brand-700 text-white shadow-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
-                                    <i class="ph-bold ph-check-circle"></i> 정답 확인
-                                </button>
-                                <button id="btnRevealAnswer" onclick="app.revealQuizAnswerDirectly()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors">
-                                    <i class="ph-bold ph-eye"></i> 풀지 않고 정답·해설 보기
-                                </button>
-                            </div>
 
                           </div>
 
@@ -3143,6 +3144,8 @@
                 const confirmBtn = document.getElementById('btnConfirmAnswer');
                 confirmBtn.disabled = true;
                 confirmBtn.classList.toggle('hidden', validOptions.length === 0);
+                document.getElementById('txtConfirmAnswer').textContent = '보기를 먼저 선택하세요';
+                document.getElementById('qAnswerActions').classList.remove('hidden');
                 document.getElementById('chkQuizUnderstood').checked = !!p.understood;
 
                 document.getElementById('btnQuizPrev').disabled = (this.currentQuizIdx === 0);
@@ -3200,6 +3203,7 @@
                     }
                 }
                 document.getElementById('btnConfirmAnswer').disabled = false;
+                document.getElementById('txtConfirmAnswer').textContent = `${choiceNum}번으로 정답 확인`;
             },
 
             confirmQuizAnswer() {
@@ -3269,6 +3273,7 @@
 
                 document.getElementById('btnRevealAnswer').classList.add('hidden');
                 document.getElementById('btnConfirmAnswer').classList.add('hidden');
+                document.getElementById('qAnswerActions').classList.add('hidden');
                 const expSec = document.getElementById('qExplanationSection');
                 expSec.classList.remove('hidden');
 
