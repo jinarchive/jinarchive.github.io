@@ -901,7 +901,66 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, signOut, updatePassword, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, deleteDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, doc, setDoc, getDoc, collection, onSnapshot, deleteDoc, query, where, getDocs, limit, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // 기본 기출문제는 저장소의 정적 JSON에서 읽고(Firestore 읽기 비용 0),
+        // 관리자가 화면에서 수정·추가·삭제한 문제만 Firestore questions 컬렉션에 '_ov: true' 표시로 저장해 덮어씀
+        const BASE_QUESTION_FILES = [
+            'data/oncology_questions_update.json',
+            'data/maternal_questions_update.json',
+            'data/growth_aging_questions.json'
+        ];
+        const QUESTION_FIELDS = ['id', 'grade', 'subject', 'cohort', 'topic', 'question', 'options', 'answer', 'explanation'];
+        // 비교·저장용으로 문제 객체를 정해진 필드만 남겨 정리
+        const cleanQuestion = (q) => ({
+            id: q.id,
+            grade: q.grade || '',
+            subject: q.subject || '',
+            cohort: q.cohort || '',
+            topic: typeof q.topic === 'string' ? q.topic.trim() : '',
+            question: q.question || '',
+            options: Array.isArray(q.options) ? q.options : [],
+            answer: Number(q.answer ?? 1),
+            explanation: q.explanation || ''
+        });
+        const questionKey = (q) => JSON.stringify(QUESTION_FIELDS.map(k => cleanQuestion(q)[k]));
+
+        // 큰 데이터(문제 목록·필기)는 localStorage(약 5MB) 대신 IndexedDB(수백 MB 이상)에 저장
+        const idbKV = (() => {
+            let dbP = null;
+            const open = () => dbP || (dbP = new Promise((resolve, reject) => {
+                const req = indexedDB.open('jinarchive-local', 1);
+                req.onupgradeneeded = () => req.result.createObjectStore('kv');
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
+            }));
+            const run = (mode, fn) => open().then(db => new Promise((resolve, reject) => {
+                const tx = db.transaction('kv', mode);
+                const r = fn(tx.objectStore('kv'));
+                tx.oncomplete = () => resolve(r && r.result);
+                tx.onerror = () => reject(tx.error);
+                tx.onabort = () => reject(tx.error);
+            }));
+            return {
+                get: (k) => run('readonly', st => st.get(k)),
+                set: (k, v) => run('readwrite', st => st.put(v, k))
+            };
+        })();
+
+        // 필기 획의 점 줄이기: 직전 점과 거의 같은 위치(캔버스 너비의 0.15% 미만)인 점은 생략
+        // (애플펜슬은 초당 최대 240개 점을 보내 용량이 크게 늘어남. 화면상 차이는 없음)
+        const STROKE_MIN_DIST = 1.5;
+        const thinPoints = (pts) => {
+            if (!Array.isArray(pts) || pts.length <= 2) return pts;
+            const out = [pts[0]];
+            for (let i = 1; i < pts.length - 1; i++) {
+                const a = out[out.length - 1], b = pts[i];
+                if (Math.abs(b[0] - a[0]) + Math.abs(b[1] - a[1]) >= STROKE_MIN_DIST) out.push(b);
+            }
+            out.push(pts[pts.length - 1]);
+            return out;
+        };
+        const thinStrokes = (strokes) => Array.isArray(strokes) ? strokes.map(st => (st && Array.isArray(st.p)) ? { ...st, p: thinPoints(st.p) } : st) : strokes;
 
         const STORAGE_KEYS = {
             QUESTIONS: 'EXAM_PRO_QUESTIONS_V2',
@@ -1190,9 +1249,20 @@
             appId: 'exam-master-pro',
             isCloudConnected: false,
             _unsubs: [],
+            _ownRegUnsub: null,
+            // 정적 JSON 기본 문제 { id -> 문제 } (불러오기 실패 시 null)
+            baseQuestionMap: null,
+            baseQuestionOrder: [],
+            // 'OVERRIDES': 정적 JSON + 덮어쓰기 문서만 읽음 / 'LEGACY': 예전처럼 questions 컬렉션 전체를 읽음
+            questionSource: 'LEGACY',
 
             async init() {
                 this.loadLocalData();
+                await this.loadLargeLocalData();
+                // 앱을 닫거나 다른 앱으로 전환할 때 아직 안 쓴 저장을 바로 기록
+                const flush = () => { this.flushLargeSaves(); };
+                window.addEventListener('pagehide', flush);
+                document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
                 await this.initFirebaseIfAvailable();
                 try { if (localStorage.getItem('jin_view_mode') === 'TOPIC') this.viewMode = 'TOPIC'; } catch (e) {}
                 this.ensureDefaultHierarchySelection();
@@ -1284,11 +1354,7 @@
                             this.questions = parsed;
                         }
                     }
-                    // 저장된 기록이 아예 없을 때만 샘플 문제를 넣음 (관리자가 전부 삭제한 경우엔 다시 채우지 않음)
-                    if (savedQ === null && this.questions.length === 0) {
-                        this.questions = JSON.parse(JSON.stringify(INITIAL_SAMPLE_QUESTIONS));
-                        this.saveQuestionsToLocal();
-                    }
+                    this._hadLegacyQuestions = savedQ !== null;
 
                     const savedRecent = localStorage.getItem(STORAGE_KEYS.RECENT_USERS);
                     if (savedRecent) {
@@ -1335,12 +1401,89 @@
                 }
             },
 
-            saveQuestionsToLocal() {
+            // 문제 목록·필기는 IndexedDB에 저장 (변경이 몰리면 0.3초 뒤 한 번에 기록)
+            // IndexedDB를 쓸 수 없는 환경에서만 예전처럼 localStorage 사용
+            _idbOk: true,
+            _largeSaveTimers: {},
+            scheduleLargeSave(kind) {
+                clearTimeout(this._largeSaveTimers[kind]);
+                this._largeSaveTimers[kind] = setTimeout(() => {
+                    delete this._largeSaveTimers[kind];
+                    this.writeLarge(kind);
+                }, 300);
+            },
+            flushLargeSaves() {
+                Object.keys(this._largeSaveTimers).forEach(kind => {
+                    clearTimeout(this._largeSaveTimers[kind]);
+                    delete this._largeSaveTimers[kind];
+                    this.writeLarge(kind);
+                });
+            },
+            async writeLarge(kind) {
+                const value = kind === 'questions' ? this.questions : this.allUsersNotesMap;
+                const lsKey = kind === 'questions' ? STORAGE_KEYS.QUESTIONS : STORAGE_KEYS.USER_NOTES;
+                if (this._idbOk) {
+                    try {
+                        await idbKV.set(kind, value);
+                        try { localStorage.removeItem(lsKey); } catch (e) {}
+                        return true;
+                    } catch (e) {
+                        console.warn('IndexedDB 저장 실패 → localStorage 사용:', e);
+                        this._idbOk = false;
+                    }
+                }
                 try {
-                    localStorage.setItem(STORAGE_KEYS.QUESTIONS, JSON.stringify(this.questions));
+                    localStorage.setItem(lsKey, JSON.stringify(value));
+                    return true;
                 } catch (e) {
                     console.error(e);
+                    if (kind === 'notes') {
+                        this.showToast(this.isCloudConnected
+                            ? '이 기기의 저장 공간이 부족합니다. 필기는 클라우드에만 저장됩니다.'
+                            : '브라우저 저장 공간이 부족해 필기를 저장하지 못했습니다.', 'error');
+                    }
+                    return false;
                 }
+            },
+
+            // 시작 시 IndexedDB에서 문제·필기를 불러옴 (예전 localStorage 데이터는 옮긴 뒤 삭제)
+            async loadLargeLocalData() {
+                let idbQ, idbN;
+                try {
+                    [idbQ, idbN] = await Promise.all([idbKV.get('questions'), idbKV.get('notes')]);
+                } catch (e) {
+                    console.warn('IndexedDB를 사용할 수 없어 localStorage를 사용합니다:', e);
+                    this._idbOk = false;
+                }
+                if (Array.isArray(idbQ)) {
+                    this.questions = idbQ;
+                } else if (this._hadLegacyQuestions) {
+                    if (this._idbOk) this.writeLarge('questions');
+                } else if (this.questions.length === 0) {
+                    // 저장된 기록이 아예 없을 때만 샘플 문제를 넣음 (관리자가 전부 삭제한 경우엔 다시 채우지 않음)
+                    this.questions = JSON.parse(JSON.stringify(INITIAL_SAMPLE_QUESTIONS));
+                    this.saveQuestionsToLocal();
+                }
+
+                if (idbN && typeof idbN === 'object') {
+                    this.allUsersNotesMap = idbN;
+                }
+                // 예전에 저장된 필기의 점도 줄여서 용량 확보
+                let changed = !idbN && Object.keys(this.allUsersNotesMap).length > 0;
+                Object.values(this.allUsersNotesMap).forEach(m => {
+                    Object.values(m || {}).forEach(n => {
+                        if (!n || !Array.isArray(n.strokes)) return;
+                        const before = n.strokes.reduce((a, st) => a + ((st && st.p) ? st.p.length : 0), 0);
+                        n.strokes = thinStrokes(n.strokes);
+                        const after = n.strokes.reduce((a, st) => a + ((st && st.p) ? st.p.length : 0), 0);
+                        if (after < before) changed = true;
+                    });
+                });
+                if (changed) await this.writeLarge('notes');
+            },
+
+            saveQuestionsToLocal() {
+                this.scheduleLargeSave('questions');
             },
 
             saveUserRegistryToLocal() {
@@ -1402,7 +1545,15 @@
 
                     this.fbApp = initializeApp(config);
                     this.fbAuth = getAuth(this.fbApp);
-                    this.fbDb = getFirestore(this.fbApp);
+                    // 오프라인 캐시(IndexedDB): 재방문 시 바뀐 문서만 서버에서 받아 읽기 횟수를 줄임
+                    try {
+                        this.fbDb = initializeFirestore(this.fbApp, {
+                            localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+                        });
+                    } catch (e) {
+                        console.warn('Firestore 오프라인 캐시를 켜지 못해 기본 모드로 동작합니다:', e);
+                        this.fbDb = getFirestore(this.fbApp);
+                    }
 
                     // 탭을 닫으면 Firebase 로그인(관리자 포함)도 풀리도록 세션 단위로 유지
                     try { await setPersistence(this.fbAuth, browserSessionPersistence); } catch (e) {}
@@ -1478,7 +1629,8 @@
             async migrateLocalDataToCloudIfEmpty() {
                 if (!this.isCloudConnected || !this.isCloudAdmin()) return;
                 try {
-                    const qSnap = await getDocs(collection(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'questions'));
+                    // 비어 있는지만 확인 (문서 1개만 읽음)
+                    const qSnap = await getDocs(query(collection(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'questions'), limit(1)));
                     // 수정하지 않은 기본 샘플 문제는 올리지 않음
                     const sampleJson = new Map(INITIAL_SAMPLE_QUESTIONS.map(q => [q.id, JSON.stringify(q)]));
                     const toUpload = this.questions.filter(q => sampleJson.get(q.id) !== JSON.stringify(q));
@@ -1494,6 +1646,182 @@
                 } catch (e) {
                     console.warn('로컬 데이터 클라우드 이전 오류:', e);
                 }
+                await this.migrateQuestionsToOverrideLayout();
+            },
+
+            questionsColRef() {
+                return collection(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'questions');
+            },
+            questionsLayoutRef() {
+                return doc(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'settings', 'questionsLayout');
+            },
+
+            // 저장소의 정적 JSON 기본 문제를 불러옴. 하나라도 실패하면 null (→ 예전 방식으로 전체 읽기)
+            async loadBaseQuestions() {
+                if (this.baseQuestionMap) return true;
+                try {
+                    const lists = await Promise.all(BASE_QUESTION_FILES.map(async (f) => {
+                        const res = await fetch(f, { cache: 'no-cache' });
+                        if (!res.ok) throw new Error(f + ' HTTP ' + res.status);
+                        const d = await res.json();
+                        if (!Array.isArray(d)) throw new Error(f + ' 배열 아님');
+                        return d;
+                    }));
+                    const map = new Map();
+                    const order = [];
+                    lists.flat().forEach(q => {
+                        if (!q || !q.id || map.has(q.id)) return;
+                        map.set(q.id, cleanQuestion(q));
+                        order.push(q.id);
+                    });
+                    this.baseQuestionMap = map;
+                    this.baseQuestionOrder = order;
+                    return true;
+                } catch (e) {
+                    console.warn('기본 문제 JSON 불러오기 실패 → 클라우드 전체 읽기로 대체:', e);
+                    this.baseQuestionMap = null;
+                    return false;
+                }
+            },
+
+            // 정적 기본 문제 + 덮어쓰기 문서(_ov)를 합쳐 최종 문제 목록을 만듦
+            buildQuestionsFromOverrides(overrideDocs) {
+                const ov = new Map();
+                overrideDocs.forEach(d => { if (d && d.id) ov.set(d.id, d); });
+                const result = [];
+                this.baseQuestionOrder.forEach(id => {
+                    const o = ov.get(id);
+                    if (o) {
+                        if (!o._deleted) result.push(cleanQuestion(o));
+                    } else {
+                        result.push(this.baseQuestionMap.get(id));
+                    }
+                });
+                ov.forEach((o, id) => {
+                    if (!this.baseQuestionMap.has(id) && !o._deleted) result.push(cleanQuestion(o));
+                });
+                return result;
+            },
+
+            // (관리자 1회) 기존 '전체 문제가 클라우드에 있는' 구조를 '덮어쓰기만 읽는' 구조로 전환
+            // 지금 사용자들이 보는 문제 목록이 그대로 유지되도록 표시만 추가하고, 문서를 지우지는 않음
+            async migrateQuestionsToOverrideLayout() {
+                if (!this.isCloudConnected || !this.isCloudAdmin()) return;
+                try {
+                    const layout = await getDoc(this.questionsLayoutRef());
+                    if (layout.exists() && layout.data().mode === 'OVERRIDES') return;
+                    if (!(await this.loadBaseQuestions())) return;
+
+                    const snap = await getDocs(this.questionsColRef());
+                    const cloud = new Map();
+                    snap.forEach(d => { const v = d.data(); if (v && v.id) cloud.set(v.id, { ref: d.ref, v }); });
+
+                    const ops = [];
+                    // 1) 기본 JSON과 내용이 다르거나 JSON에 없는 문제 → 덮어쓰기 표시
+                    cloud.forEach(({ ref, v }, id) => {
+                        if (v._ov) return;
+                        const base = this.baseQuestionMap.get(id);
+                        if (!base || questionKey(base) !== questionKey(v)) ops.push([ref, { _ov: true }, true]);
+                    });
+                    // 2) 클라우드에서 이미 삭제된 기본 문제 → 삭제 표시 (클라우드가 완전히 빈 경우는 제외)
+                    if (cloud.size > 0) {
+                        this.baseQuestionMap.forEach((base, id) => {
+                            if (cloud.has(id)) return;
+                            ops.push([doc(this.questionsColRef(), id), { ...base, _ov: true, _deleted: true }, false]);
+                        });
+                    }
+                    for (let i = 0; i < ops.length; i += 400) {
+                        const batch = writeBatch(this.fbDb);
+                        ops.slice(i, i + 400).forEach(([ref, data, merge]) => batch.set(ref, data, merge ? { merge: true } : {}));
+                        await batch.commit();
+                    }
+                    await setDoc(this.questionsLayoutRef(), { mode: 'OVERRIDES', migratedAt: Date.now() });
+                    this.showToast(`문제 저장 구조를 전환했습니다 (덮어쓰기 ${ops.length}건). 이제 접속자당 Firestore 읽기가 크게 줄어듭니다.`, 'success');
+                    this.subscribeQuestions();
+                } catch (e) {
+                    console.warn('문제 저장 구조 전환 오류:', e);
+                    this.showToast('문제 저장 구조 전환에 실패했습니다 (기존 방식으로 계속 동작). Firestore 보안 규칙에서 settings/questionsLayout 쓰기 권한을 확인해 주세요.', 'error');
+                }
+            },
+
+            // 문제 구독: 전환이 끝났고 정적 JSON을 읽었으면 덮어쓰기 문서만, 아니면 예전처럼 전체를 구독
+            async subscribeQuestions() {
+                if (this._qUnsub) { try { this._qUnsub(); } catch (e) {} this._qUnsub = null; }
+                const token = (this._qSubToken = (this._qSubToken || 0) + 1);
+                let mode = 'LEGACY';
+                try {
+                    const [layout, baseOk] = await Promise.all([getDoc(this.questionsLayoutRef()), this.loadBaseQuestions()]);
+                    if (baseOk && layout.exists() && layout.data().mode === 'OVERRIDES') mode = 'OVERRIDES';
+                } catch (e) {
+                    console.warn('문제 저장 구조 확인 오류:', e);
+                }
+                if (token !== this._qSubToken) return; // 그 사이 다시 구독됨
+                this.questionSource = mode;
+
+                const applyQuestions = (list) => {
+                    this.questions = list;
+                    this.saveQuestionsToLocal();
+                    this.ensureDefaultHierarchySelection();
+                    this.renderAll();
+                };
+
+                if (mode === 'OVERRIDES') {
+                    const q = query(this.questionsColRef(), where('_ov', '==', true));
+                    this._qUnsub = onSnapshot(q, (snapshot) => {
+                        const docs = [];
+                        snapshot.forEach(d => docs.push(d.data()));
+                        applyQuestions(this.buildQuestionsFromOverrides(docs));
+                    }, (err) => console.warn('Firestore questions listener error:', err));
+                    return;
+                }
+
+                this._qUnsub = onSnapshot(this.questionsColRef(), (snapshot) => {
+                    // 클라우드 문제가 있다가 전부 삭제된 경우 이 브라우저 목록도 비움
+                    if (snapshot.empty && this._questionsSeenInCloud && !snapshot.metadata.fromCache) {
+                        applyQuestions([]);
+                        return;
+                    }
+                    if (!snapshot.empty) {
+                        this._questionsSeenInCloud = true;
+                        const cloudQuestions = [];
+                        snapshot.forEach(docSnap => {
+                            const d = docSnap.data();
+                            if (d && !d._deleted) cloudQuestions.push(d._ov ? cleanQuestion(d) : d);
+                        });
+                        applyQuestions(cloudQuestions);
+                    }
+                }, (err) => console.warn('Firestore questions listener error:', err));
+            },
+
+            // 일반 회원: 전체 회원 목록 대신 본인 승인 문서 1개만 구독 (읽기 절약 + 다른 회원 정보 비노출)
+            subscribeOwnRegistry() {
+                if (this._ownRegUnsub) { try { this._ownRegUnsub(); } catch (e) {} this._ownRegUnsub = null; }
+                if (!this.isCloudConnected || !this.fbAuth || !this.fbAuth.currentUser || this.isCloudAdmin()) return;
+                if (!this.currentUser || this.currentUser.isAdmin) return;
+                const uid = this.currentUser.uid;
+                const ref = doc(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'userRegistry', uid);
+                this._ownRegUnsub = onSnapshot(ref, (snap) => {
+                    if (!this.currentUser || this.currentUser.uid !== uid) return;
+                    // 오프라인 캐시에 아직 없을 뿐인 경우는 서버 응답을 기다림
+                    if (!snap.exists() && snap.metadata.fromCache) return;
+                    if (snap.exists()) this.userRegistryMap[uid] = snap.data();
+                    else delete this.userRegistryMap[uid];
+                    this.saveUserRegistryToLocal();
+                    const myReg = this.userRegistryMap[uid];
+                    if (!myReg || myReg.status !== 'APPROVED') {
+                        this.logout('관리자에 의해 계정 승인 상태가 변경되어 로그아웃되었습니다.');
+                    }
+                }, (err) => console.warn('Firestore own registry listener error:', err));
+            },
+
+            // 일반 모드에서는 이 기기의 '최근 로그인 계정' 승인 정보만 남기고 나머지 회원 정보는 지움
+            pruneRegistryForNonAdmin() {
+                const keep = new Set((this.recentUsers || []).map(u => u.uid));
+                if (this.currentUser && !this.currentUser.isAdmin) keep.add(this.currentUser.uid);
+                const next = {};
+                Object.keys(this.userRegistryMap).forEach(uid => { if (keep.has(uid)) next[uid] = this.userRegistryMap[uid]; });
+                this.userRegistryMap = next;
+                this.saveUserRegistryToLocal();
             },
 
             setupFirestoreListeners() {
@@ -1503,65 +1831,40 @@
                 (this._unsubs || []).forEach(fn => { try { fn(); } catch (e) {} });
                 this._unsubs = [];
 
-                // 1. 공용 기출문제 컬렉션 실시간 구독 (RULE 1 준수)
+                // 1. 기출문제 구독 (정적 JSON + 덮어쓰기 문서만, 또는 전환 전이면 전체)
                 // (클라우드가 비어 있을 때의 업로드는 관리자 로그인 시 migrateLocalDataToCloudIfEmpty 가 담당)
-                const qColRef = collection(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'questions');
-                this._unsubs.push(onSnapshot(qColRef, (snapshot) => {
-                    // 클라우드 문제가 있다가 전부 삭제된 경우 이 브라우저 목록도 비움
-                    if (snapshot.empty && this._questionsSeenInCloud && !snapshot.metadata.fromCache) {
-                        this.questions = [];
-                        this.saveQuestionsToLocal();
-                        this.renderAll();
-                        return;
-                    }
-                    if (!snapshot.empty) {
-                        this._questionsSeenInCloud = true;
-                        const cloudQuestions = [];
-                        snapshot.forEach(docSnap => cloudQuestions.push(docSnap.data()));
-                        this.questions = cloudQuestions;
-                        this.saveQuestionsToLocal();
-                        this.ensureDefaultHierarchySelection();
-                        this.renderAll();
-                    }
-                }, (err) => console.warn('Firestore questions listener error:', err)));
+                this.subscribeQuestions();
 
-                // 2. 회원 승인 레지스트리 실시간 구독
-                // 클라우드가 기준: 클라우드에서 삭제된 회원은 이 브라우저 목록에서도 제거
-                const regColRef = collection(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'userRegistry');
-                this._unsubs.push(onSnapshot(regColRef, (snapshot) => {
-                    // 클라우드가 처음부터 비어 있으면 로컬 목록 유지(관리자 첫 로그인 때 이전), 
-                    // 한 번이라도 회원이 있었다가 모두 삭제된 경우에는 로컬 목록도 비움
-                    if (snapshot.empty && this._registrySeenInCloud && !snapshot.metadata.fromCache) {
-                        this.userRegistryMap = {};
-                        this.saveUserRegistryToLocal();
-                        if (this.currentUser && !this.currentUser.isAdmin) {
-                            this.logout('관리자에 의해 계정 승인 상태가 변경되어 로그아웃되었습니다.');
+                // 2. 회원 승인 정보 구독
+                // 관리자: 전체 회원 목록 실시간 구독 / 일반 회원: 본인 문서 1개만 구독
+                if (this.isCloudAdmin()) {
+                    if (this._ownRegUnsub) { try { this._ownRegUnsub(); } catch (e) {} this._ownRegUnsub = null; }
+                    const regColRef = collection(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'userRegistry');
+                    this._unsubs.push(onSnapshot(regColRef, (snapshot) => {
+                        // 클라우드가 처음부터 비어 있으면 로컬 목록 유지(관리자 첫 로그인 때 이전),
+                        // 한 번이라도 회원이 있었다가 모두 삭제된 경우에는 로컬 목록도 비움
+                        if (snapshot.empty && this._registrySeenInCloud && !snapshot.metadata.fromCache) {
+                            this.userRegistryMap = {};
+                            this.saveUserRegistryToLocal();
+                            this.renderAll();
                             return;
                         }
-                        this.renderAll();
-                        return;
-                    }
-                    if (!snapshot.empty) {
-                        this._registrySeenInCloud = true;
-                        const nextMap = {};
-                        snapshot.forEach(docSnap => {
-                            const d = docSnap.data();
-                            if (d && d.uid) nextMap[d.uid] = d;
-                        });
-                        this.userRegistryMap = nextMap;
-                        this.saveUserRegistryToLocal();
-
-                        // 만약 현재 로그인된 일반 사용자가 관리자에 의해 승인 취소된 경우 즉시 로그아웃 처리
-                        if (this.currentUser && !this.currentUser.isAdmin) {
-                            const myReg = this.userRegistryMap[this.currentUser.uid];
-                            if (!myReg || myReg.status !== 'APPROVED') {
-                                this.logout('관리자에 의해 계정 승인 상태가 변경되어 로그아웃되었습니다.');
-                                return;
-                            }
+                        if (!snapshot.empty) {
+                            this._registrySeenInCloud = true;
+                            const nextMap = {};
+                            snapshot.forEach(docSnap => {
+                                const d = docSnap.data();
+                                if (d && d.uid) nextMap[d.uid] = d;
+                            });
+                            this.userRegistryMap = nextMap;
+                            this.saveUserRegistryToLocal();
+                            this.renderAll();
                         }
-                        this.renderAll();
-                    }
-                }, (err) => console.warn('Firestore userRegistry listener error:', err)));
+                    }, (err) => console.warn('Firestore userRegistry listener error:', err)));
+                } else {
+                    this.pruneRegistryForNonAdmin();
+                    this.subscribeOwnRegistry();
+                }
 
                 // 3. 공지사항 실시간 구독
                 const noticeRef = doc(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'settings', 'notice');
@@ -1665,7 +1968,11 @@
                 if (!this.isCloudConnected || !this.fbAuth.currentUser) return false;
                 try {
                     const qDocRef = doc(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'questions', qObj.id);
-                    await setDoc(qDocRef, qObj);
+                    const clean = cleanQuestion(qObj);
+                    const base = this.baseQuestionMap && this.baseQuestionMap.get(clean.id);
+                    // 기본 JSON과 같아지면 덮어쓰기 표시를 빼서(읽기 대상에서 제외) 저장, 다르면 덮어쓰기로 저장
+                    const isSameAsBase = !!base && questionKey(base) === questionKey(clean);
+                    await setDoc(qDocRef, isSameAsBase ? clean : { ...clean, _ov: true });
                     return true;
                 } catch (e) {
                     console.warn('문제 클라우드 저장 오류:', e);
@@ -1677,8 +1984,7 @@
             async deleteQuestionFromCloud(qId) {
                 if (!this.isCloudConnected || !this.fbAuth.currentUser) return;
                 try {
-                    const qDocRef = doc(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'questions', qId);
-                    await deleteDoc(qDocRef);
+                    await this.deleteQuestionFromCloudStrict(qId);
                 } catch (e) {
                     console.warn('문제 클라우드 삭제 오류:', e);
                 }
@@ -2362,14 +2668,8 @@
             },
 
             saveNotesToLocal() {
-                try {
-                    localStorage.setItem(STORAGE_KEYS.USER_NOTES, JSON.stringify(this.allUsersNotesMap));
-                    return true;
-                } catch (e) {
-                    console.error(e);
-                    this.showToast('브라우저 저장 공간이 부족해 필기를 저장하지 못했습니다.', 'error');
-                    return false;
-                }
+                this.scheduleLargeSave('notes');
+                return true;
             },
 
             scheduleNoteCloudSync(uid, questionId, delayMs) {
@@ -2391,15 +2691,22 @@
                     if (!n) {
                         await deleteDoc(docRef);
                     } else {
+                        const strokesJson = JSON.stringify(n.strokes || []);
+                        // Firestore 문서 1개 최대 1MiB → 넘으면 저장이 거부되므로 미리 안내
+                        if (strokesJson.length + (n.text || '').length * 3 > 1000000) {
+                            this.showToast('이 문제의 필기가 너무 많아 클라우드에 저장할 수 없습니다. 이 기기에는 저장되어 있습니다. 일부를 지워 주세요.', 'error');
+                            return;
+                        }
                         await setDoc(docRef, {
                             uid, questionId,
                             text: n.text || '',
-                            strokes: JSON.stringify(n.strokes || []),
+                            strokes: strokesJson,
                             updatedAt: n.updatedAt || Date.now()
                         });
                     }
                 } catch (e) {
                     console.warn('노트 클라우드 저장 오류:', e);
+                    this.showToast('필기를 클라우드에 저장하지 못했습니다. 네트워크 상태를 확인해 주세요. (이 기기에는 저장됨)', 'error');
                 }
             },
 
@@ -2416,7 +2723,7 @@
                         const local = mine[v.questionId];
                         if (!local || (v.updatedAt || 0) > (local.updatedAt || 0)) {
                             let strokes = [];
-                            try { strokes = JSON.parse(v.strokes || '[]'); } catch (e) {}
+                            try { strokes = thinStrokes(JSON.parse(v.strokes || '[]')); } catch (e) {}
                             mine[v.questionId] = { text: v.text || '', strokes, updatedAt: v.updatedAt || 0 };
                         }
                     });
@@ -2550,7 +2857,16 @@
                     if (!s || s.pid !== e.pointerId) return;
                     e.preventDefault();
                     const evs = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
-                    (evs.length ? evs : [e]).forEach(ev => s.p.push(toPt(ev)));
+                    (evs.length ? evs : [e]).forEach(ev => {
+                        const pt = toPt(ev);
+                        const last = s.p[s.p.length - 1];
+                        if (last && Math.abs(pt[0] - last[0]) + Math.abs(pt[1] - last[1]) < STROKE_MIN_DIST) {
+                            s._tail = pt; // 생략한 점은 획이 끝날 때 마지막 점으로만 보존
+                            return;
+                        }
+                        s._tail = null;
+                        s.p.push(pt);
+                    });
                     this.drawNoteFrame();
                 });
 
@@ -2559,6 +2875,8 @@
                     if (!s || s.pid !== e.pointerId) return;
                     this._curStroke = null;
                     delete s.pid;
+                    if (s._tail) s.p.push(s._tail);
+                    delete s._tail;
                     const qid = this._noteQid;
                     if (!qid) return;
                     const n = this.getQuestionNote(qid);
@@ -3561,7 +3879,15 @@
             // 실패 시 예외를 던지는 버전 (일괄 삭제 결과 집계용)
             async deleteQuestionFromCloudStrict(qId) {
                 const qDocRef = doc(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'questions', qId);
-                await deleteDoc(qDocRef);
+                const base = this.baseQuestionMap && this.baseQuestionMap.get(qId);
+                if (this.baseQuestionMap && !base) {
+                    // 기본 JSON에 없는(관리자가 추가한) 문제는 문서를 그냥 삭제
+                    await deleteDoc(qDocRef);
+                } else {
+                    // 기본 JSON에 있는 문제는 '삭제 표시' 문서를 남겨야 정적 JSON에서 다시 나타나지 않음
+                    // (내용도 함께 저장해 두면 예전 버전 화면에서도 오류 없이 표시됨)
+                    await setDoc(qDocRef, { ...(base || { id: qId }), _ov: true, _deleted: true });
+                }
             },
 
             openAdminQuestionModal(editId = null) {
@@ -3775,6 +4101,7 @@
                     }));
 
                     let updatedCount = 0, addedCount = 0;
+                    const prevIds = this.questions.map(q => q.id);
                     if (mode === 'REPLACE') {
                         this.questions = formatted;
                     } else if (mode === 'UPSERT') {
@@ -3818,6 +4145,15 @@
                     for (let i = 0; i < targets.length; i += 50) {
                         const res = await Promise.all(targets.slice(i, i + 50).map(q => this.syncSingleQuestionToCloud(q)));
                         res.forEach(r => r ? ok++ : fail++);
+                    }
+                    if (mode === 'REPLACE') {
+                        // 전체 교체: 새 목록에 없는 기존 문제는 클라우드에서도 삭제 (기본 JSON 문제는 삭제 표시)
+                        const keepIds = new Set(this.questions.map(q => q.id));
+                        const removed = prevIds.filter(id => !keepIds.has(id));
+                        for (let i = 0; i < removed.length; i += 50) {
+                            const res = await Promise.allSettled(removed.slice(i, i + 50).map(id => this.deleteQuestionFromCloudStrict(id)));
+                            res.forEach(r => { if (r.status === 'rejected') { fail++; this._lastCloudError = (r.reason && (r.reason.code || r.reason.message)) || String(r.reason); } });
+                        }
                     }
                     if (fail === 0) {
                         this.showToast(`${doneMsg} 및 클라우드 저장(${ok}문항)이 완료되었습니다!`, 'success');
@@ -3973,6 +4309,7 @@
                 this.isAdminUnlocked = false;
                 this.saveProgressToLocal();
                 this.loadCurrentUserProgressFromCloud();
+                this.subscribeOwnRegistry();
 
                 // 일반 사용자는 오직 학습자 대시보드만 표시 (관리자 화면은 DOM에 존재하지 않음)
                 this.unmountAdminUI();
@@ -3989,6 +4326,7 @@
                 this._noteQid = null;
                 const prevName = this.currentUser ? this.currentUser.name : '';
                 this.currentUser = null;
+                if (this._ownRegUnsub) { try { this._ownRegUnsub(); } catch (e) {} this._ownRegUnsub = null; }
                 this.isAdminUnlocked = false;
                 try { sessionStorage.removeItem(STORAGE_KEYS.ADMIN_SESSION); } catch (e) {}
                 this.unmountAdminUI();
