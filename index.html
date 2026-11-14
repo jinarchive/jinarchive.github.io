@@ -474,6 +474,29 @@
                 </div>
             </div>
 
+            <!-- 오류 제보 (관리자 페이지로 전달) -->
+            <div id="qReportPanel" class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+                <div class="px-4 sm:px-5 py-3 border-b border-slate-200 flex items-center gap-2 bg-rose-50/50">
+                    <i class="ph-bold ph-warning-circle text-lg text-rose-600"></i>
+                    <h4 class="font-extrabold text-sm text-slate-900">오류 제보</h4>
+                    <span class="text-[11px] font-semibold text-slate-400">문제·보기·정답·해설에 잘못된 부분이 있나요?</span>
+                </div>
+                <form onsubmit="app.submitErrorReport(event)" class="p-4 space-y-2.5">
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <select id="reportType" class="sm:w-44 px-3 py-2 text-sm bg-white border border-slate-300 rounded-xl font-semibold outline-none focus:border-rose-400">
+                            <option value="문제/보기 오타">문제/보기 오타</option>
+                            <option value="정답이 틀림">정답이 틀림</option>
+                            <option value="해설 오류">해설 오류</option>
+                            <option value="이미지/표 문제">이미지/표 문제</option>
+                            <option value="기타">기타</option>
+                        </select>
+                        <input type="text" id="reportText" maxlength="500" placeholder="어떤 부분이 잘못되었는지 적어 주세요. (최대 500자)" class="flex-1 min-w-0 px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl outline-none focus:bg-white focus:border-rose-400">
+                        <button type="submit" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold bg-rose-500 hover:bg-rose-600 text-white shrink-0">제보하기</button>
+                    </div>
+                    <p id="reportStatus" class="hidden text-[11px] font-semibold text-emerald-600"></p>
+                </form>
+            </div>
+
         </section>
 
     </main>
@@ -604,6 +627,22 @@
                 <div id="adminStudyBody" class="text-xs sm:text-sm">
                     <!-- JS로 학습 현황 렌더링 -->
                 </div>
+            </div>
+
+            <!-- 오류 제보 목록 (학습자가 문제 화면에서 제보한 내용) -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+                <div class="px-4 sm:px-5 py-3.5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2 bg-rose-50/50">
+                    <div class="flex items-center gap-2">
+                        <i class="ph-fill ph-warning-circle text-xl text-rose-600"></i>
+                        <h3 class="font-extrabold text-sm sm:text-base text-slate-900">문제 오류 제보</h3>
+                        <span id="adminReportCount" class="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-rose-50 text-rose-700">0건</span>
+                    </div>
+                    <label class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 cursor-pointer select-none">
+                        <input type="checkbox" id="adminReportShowDone" onchange="app.renderAdminReports()" class="accent-rose-600"> 처리 완료도 보기
+                    </label>
+                </div>
+                <div id="adminReportNotice" class="hidden px-5 py-2.5 text-xs font-semibold bg-amber-50 text-amber-800 border-b border-amber-200"></div>
+                <div id="adminReportBody" class="divide-y divide-slate-100 text-xs sm:text-sm max-h-96 overflow-y-auto"></div>
             </div>
 
             <!-- 관리자 필터 바 (학년 / 과목 / 기출학번 / 검색어) -->
@@ -908,6 +947,7 @@
             USER_PROFILES: 'EXAM_PRO_USER_PROGRESS_MAP_V2',
             USER_NOTES: 'EXAM_PRO_USER_NOTES_V1',       // 사용자별·문제별 메모/손필기
             NOTICE: 'EXAM_PRO_NOTICE_V1',               // 대시보드 한 줄 공지
+            REPORTS: 'EXAM_PRO_ERROR_REPORTS_V1',       // 문제 오류 제보 (클라우드 미연결 시 이 기기에만 저장)
             USER_REGISTRY: 'EXAM_PRO_USER_REGISTRY_V2',
             CURRENT_USER: 'EXAM_PRO_ACTIVE_USER_V2',
             RECENT_USERS: 'EXAM_PRO_RECENT_USERS_V2',
@@ -1146,6 +1186,8 @@
             // (관리자 전용) 클라우드에서 받아온 전체 회원 풀이 기록: { [uid]: { name, updatedAt, progress: {...} } }
             adminProgressMap: {},
             adminProgressError: '',
+            errorReports: {},
+            adminReportError: '',
             _adminStudyOpen: new Set(),
             // 사용자별 노트 맵: { [uid]: { [questionId]: { text, strokes: [...], updatedAt } } }
             allUsersNotesMap: {},
@@ -1302,6 +1344,7 @@
                     }
 
                     this.noticeText = localStorage.getItem(STORAGE_KEYS.NOTICE) || '';
+                    try { this.errorReports = JSON.parse(localStorage.getItem(STORAGE_KEYS.REPORTS) || '{}') || {}; } catch (e) { this.errorReports = {}; }
 
                     const savedNotes = localStorage.getItem(STORAGE_KEYS.USER_NOTES);
                     if (savedNotes) {
@@ -1578,6 +1621,19 @@
                 this.adminProgressMap = {};
                 this.adminProgressError = '';
                 if (this.isCloudAdmin()) {
+                    const repColRef = collection(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'errorReports');
+                    this._unsubs.push(onSnapshot(repColRef, (snapshot) => {
+                        const next = {};
+                        snapshot.forEach(d => { next[d.id] = d.data() || {}; });
+                        this.errorReports = next;
+                        this.adminReportError = '';
+                        this.saveLocalReports();
+                        if (this.isAdminUiMounted) this.renderAdminReports();
+                    }, (err) => {
+                        console.warn('Firestore errorReports listener error:', err);
+                        this.adminReportError = '오류 제보를 불러오지 못했습니다. Firestore 보안 규칙에 errorReports 컬렉션 권한을 추가해 주세요. (' + ((err && err.code) || 'error') + ')';
+                        if (this.isAdminUiMounted) this.renderAdminReports();
+                    }));
                     const progColRef = collection(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'userProgress');
                     this._unsubs.push(onSnapshot(progColRef, (snapshot) => {
                         const next = {};
@@ -1981,6 +2037,124 @@
                         adminTabBtn.className = 'inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all';
                     }
                     this.renderUserDashboard();
+                }
+            },
+
+            // ================= [문제 오류 제보] =================
+            saveLocalReports() {
+                try { localStorage.setItem(STORAGE_KEYS.REPORTS, JSON.stringify(this.errorReports)); } catch (e) {}
+            },
+
+            renderReportPanel() {
+                const t = document.getElementById('reportText');
+                const st = document.getElementById('reportStatus');
+                if (t) t.value = '';
+                if (st) st.classList.add('hidden');
+            },
+
+            async submitErrorReport(e) {
+                if (e) e.preventDefault();
+                if (!this.currentUser || this.currentUser.isAdmin) {
+                    this.showToast('학습자 계정으로 로그인했을 때 제보할 수 있습니다.', 'info');
+                    return;
+                }
+                const q = this.getCurrentQuizQuestion();
+                if (!q) return;
+                const text = (document.getElementById('reportText').value || '').trim().slice(0, 500);
+                if (!text) { this.showToast('제보 내용을 입력해 주세요.', 'error'); return; }
+                const type = document.getElementById('reportType').value;
+                const id = 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+                const report = {
+                    id, questionId: q.id, grade: q.grade || '', subject: q.subject || '', cohort: q.cohort || '',
+                    questionText: String(q.question || '').slice(0, 200),
+                    type, text, uid: this.currentUser.uid, name: this.currentUser.name || '',
+                    status: 'OPEN', createdAt: Date.now()
+                };
+                let sent = false;
+                if (this.isCloudConnected && this.fbAuth.currentUser) {
+                    try {
+                        await setDoc(doc(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'errorReports', id), report);
+                        sent = true;
+                    } catch (err) {
+                        console.warn('오류 제보 전송 실패:', err);
+                        this.showToast('제보 전송에 실패했습니다. 잠시 후 다시 시도해 주세요.', 'error');
+                        return;
+                    }
+                } else {
+                    this.errorReports[id] = report;
+                    this.saveLocalReports();
+                }
+                document.getElementById('reportText').value = '';
+                const st = document.getElementById('reportStatus');
+                if (st) {
+                    st.textContent = sent ? '✅ 제보가 관리자에게 전달되었습니다. 감사합니다!' : '✅ 제보가 접수되었습니다. (클라우드 미연결: 이 기기에만 저장됨)';
+                    st.classList.remove('hidden');
+                }
+                this.showToast('오류 제보가 접수되었습니다.', 'success');
+            },
+
+            renderAdminReports() {
+                const body = document.getElementById('adminReportBody');
+                if (!body || !this.isAdminUiMounted) return;
+                const esc = (v) => this.escapeHtml(v);
+                const notice = document.getElementById('adminReportNotice');
+                if (notice) {
+                    notice.textContent = this.adminReportError || '';
+                    notice.classList.toggle('hidden', !this.adminReportError);
+                }
+                const showDone = !!(document.getElementById('adminReportShowDone') || {}).checked;
+                const all = Object.values(this.errorReports).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                const open = all.filter(r => r.status !== 'DONE');
+                const cnt = document.getElementById('adminReportCount');
+                if (cnt) cnt.textContent = `미처리 ${open.length}건`;
+                const list = showDone ? all : open;
+                if (!list.length) {
+                    body.innerHTML = '<p class="px-5 py-6 text-center text-xs font-semibold text-slate-400">접수된 오류 제보가 없습니다.</p>';
+                    return;
+                }
+                body.innerHTML = list.map(r => {
+                    const done = r.status === 'DONE';
+                    const when = r.createdAt ? new Date(r.createdAt).toLocaleString('ko-KR') : '';
+                    const exists = this.questions.some(q => q.id === r.questionId);
+                    return `<div class="px-4 sm:px-5 py-3 space-y-1.5 ${done ? 'opacity-60' : ''}">
+                        <div class="flex flex-wrap items-center gap-2 text-[11px]">
+                            <span class="px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 font-extrabold">${esc(r.type)}</span>
+                            <span class="font-bold text-slate-700">${esc(r.name)} <span class="font-mono text-slate-400">(${esc(r.uid)})</span></span>
+                            <span class="text-slate-400">${esc(when)}</span>
+                            ${done ? '<span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-extrabold">처리 완료</span>' : ''}
+                        </div>
+                        <p class="text-[11px] text-slate-500">${esc(r.grade)} &gt; ${esc(r.subject)} &gt; ${esc(r.cohort)} · ${esc(r.questionText)}</p>
+                        <p class="text-sm text-slate-900 whitespace-pre-line break-words">${esc(r.text)}</p>
+                        <div class="flex flex-wrap gap-1.5 pt-1">
+                            ${exists ? `<button onclick="app.openAdminQuestionModal('${esc(r.questionId)}')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-brand-50 text-brand-700 hover:bg-brand-100">문제 수정</button>` : '<span class="text-[11px] text-slate-400 py-1">(삭제된 문제)</span>'}
+                            <button onclick="app.setReportStatus('${esc(r.id)}', ${done ? "'OPEN'" : "'DONE'"})" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100">${done ? '다시 열기' : '처리 완료'}</button>
+                            <button onclick="app.deleteReport('${esc(r.id)}')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 text-slate-600 hover:bg-slate-200">삭제</button>
+                        </div>
+                    </div>`;
+                }).join('');
+            },
+
+            async setReportStatus(id, status) {
+                if (!this.requireAdmin()) return;
+                const r = this.errorReports[id];
+                if (!r) return;
+                r.status = status;
+                this.saveLocalReports();
+                this.renderAdminReports();
+                if (this.isCloudConnected && this.fbAuth.currentUser) {
+                    try { await setDoc(doc(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'errorReports', id), r); }
+                    catch (e) { console.warn(e); this.showToast('클라우드 저장에 실패했습니다.', 'error'); }
+                }
+            },
+
+            async deleteReport(id) {
+                if (!this.requireAdmin()) return;
+                delete this.errorReports[id];
+                this.saveLocalReports();
+                this.renderAdminReports();
+                if (this.isCloudConnected && this.fbAuth.currentUser) {
+                    try { await deleteDoc(doc(this.fbDb, 'artifacts', this.appId, 'public', 'data', 'errorReports', id)); }
+                    catch (e) { console.warn(e); this.showToast('클라우드 삭제에 실패했습니다.', 'error'); }
                 }
             },
 
@@ -2783,6 +2957,7 @@
 
                 this.updateQuizBookmarkButtonUI(p.bookmarked);
                 this.renderNotePanel(q.id);
+                this.renderReportPanel();
                 this.renderQuizPalette();
 
                 document.getElementById('qIndexLabel').textContent = `Q${currentNum}.`;
@@ -3057,6 +3232,7 @@
                 // 1. 회원 승인 요청 테이블 렌더링
                 this.renderAdminUserApprovalList();
                 this.renderAdminStudyStats();
+                this.renderAdminReports();
 
                 // 2. 필터 드롭다운 갱신
                 const gSelect = document.getElementById('adminFilterGrade');
