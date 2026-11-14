@@ -925,6 +925,43 @@
         });
         const questionKey = (q) => JSON.stringify(QUESTION_FIELDS.map(k => cleanQuestion(q)[k]));
 
+        // 큰 데이터(문제 목록·필기)는 localStorage(약 5MB) 대신 IndexedDB(수백 MB 이상)에 저장
+        const idbKV = (() => {
+            let dbP = null;
+            const open = () => dbP || (dbP = new Promise((resolve, reject) => {
+                const req = indexedDB.open('jinarchive-local', 1);
+                req.onupgradeneeded = () => req.result.createObjectStore('kv');
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
+            }));
+            const run = (mode, fn) => open().then(db => new Promise((resolve, reject) => {
+                const tx = db.transaction('kv', mode);
+                const r = fn(tx.objectStore('kv'));
+                tx.oncomplete = () => resolve(r && r.result);
+                tx.onerror = () => reject(tx.error);
+                tx.onabort = () => reject(tx.error);
+            }));
+            return {
+                get: (k) => run('readonly', st => st.get(k)),
+                set: (k, v) => run('readwrite', st => st.put(v, k))
+            };
+        })();
+
+        // 필기 획의 점 줄이기: 직전 점과 거의 같은 위치(캔버스 너비의 0.15% 미만)인 점은 생략
+        // (애플펜슬은 초당 최대 240개 점을 보내 용량이 크게 늘어남. 화면상 차이는 없음)
+        const STROKE_MIN_DIST = 1.5;
+        const thinPoints = (pts) => {
+            if (!Array.isArray(pts) || pts.length <= 2) return pts;
+            const out = [pts[0]];
+            for (let i = 1; i < pts.length - 1; i++) {
+                const a = out[out.length - 1], b = pts[i];
+                if (Math.abs(b[0] - a[0]) + Math.abs(b[1] - a[1]) >= STROKE_MIN_DIST) out.push(b);
+            }
+            out.push(pts[pts.length - 1]);
+            return out;
+        };
+        const thinStrokes = (strokes) => Array.isArray(strokes) ? strokes.map(st => (st && Array.isArray(st.p)) ? { ...st, p: thinPoints(st.p) } : st) : strokes;
+
         const STORAGE_KEYS = {
             QUESTIONS: 'EXAM_PRO_QUESTIONS_V2',
             USER_PROFILES: 'EXAM_PRO_USER_PROGRESS_MAP_V2',
@@ -1221,6 +1258,11 @@
 
             async init() {
                 this.loadLocalData();
+                await this.loadLargeLocalData();
+                // 앱을 닫거나 다른 앱으로 전환할 때 아직 안 쓴 저장을 바로 기록
+                const flush = () => { this.flushLargeSaves(); };
+                window.addEventListener('pagehide', flush);
+                document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
                 await this.initFirebaseIfAvailable();
                 try { if (localStorage.getItem('jin_view_mode') === 'TOPIC') this.viewMode = 'TOPIC'; } catch (e) {}
                 this.ensureDefaultHierarchySelection();
@@ -1312,11 +1354,7 @@
                             this.questions = parsed;
                         }
                     }
-                    // 저장된 기록이 아예 없을 때만 샘플 문제를 넣음 (관리자가 전부 삭제한 경우엔 다시 채우지 않음)
-                    if (savedQ === null && this.questions.length === 0) {
-                        this.questions = JSON.parse(JSON.stringify(INITIAL_SAMPLE_QUESTIONS));
-                        this.saveQuestionsToLocal();
-                    }
+                    this._hadLegacyQuestions = savedQ !== null;
 
                     const savedRecent = localStorage.getItem(STORAGE_KEYS.RECENT_USERS);
                     if (savedRecent) {
@@ -1363,12 +1401,89 @@
                 }
             },
 
-            saveQuestionsToLocal() {
+            // 문제 목록·필기는 IndexedDB에 저장 (변경이 몰리면 0.3초 뒤 한 번에 기록)
+            // IndexedDB를 쓸 수 없는 환경에서만 예전처럼 localStorage 사용
+            _idbOk: true,
+            _largeSaveTimers: {},
+            scheduleLargeSave(kind) {
+                clearTimeout(this._largeSaveTimers[kind]);
+                this._largeSaveTimers[kind] = setTimeout(() => {
+                    delete this._largeSaveTimers[kind];
+                    this.writeLarge(kind);
+                }, 300);
+            },
+            flushLargeSaves() {
+                Object.keys(this._largeSaveTimers).forEach(kind => {
+                    clearTimeout(this._largeSaveTimers[kind]);
+                    delete this._largeSaveTimers[kind];
+                    this.writeLarge(kind);
+                });
+            },
+            async writeLarge(kind) {
+                const value = kind === 'questions' ? this.questions : this.allUsersNotesMap;
+                const lsKey = kind === 'questions' ? STORAGE_KEYS.QUESTIONS : STORAGE_KEYS.USER_NOTES;
+                if (this._idbOk) {
+                    try {
+                        await idbKV.set(kind, value);
+                        try { localStorage.removeItem(lsKey); } catch (e) {}
+                        return true;
+                    } catch (e) {
+                        console.warn('IndexedDB 저장 실패 → localStorage 사용:', e);
+                        this._idbOk = false;
+                    }
+                }
                 try {
-                    localStorage.setItem(STORAGE_KEYS.QUESTIONS, JSON.stringify(this.questions));
+                    localStorage.setItem(lsKey, JSON.stringify(value));
+                    return true;
                 } catch (e) {
                     console.error(e);
+                    if (kind === 'notes') {
+                        this.showToast(this.isCloudConnected
+                            ? '이 기기의 저장 공간이 부족합니다. 필기는 클라우드에만 저장됩니다.'
+                            : '브라우저 저장 공간이 부족해 필기를 저장하지 못했습니다.', 'error');
+                    }
+                    return false;
                 }
+            },
+
+            // 시작 시 IndexedDB에서 문제·필기를 불러옴 (예전 localStorage 데이터는 옮긴 뒤 삭제)
+            async loadLargeLocalData() {
+                let idbQ, idbN;
+                try {
+                    [idbQ, idbN] = await Promise.all([idbKV.get('questions'), idbKV.get('notes')]);
+                } catch (e) {
+                    console.warn('IndexedDB를 사용할 수 없어 localStorage를 사용합니다:', e);
+                    this._idbOk = false;
+                }
+                if (Array.isArray(idbQ)) {
+                    this.questions = idbQ;
+                } else if (this._hadLegacyQuestions) {
+                    if (this._idbOk) this.writeLarge('questions');
+                } else if (this.questions.length === 0) {
+                    // 저장된 기록이 아예 없을 때만 샘플 문제를 넣음 (관리자가 전부 삭제한 경우엔 다시 채우지 않음)
+                    this.questions = JSON.parse(JSON.stringify(INITIAL_SAMPLE_QUESTIONS));
+                    this.saveQuestionsToLocal();
+                }
+
+                if (idbN && typeof idbN === 'object') {
+                    this.allUsersNotesMap = idbN;
+                }
+                // 예전에 저장된 필기의 점도 줄여서 용량 확보
+                let changed = !idbN && Object.keys(this.allUsersNotesMap).length > 0;
+                Object.values(this.allUsersNotesMap).forEach(m => {
+                    Object.values(m || {}).forEach(n => {
+                        if (!n || !Array.isArray(n.strokes)) return;
+                        const before = n.strokes.reduce((a, st) => a + ((st && st.p) ? st.p.length : 0), 0);
+                        n.strokes = thinStrokes(n.strokes);
+                        const after = n.strokes.reduce((a, st) => a + ((st && st.p) ? st.p.length : 0), 0);
+                        if (after < before) changed = true;
+                    });
+                });
+                if (changed) await this.writeLarge('notes');
+            },
+
+            saveQuestionsToLocal() {
+                this.scheduleLargeSave('questions');
             },
 
             saveUserRegistryToLocal() {
@@ -2553,14 +2668,8 @@
             },
 
             saveNotesToLocal() {
-                try {
-                    localStorage.setItem(STORAGE_KEYS.USER_NOTES, JSON.stringify(this.allUsersNotesMap));
-                    return true;
-                } catch (e) {
-                    console.error(e);
-                    this.showToast('브라우저 저장 공간이 부족해 필기를 저장하지 못했습니다.', 'error');
-                    return false;
-                }
+                this.scheduleLargeSave('notes');
+                return true;
             },
 
             scheduleNoteCloudSync(uid, questionId, delayMs) {
@@ -2582,15 +2691,22 @@
                     if (!n) {
                         await deleteDoc(docRef);
                     } else {
+                        const strokesJson = JSON.stringify(n.strokes || []);
+                        // Firestore 문서 1개 최대 1MiB → 넘으면 저장이 거부되므로 미리 안내
+                        if (strokesJson.length + (n.text || '').length * 3 > 1000000) {
+                            this.showToast('이 문제의 필기가 너무 많아 클라우드에 저장할 수 없습니다. 이 기기에는 저장되어 있습니다. 일부를 지워 주세요.', 'error');
+                            return;
+                        }
                         await setDoc(docRef, {
                             uid, questionId,
                             text: n.text || '',
-                            strokes: JSON.stringify(n.strokes || []),
+                            strokes: strokesJson,
                             updatedAt: n.updatedAt || Date.now()
                         });
                     }
                 } catch (e) {
                     console.warn('노트 클라우드 저장 오류:', e);
+                    this.showToast('필기를 클라우드에 저장하지 못했습니다. 네트워크 상태를 확인해 주세요. (이 기기에는 저장됨)', 'error');
                 }
             },
 
@@ -2607,7 +2723,7 @@
                         const local = mine[v.questionId];
                         if (!local || (v.updatedAt || 0) > (local.updatedAt || 0)) {
                             let strokes = [];
-                            try { strokes = JSON.parse(v.strokes || '[]'); } catch (e) {}
+                            try { strokes = thinStrokes(JSON.parse(v.strokes || '[]')); } catch (e) {}
                             mine[v.questionId] = { text: v.text || '', strokes, updatedAt: v.updatedAt || 0 };
                         }
                     });
@@ -2741,7 +2857,16 @@
                     if (!s || s.pid !== e.pointerId) return;
                     e.preventDefault();
                     const evs = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
-                    (evs.length ? evs : [e]).forEach(ev => s.p.push(toPt(ev)));
+                    (evs.length ? evs : [e]).forEach(ev => {
+                        const pt = toPt(ev);
+                        const last = s.p[s.p.length - 1];
+                        if (last && Math.abs(pt[0] - last[0]) + Math.abs(pt[1] - last[1]) < STROKE_MIN_DIST) {
+                            s._tail = pt; // 생략한 점은 획이 끝날 때 마지막 점으로만 보존
+                            return;
+                        }
+                        s._tail = null;
+                        s.p.push(pt);
+                    });
                     this.drawNoteFrame();
                 });
 
@@ -2750,6 +2875,8 @@
                     if (!s || s.pid !== e.pointerId) return;
                     this._curStroke = null;
                     delete s.pid;
+                    if (s._tail) s.p.push(s._tail);
+                    delete s._tail;
                     const qid = this._noteQid;
                     if (!qid) return;
                     const n = this.getQuestionNote(qid);
