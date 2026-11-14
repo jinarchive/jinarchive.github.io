@@ -423,13 +423,16 @@
                 <button id="btnQuizPrev" onclick="app.goPrevQuizQuestion()" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
                     <i class="ph-bold ph-caret-left"></i> 이전 문제
                 </button>
-                <span class="hidden sm:inline text-[11px] text-slate-400">키보드: 1~5 선택 · ← → 이동</span>
+                <span class="hidden sm:inline text-[11px] text-slate-400">키보드: 1~5 선택 · Enter 정답 확인 · ← → 이동</span>
                 <button onclick="app.goNextQuizQuestion()" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-brand-600 hover:bg-brand-700 text-white shadow-sm transition-colors">
                     <span id="txtQuizNext">다음 문제</span> <i class="ph-bold ph-caret-right"></i>
                 </button>
             </div>
 
-                            <div class="flex justify-end">
+                            <div class="flex justify-end items-center gap-2">
+                                <button id="btnConfirmAnswer" onclick="app.confirmQuizAnswer()" disabled class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold bg-brand-600 hover:bg-brand-700 text-white shadow-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                                    <i class="ph-bold ph-check-circle"></i> 정답 확인
+                                </button>
                                 <button id="btnRevealAnswer" onclick="app.revealQuizAnswerDirectly()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors">
                                     <i class="ph-bold ph-eye"></i> 풀지 않고 정답·해설 보기
                                 </button>
@@ -2132,6 +2135,8 @@
                             if (q && q.options && num <= q.options.filter(o => o && o.trim() !== '').length) {
                                 this.selectQuizOption(num);
                             }
+                        } else if (e.key === 'Enter') {
+                            this.confirmQuizAnswer();
                         } else if (e.key === 'ArrowRight') {
                             this.goNextQuizQuestion();
                         } else if (e.key === 'ArrowLeft') {
@@ -3134,6 +3139,10 @@
                 // 해설 영역 초기화
                 document.getElementById('qExplanationSection').classList.add('hidden');
                 document.getElementById('btnRevealAnswer').classList.remove('hidden');
+                this.pendingQuizChoice = null;
+                const confirmBtn = document.getElementById('btnConfirmAnswer');
+                confirmBtn.disabled = true;
+                confirmBtn.classList.toggle('hidden', validOptions.length === 0);
                 document.getElementById('chkQuizUnderstood').checked = !!p.understood;
 
                 document.getElementById('btnQuizPrev').disabled = (this.currentQuizIdx === 0);
@@ -3169,9 +3178,36 @@
                 this.renderCurrentQuizQuestion();
             },
 
+            // 보기 선택: 하이라이트만 하고, '정답 확인' 버튼을 눌러야 채점됨
             selectQuizOption(choiceNum) {
                 const q = this.getCurrentQuizQuestion();
                 if (!q) return;
+                const btn = document.getElementById(`quizOptBtn_${choiceNum}`);
+                if (!btn || btn.disabled) return; // 이미 채점된 문제
+
+                const validCount = q.options.filter(o => o && o.trim() !== '').length;
+                this.pendingQuizChoice = choiceNum;
+                for (let i = 1; i <= validCount; i++) {
+                    const b = document.getElementById(`quizOptBtn_${i}`);
+                    const c = document.getElementById(`quizOptCircle_${i}`);
+                    if (!b || !c) continue;
+                    if (i === choiceNum) {
+                        b.className = 'w-full text-left p-4 rounded-xl border-2 border-brand-500 bg-brand-50 transition-all flex items-start gap-3.5';
+                        c.className = 'w-7 h-7 rounded-lg bg-brand-600 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5';
+                    } else {
+                        b.className = 'w-full text-left p-4 rounded-xl border border-slate-200 hover:border-brand-400 hover:bg-brand-50/40 transition-all flex items-start gap-3.5 group';
+                        c.className = 'w-7 h-7 rounded-lg bg-slate-100 text-slate-700 font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-brand-600 group-hover:text-white transition-colors';
+                    }
+                }
+                document.getElementById('btnConfirmAnswer').disabled = false;
+            },
+
+            confirmQuizAnswer() {
+                const q = this.getCurrentQuizQuestion();
+                if (!q || !this.pendingQuizChoice) return;
+                const choiceNum = this.pendingQuizChoice;
+                this.pendingQuizChoice = null;
+                document.getElementById('btnConfirmAnswer').disabled = true;
 
                 const correctNum = Number(q.answer);
                 const isCorrect = (choiceNum === correctNum);
@@ -3232,6 +3268,7 @@
                 }
 
                 document.getElementById('btnRevealAnswer').classList.add('hidden');
+                document.getElementById('btnConfirmAnswer').classList.add('hidden');
                 const expSec = document.getElementById('qExplanationSection');
                 expSec.classList.remove('hidden');
 
