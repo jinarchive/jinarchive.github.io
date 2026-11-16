@@ -415,6 +415,7 @@
                                 <span id="qIndexLabel" class="text-lg font-extrabold text-brand-600 shrink-0">Q1.</span>
                                 <p id="qTextDisplay" class="text-base sm:text-lg font-bold text-slate-900 leading-relaxed whitespace-pre-line"></p>
                             </div>
+                            <div id="qImagesDisplay" class="hidden flex flex-wrap gap-3"></div>
 
                             <div id="qOptionsContainer" class="space-y-2.5"></div>
 
@@ -730,6 +731,22 @@
                     <textarea id="qFormQuestion" required rows="3" placeholder="기출문제 지문을 입력하세요..." class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-xl outline-none focus:border-brand-500"></textarea>
                 </div>
 
+                <!-- 문제 사진 -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between gap-2 flex-wrap">
+                        <label class="block text-xs font-extrabold text-slate-700">문제 사진 (선택)</label>
+                        <div class="flex items-center gap-1.5">
+                            <label class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-brand-50 text-brand-700 border border-brand-200 hover:bg-brand-100 cursor-pointer">
+                                <i class="ph-bold ph-image"></i> 사진 선택
+                                <input type="file" id="qFormImageFile" accept="image/*" multiple class="hidden" onchange="app.onAdminImageFiles(this.files); this.value='';">
+                            </label>
+                            <button type="button" onclick="app.addAdminImageUrl()" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200"><i class="ph-bold ph-link"></i> 주소로 추가</button>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-slate-400">사진 파일을 고르거나, 이 창에서 <b>Ctrl+V</b>로 캡처한 이미지를 붙여넣을 수 있습니다. 사진은 자동으로 줄여서 저장됩니다.</p>
+                    <div id="qFormImagesPreview" class="flex flex-wrap gap-2"></div>
+                </div>
+
                 <!-- 객관식 보기 1~5 -->
                 <div class="space-y-2">
                     <div class="flex items-center justify-between">
@@ -923,7 +940,7 @@
             'data/growth_aging_questions.json',
             'data/hematology_questions.json'
         ];
-        const QUESTION_FIELDS = ['id', 'grade', 'subject', 'cohort', 'topic', 'question', 'options', 'answer', 'explanation'];
+        const QUESTION_FIELDS = ['id', 'grade', 'subject', 'cohort', 'topic', 'question', 'images', 'options', 'answer', 'explanation'];
         // 비교·저장용으로 문제 객체를 정해진 필드만 남겨 정리
         const cleanQuestion = (q) => ({
             id: q.id,
@@ -932,6 +949,8 @@
             cohort: q.cohort || '',
             topic: typeof q.topic === 'string' ? q.topic.trim() : '',
             question: q.question || '',
+            // 문제 사진: 이미지 주소(https://… 또는 저장소 상대경로) 또는 data:image/… 문자열 배열
+            images: Array.isArray(q.images) ? q.images.filter(s => typeof s === 'string' && s.trim()) : [],
             options: Array.isArray(q.options) ? q.options : [],
             answer: Number(q.answer ?? 1),
             explanation: q.explanation || ''
@@ -3120,6 +3139,7 @@
 
                 document.getElementById('qIndexLabel').textContent = `Q${currentNum}.`;
                 document.getElementById('qTextDisplay').textContent = q.question;
+                this.renderQuestionImages(q);
 
                 // 객관식 보기 생성
                 const validOptions = q.options.filter(o => o && o.trim() !== '');
@@ -3831,7 +3851,7 @@
                         <td class="py-3.5 px-3"><span class="px-2 py-1 rounded-md bg-indigo-50 text-indigo-700 font-bold text-xs">${this.escapeHtml(q.subject)}</span></td>
                         <td class="py-3.5 px-3"><span class="px-2 py-1 rounded-md bg-amber-50 text-amber-800 font-bold text-xs">${this.escapeHtml(q.cohort)}</span></td>
                         <td class="py-3.5 px-4 max-w-md">
-                            <p class="font-bold text-slate-800 truncate">${this.escapeHtml(q.question)}</p>
+                            <p class="font-bold text-slate-800 truncate">${(q.images && q.images.length) ? '📷 ' : ''}${this.escapeHtml(q.question)}</p>
                             <p class="text-[11px] text-emerald-700 font-semibold mt-0.5">${(q.options || []).filter(o => o && o.trim() !== '').length === 0 ? '주관식(서술형) · 모범답안은 해설 참고' : `정답: ${q.answer}번 (${this.escapeHtml(q.options[q.answer - 1] || '')})`}</p>
                         </td>
                         <td class="py-3.5 px-4 text-right whitespace-nowrap">
@@ -3945,6 +3965,16 @@
                 if (!this.requireAdmin()) return;
                 const form = document.getElementById('adminQuestionForm');
                 form.reset();
+                this.adminFormImages = [];
+                if (!this._adminPasteBound) {
+                    this._adminPasteBound = true;
+                    document.getElementById('adminQuestionModal').addEventListener('paste', (ev) => {
+                        const files = [...((ev.clipboardData && ev.clipboardData.items) || [])]
+                            .filter(it => it.kind === 'file' && it.type.startsWith('image/'))
+                            .map(it => it.getAsFile()).filter(Boolean);
+                        if (files.length) { ev.preventDefault(); this.onAdminImageFiles(files); }
+                    });
+                }
 
                 // 자동완성 Datalist 채우기
                 const grades = [...new Set(['예과 1학년', '예과 2학년', '본과 1학년', '본과 2학년', '본과 3학년', '본과 4학년', ...this.getUniqueGrades()])];
@@ -3967,6 +3997,7 @@
                     document.getElementById('qFormCohort').value = q.cohort;
                     document.getElementById('qFormTopic').value = q.topic || '';
                     document.getElementById('qFormQuestion').value = q.question;
+                    this.adminFormImages = Array.isArray(q.images) ? [...q.images] : [];
                     document.getElementById('qFormAnswer').value = q.answer;
                     document.getElementById('qFormOpt1').value = q.options[0] || '';
                     document.getElementById('qFormOpt2').value = q.options[1] || '';
@@ -3982,7 +4013,108 @@
                     document.getElementById('qFormCohort').value = (this.selectedCohort && this.selectedCohort !== 'ALL') ? this.selectedCohort : '23학번 기출';
                 }
 
+                this.renderAdminImagePreview();
                 document.getElementById('adminQuestionModal').classList.remove('hidden');
+            },
+
+            // ================= [문제 사진] =================
+            renderQuestionImages(q) {
+                const box = document.getElementById('qImagesDisplay');
+                const imgs = (q && Array.isArray(q.images)) ? q.images : [];
+                box.classList.toggle('hidden', imgs.length === 0);
+                box.innerHTML = imgs.map((src, i) => `
+                    <button type="button" onclick="app.openImageViewer(${i})" class="block max-w-full rounded-xl border border-slate-200 bg-white overflow-hidden hover:border-brand-400 transition-colors" title="크게 보기">
+                        <img src="${this.escapeHtml(src)}" alt="문제 사진 ${i + 1}" loading="lazy" class="max-h-[420px] max-w-full w-auto object-contain">
+                    </button>`).join('');
+            },
+
+            openImageViewer(idx) {
+                const q = this.getCurrentQuizQuestion();
+                const src = q && q.images && q.images[idx];
+                if (!src) return;
+                let ov = document.getElementById('imageViewerOverlay');
+                if (!ov) {
+                    ov = document.createElement('div');
+                    ov.id = 'imageViewerOverlay';
+                    ov.className = 'fixed inset-0 z-[100] bg-slate-900/85 flex items-center justify-center p-3 cursor-zoom-out';
+                    ov.onclick = () => ov.remove();
+                    document.body.appendChild(ov);
+                }
+                ov.innerHTML = `<img src="${this.escapeHtml(src)}" alt="문제 사진" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl bg-white">`;
+            },
+
+            // 사진을 최대 1600px JPEG로 줄여 data URL로 변환 (Firestore 문서 1MB 제한 대비)
+            compressImageFile(file, maxSide = 1600, quality = 0.82) {
+                return new Promise((resolve, reject) => {
+                    const url = URL.createObjectURL(file);
+                    const img = new Image();
+                    img.onload = () => {
+                        URL.revokeObjectURL(url);
+                        const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+                        const w = Math.max(1, Math.round(img.width * scale));
+                        const h = Math.max(1, Math.round(img.height * scale));
+                        const c = document.createElement('canvas');
+                        c.width = w; c.height = h;
+                        const ctx = c.getContext('2d');
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.drawImage(img, 0, 0, w, h);
+                        resolve(c.toDataURL('image/jpeg', quality));
+                    };
+                    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('이미지를 읽을 수 없습니다')); };
+                    img.src = url;
+                });
+            },
+
+            async onAdminImageFiles(fileList) {
+                const files = [...(fileList || [])].filter(f => f && f.type && f.type.startsWith('image/'));
+                if (!files.length) return;
+                for (const f of files) {
+                    try {
+                        let data = await this.compressImageFile(f);
+                        if (data.length > 450000) data = await this.compressImageFile(f, 1200, 0.72);
+                        this.adminFormImages.push(data);
+                    } catch (e) {
+                        this.showToast(`${f.name || '사진'}: ${e.message}`, 'error');
+                    }
+                }
+                this.renderAdminImagePreview();
+            },
+
+            addAdminImageUrl() {
+                const url = (prompt('이미지 주소를 입력하세요 (https://… 또는 저장소 경로 예: images/q1.png)') || '').trim();
+                if (!url) return;
+                if (/^\s*javascript:/i.test(url)) { this.showToast('사용할 수 없는 주소입니다.', 'error'); return; }
+                this.adminFormImages.push(url);
+                this.renderAdminImagePreview();
+            },
+
+            removeAdminImage(idx) {
+                this.adminFormImages.splice(idx, 1);
+                this.renderAdminImagePreview();
+            },
+
+            moveAdminImage(idx, dir) {
+                const j = idx + dir;
+                const arr = this.adminFormImages;
+                if (j < 0 || j >= arr.length) return;
+                [arr[idx], arr[j]] = [arr[j], arr[idx]];
+                this.renderAdminImagePreview();
+            },
+
+            renderAdminImagePreview() {
+                const box = document.getElementById('qFormImagesPreview');
+                const imgs = this.adminFormImages || [];
+                box.innerHTML = imgs.map((src, i) => `
+                    <div class="relative w-24 h-24 rounded-lg border border-slate-200 bg-slate-50 overflow-hidden group">
+                        <img src="${this.escapeHtml(src)}" alt="사진 ${i + 1}" class="w-full h-full object-contain">
+                        <span class="absolute top-1 left-1 px-1.5 rounded bg-slate-900/70 text-white text-[10px] font-bold">${i + 1}</span>
+                        <button type="button" onclick="app.removeAdminImage(${i})" title="삭제" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-rose-600 text-white text-xs font-bold flex items-center justify-center">×</button>
+                        <div class="absolute bottom-1 inset-x-1 flex justify-between">
+                            <button type="button" onclick="app.moveAdminImage(${i}, -1)" title="앞으로" class="w-5 h-5 rounded bg-white/90 border border-slate-300 text-[10px] font-bold ${i === 0 ? 'invisible' : ''}">◀</button>
+                            <button type="button" onclick="app.moveAdminImage(${i}, 1)" title="뒤로" class="w-5 h-5 rounded bg-white/90 border border-slate-300 text-[10px] font-bold ${i === imgs.length - 1 ? 'invisible' : ''}">▶</button>
+                        </div>
+                    </div>`).join('');
             },
 
             closeAdminQuestionModal() {
@@ -4008,12 +4140,18 @@
                 const opt5 = document.getElementById('qFormOpt5').value.trim();
                 if (opt5) options.push(opt5);
                 const explanation = document.getElementById('qFormExplanation').value.trim();
+                const images = [...(this.adminFormImages || [])];
+                const approxBytes = JSON.stringify({ question, options, explanation, images }).length;
+                if (approxBytes > 950000) {
+                    this.showToast('사진 용량이 너무 큽니다 (문항당 약 1MB 제한). 사진 수를 줄이거나 주소로 추가해 주세요.', 'error');
+                    return;
+                }
 
                 let targetObj = null;
                 if (id) {
                     const idx = this.questions.findIndex(q => q.id === id);
                     if (idx !== -1) {
-                        targetObj = { ...this.questions[idx], grade, subject, cohort, topic, question, options, answer, explanation };
+                        targetObj = { ...this.questions[idx], grade, subject, cohort, topic, question, images, options, answer, explanation };
                         this.questions[idx] = targetObj;
                     }
                 } else {
@@ -4024,6 +4162,7 @@
                         cohort,
                         topic,
                         question,
+                        images,
                         options,
                         answer,
                         explanation
@@ -4093,6 +4232,7 @@
                         cohort: "24학번 기출",
                         topic: "상지 신경",
                         question: "예시 기출문제 지문을 입력하세요.",
+                        images: [],
                         options: ["1번보기", "2번보기", "3번보기", "4번보기", "5번보기"],
                         answer: 1,
                         explanation: "정답에 대한 상세 해설을 입력하세요."
@@ -4146,6 +4286,7 @@
                         cohort: item.cohort || '24학번 기출',
                         topic: typeof item.topic === 'string' ? item.topic.trim() : '',
                         question: item.question || '무제',
+                        images: Array.isArray(item.images) ? item.images.filter(s => typeof s === 'string' && s.trim()) : [],
                         options: Array.isArray(item.options) ? item.options : ['1', '2', '3', '4'],
                         answer: Number(item.answer ?? 1),
                         explanation: item.explanation || '해설 없음'
