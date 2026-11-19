@@ -749,19 +749,27 @@
 
                 <!-- 객관식 보기 1~5 -->
                 <div class="space-y-2">
-                    <div class="flex items-center justify-between">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
                         <label class="block text-xs font-extrabold text-slate-700">객관식 보기 (1~4번 필수, 5번 선택)</label>
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs font-extrabold text-brand-700">정답 번호:</span>
-                            <select id="qFormAnswer" required class="px-2.5 py-1 text-xs font-extrabold border border-brand-300 bg-brand-50 text-brand-700 rounded-lg outline-none">
-                                <option value="1">1번</option>
-                                <option value="2">2번</option>
-                                <option value="3">3번</option>
-                                <option value="4">4번</option>
-                                <option value="5">5번</option>
-                            </select>
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <span class="text-xs font-extrabold text-brand-700">정답 번호<span class="font-semibold text-slate-400">(복수 선택 가능)</span>:</span>
+                            <div id="qFormAnswerGroup" class="flex items-center gap-1">
+                                <label class="cursor-pointer"><input type="checkbox" name="qFormAnswerChk" value="1" class="peer sr-only" onchange="app.updateAdminAnswerModeUI()"><span class="inline-flex w-7 h-7 items-center justify-center rounded-lg border border-brand-300 bg-white text-xs font-extrabold text-brand-700 peer-checked:bg-brand-600 peer-checked:text-white peer-checked:border-brand-600">1</span></label>
+                                <label class="cursor-pointer"><input type="checkbox" name="qFormAnswerChk" value="2" class="peer sr-only" onchange="app.updateAdminAnswerModeUI()"><span class="inline-flex w-7 h-7 items-center justify-center rounded-lg border border-brand-300 bg-white text-xs font-extrabold text-brand-700 peer-checked:bg-brand-600 peer-checked:text-white peer-checked:border-brand-600">2</span></label>
+                                <label class="cursor-pointer"><input type="checkbox" name="qFormAnswerChk" value="3" class="peer sr-only" onchange="app.updateAdminAnswerModeUI()"><span class="inline-flex w-7 h-7 items-center justify-center rounded-lg border border-brand-300 bg-white text-xs font-extrabold text-brand-700 peer-checked:bg-brand-600 peer-checked:text-white peer-checked:border-brand-600">3</span></label>
+                                <label class="cursor-pointer"><input type="checkbox" name="qFormAnswerChk" value="4" class="peer sr-only" onchange="app.updateAdminAnswerModeUI()"><span class="inline-flex w-7 h-7 items-center justify-center rounded-lg border border-brand-300 bg-white text-xs font-extrabold text-brand-700 peer-checked:bg-brand-600 peer-checked:text-white peer-checked:border-brand-600">4</span></label>
+                                <label class="cursor-pointer"><input type="checkbox" name="qFormAnswerChk" value="5" class="peer sr-only" onchange="app.updateAdminAnswerModeUI()"><span class="inline-flex w-7 h-7 items-center justify-center rounded-lg border border-brand-300 bg-white text-xs font-extrabold text-brand-700 peer-checked:bg-brand-600 peer-checked:text-white peer-checked:border-brand-600">5</span></label>
+                            </div>
                         </div>
                     </div>
+                    <div class="flex flex-wrap items-center justify-end gap-2">
+                        <span class="text-xs font-extrabold text-slate-600">채점 방식:</span>
+                        <select id="qFormAnswerMode" onchange="app.updateAdminAnswerModeUI()" class="px-2.5 py-1 text-xs font-bold border border-slate-300 bg-white text-slate-700 rounded-lg outline-none">
+                            <option value="any">한 개 선택 (정답이 여러 개면 그중 하나만 골라도 정답 = 복수정답 인정)</option>
+                            <option value="all">여러 개 선택 (정답을 모두 정확히 골라야 정답 — '두 가지/모두 고르시오')</option>
+                        </select>
+                    </div>
+                    <p id="qFormAnswerHint" class="text-[11px] text-slate-500 text-right"></p>
                     <div class="flex items-center gap-2">
                         <span class="w-6 h-6 rounded-full bg-slate-100 text-xs font-bold flex items-center justify-center shrink-0">1</span>
                         <input type="text" id="qFormOpt1" required placeholder="1번 보기" class="w-full px-3 py-1.5 text-sm border border-slate-300 rounded-lg outline-none focus:border-brand-500">
@@ -829,6 +837,7 @@
                         <button onclick="app.insertSampleJsonTemplate()" class="text-xs font-bold text-brand-600 hover:underline">표준 JSON 양식 채우기</button>
                     </div>
                     <textarea id="jsonBulkTextarea" rows="8" placeholder='[{"grade":"본과 1학년","subject":"병리학","cohort":"23학번 기출","question":"문제 지문","options":["1번","2번","3번","4번"],"answer":1,"explanation":"해설"}]' class="w-full p-3.5 text-xs font-mono bg-slate-900 text-slate-100 rounded-xl outline-none"></textarea>
+                    <p class="text-[11px] text-slate-500">복수정답: <code>"answer": [2, 4]</code> → 둘 중 하나만 골라도 정답 · 여기에 <code>"answerMode": "all"</code>을 더하면 보기를 여러 개 골라 <b>모두</b> 맞혀야 정답</p>
                 </div>
 
                 <div class="bg-teal-50 p-4 rounded-xl border border-teal-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -940,7 +949,37 @@
             'data/growth_aging_questions.json',
             'data/hematology_questions.json'
         ];
-        const QUESTION_FIELDS = ['id', 'grade', 'subject', 'cohort', 'topic', 'question', 'images', 'options', 'answer', 'explanation'];
+        const QUESTION_FIELDS = ['id', 'grade', 'subject', 'cohort', 'topic', 'question', 'images', 'options', 'answer', 'answerMode', 'explanation'];
+        // 정답 정규화: 숫자(3) · 배열([2, 4]) · 문자열("2,4") 모두 허용
+        // 정답이 1개면 숫자, 2개 이상이면 오름차순 배열로 저장 (기존 단일 정답 문제는 그대로 숫자)
+        const normalizeAnswer = (raw) => {
+            const list = (Array.isArray(raw) ? raw : String(raw ?? 1).split(/[^0-9]+/))
+                .map(Number).filter(n => Number.isInteger(n) && n > 0);
+            const uniq = [...new Set(list)].sort((a, b) => a - b);
+            if (uniq.length > 1) return uniq;
+            if (uniq.length === 1) return uniq[0];
+            const n = Number(Array.isArray(raw) ? raw[0] : raw);
+            return Number.isFinite(n) ? n : 1; // 0 = 주관식
+        };
+        // 정답 목록(배열)으로 꺼내기
+        const getAnswerList = (q) => {
+            const a = normalizeAnswer(q && q.answer);
+            return (Array.isArray(a) ? a : [a]).filter(n => n > 0);
+        };
+        // 채점 방식
+        //  - 'any'(기본): 복수정답 인정 — 정답 중 하나만 골라도 정답
+        //  - 'all': 복수 선택 문항('두 가지 고르시오'·'모두 고르시오') — 보기를 여러 개 고를 수 있고, 정답을 빠짐없이 정확히 골라야 정답
+        const normalizeAnswerMode = (mode) => (mode === 'all' ? 'all' : 'any');
+        const isMultiSelectQuestion = (q) => !!q && q.answerMode === 'all' && getAnswerList(q).length > 0;
+        // 선택(숫자 또는 숫자 배열)을 채점
+        const gradeAnswerChoice = (q, choice) => {
+            const answers = getAnswerList(q);
+            const picked = [...new Set((Array.isArray(choice) ? choice : [choice]).map(Number))].filter(n => n > 0);
+            if (!picked.length) return false;
+            if (isMultiSelectQuestion(q)) return picked.length === answers.length && picked.every(n => answers.includes(n));
+            return picked.length === 1 && answers.includes(picked[0]);
+        };
+        const formatAnswerNums = (list) => list.map(n => `${n}번`).join(', ');
         // 비교·저장용으로 문제 객체를 정해진 필드만 남겨 정리
         const cleanQuestion = (q) => ({
             id: q.id,
@@ -952,7 +991,9 @@
             // 문제 사진: 이미지 주소(https://… 또는 저장소 상대경로) 또는 data:image/… 문자열 배열
             images: Array.isArray(q.images) ? q.images.filter(s => typeof s === 'string' && s.trim()) : [],
             options: Array.isArray(q.options) ? q.options : [],
-            answer: Number(q.answer ?? 1),
+            answer: normalizeAnswer(q.answer),
+            // 채점 방식은 기본값('any')이 아닐 때만 저장 (기존 문제의 비교 키·저장 형태는 그대로)
+            ...(q.answerMode === 'all' ? { answerMode: 'all' } : {}),
             explanation: q.explanation || ''
         });
         const questionKey = (q) => JSON.stringify(QUESTION_FIELDS.map(k => cleanQuestion(q)[k]));
@@ -3154,7 +3195,10 @@
                             <button id="quizSelfOk" onclick="app.selfGradeSubjective(true)" class="p-3.5 rounded-xl border border-emerald-300 bg-white hover:bg-emerald-50 text-emerald-800 font-extrabold text-sm">⭕ 맞게 썼어요</button>
                             <button id="quizSelfNg" onclick="app.selfGradeSubjective(false)" class="p-3.5 rounded-xl border border-rose-300 bg-white hover:bg-rose-50 text-rose-800 font-extrabold text-sm">❌ 부족했어요</button>
                         </div>`;
-                } else optContainer.innerHTML = validOptions.map((optText, i) => {
+                } else optContainer.innerHTML = (isMultiSelectQuestion(q) ? `
+                        <div class="px-3 py-2 rounded-lg border border-brand-200 bg-brand-50/70 text-xs font-bold text-brand-800">
+                            ☑️ 복수 선택 문항 — 해당하는 보기를 <b>모두</b> 고른 뒤 정답을 확인하세요. (다시 누르면 선택 해제)
+                        </div>` : '') + validOptions.map((optText, i) => {
                     const num = i + 1;
                     return `
                         <button id="quizOptBtn_${num}" onclick="app.selectQuizOption(${num})" class="w-full text-left p-4 rounded-xl border border-slate-200 hover:border-brand-400 hover:bg-brand-50/40 transition-all flex items-start gap-3.5 group">
@@ -3169,7 +3213,7 @@
                 // 해설 영역 초기화
                 document.getElementById('qExplanationSection').classList.add('hidden');
                 document.getElementById('btnRevealAnswer').classList.remove('hidden');
-                this.pendingQuizChoice = null;
+                this.pendingQuizChoice = isMultiSelectQuestion(q) ? [] : null;
                 const confirmBtn = document.getElementById('btnConfirmAnswer');
                 confirmBtn.disabled = true;
                 confirmBtn.classList.toggle('hidden', validOptions.length === 0);
@@ -3211,19 +3255,30 @@
             },
 
             // 보기 선택: 하이라이트만 하고, '정답 확인' 버튼을 눌러야 채점됨
+            // 복수 선택 문항(answerMode 'all')은 여러 보기를 토글로 고를 수 있음
             selectQuizOption(choiceNum) {
                 const q = this.getCurrentQuizQuestion();
                 if (!q) return;
                 const btn = document.getElementById(`quizOptBtn_${choiceNum}`);
                 if (!btn || btn.disabled) return; // 이미 채점된 문제
 
+                const multi = isMultiSelectQuestion(q);
+                if (multi) {
+                    const cur = Array.isArray(this.pendingQuizChoice) ? this.pendingQuizChoice : [];
+                    this.pendingQuizChoice = cur.includes(choiceNum)
+                        ? cur.filter(n => n !== choiceNum)
+                        : [...cur, choiceNum].sort((a, b) => a - b);
+                } else {
+                    this.pendingQuizChoice = choiceNum;
+                }
+                const picked = multi ? this.pendingQuizChoice : [choiceNum];
+
                 const validCount = q.options.filter(o => o && o.trim() !== '').length;
-                this.pendingQuizChoice = choiceNum;
                 for (let i = 1; i <= validCount; i++) {
                     const b = document.getElementById(`quizOptBtn_${i}`);
                     const c = document.getElementById(`quizOptCircle_${i}`);
                     if (!b || !c) continue;
-                    if (i === choiceNum) {
+                    if (picked.includes(i)) {
                         b.className = 'w-full text-left p-4 rounded-xl border-2 border-brand-500 bg-brand-50 transition-all flex items-start gap-3.5';
                         c.className = 'w-7 h-7 rounded-lg bg-brand-600 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5';
                     } else {
@@ -3231,32 +3286,36 @@
                         c.className = 'w-7 h-7 rounded-lg bg-slate-100 text-slate-700 font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-brand-600 group-hover:text-white transition-colors';
                     }
                 }
-                document.getElementById('btnConfirmAnswer').disabled = false;
-                document.getElementById('txtConfirmAnswer').textContent = `${choiceNum}번으로 정답 확인`;
+                document.getElementById('btnConfirmAnswer').disabled = picked.length === 0;
+                document.getElementById('txtConfirmAnswer').textContent = picked.length === 0
+                    ? '보기를 먼저 선택하세요'
+                    : `${formatAnswerNums(picked)}으로 정답 확인`;
             },
 
             confirmQuizAnswer() {
                 const q = this.getCurrentQuizQuestion();
-                if (!q || !this.pendingQuizChoice) return;
-                const choiceNum = this.pendingQuizChoice;
+                if (!q) return;
+                const pending = this.pendingQuizChoice;
+                if (!pending || (Array.isArray(pending) && pending.length === 0)) return;
+                // 복수 선택은 배열, 단일 선택은 숫자로 기록 (기존 기록과 호환)
+                const choice = Array.isArray(pending) ? (pending.length === 1 ? pending[0] : [...pending]) : pending;
                 this.pendingQuizChoice = null;
                 document.getElementById('btnConfirmAnswer').disabled = true;
 
-                const correctNum = Number(q.answer);
-                const isCorrect = (choiceNum === correctNum);
+                const isCorrect = gradeAnswerChoice(q, choice);
                 const currentP = this.getQuestionProgress(q.id);
 
                 this.setQuestionProgress(q.id, {
                     solved: true,
                     isCorrect,
-                    userChoice: choiceNum,
+                    userChoice: choice,
                     bookmarked: !isCorrect ? true : currentP.bookmarked
                 });
 
                 const updatedP = this.getQuestionProgress(q.id);
                 this.updateQuizBookmarkButtonUI(updatedP.bookmarked);
                 this.renderQuizPalette();
-                this.displayAnswerFeedbackAndExplanation(choiceNum, correctNum);
+                this.displayAnswerFeedbackAndExplanation(choice);
             },
 
             selfGradeSubjective(ok) {
@@ -3270,18 +3329,22 @@
                     bookmarked: !ok ? true : currentP.bookmarked
                 });
                 this.updateQuizBookmarkButtonUI(this.getQuestionProgress(q.id).bookmarked);
-                this.displayAnswerFeedbackAndExplanation(ok ? 'SELF_OK' : 'SELF_NG', Number(q.answer));
+                this.displayAnswerFeedbackAndExplanation(ok ? 'SELF_OK' : 'SELF_NG');
             },
 
             revealQuizAnswerDirectly() {
                 const q = this.getCurrentQuizQuestion();
                 if (!q) return;
-                this.displayAnswerFeedbackAndExplanation(null, Number(q.answer));
+                this.displayAnswerFeedbackAndExplanation(null);
             },
 
-            displayAnswerFeedbackAndExplanation(selectedNum, correctNum) {
+            // selected: 숫자 · 숫자 배열(복수 선택) · null(바로 보기) · 'SELF_OK'/'SELF_NG'(주관식 자가채점)
+            displayAnswerFeedbackAndExplanation(selected) {
                 const q = this.getCurrentQuizQuestion();
                 const validCount = q.options.filter(o => o && o.trim() !== '').length;
+                const answers = getAnswerList(q);
+                const isSelf = selected === 'SELF_OK' || selected === 'SELF_NG';
+                const picked = (selected === null || isSelf) ? [] : (Array.isArray(selected) ? selected : [selected]).map(Number);
 
                 for (let i = 1; i <= validCount; i++) {
                     const btn = document.getElementById(`quizOptBtn_${i}`);
@@ -3291,10 +3354,10 @@
                     btn.disabled = true;
                     btn.className = 'w-full text-left p-4 rounded-xl border transition-all flex items-start gap-3.5 opacity-80';
 
-                    if (i === correctNum) {
+                    if (answers.includes(i)) {
                         btn.className = 'w-full text-left p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 shadow-xs flex items-start gap-3.5';
                         circle.className = 'w-7 h-7 rounded-lg bg-emerald-600 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5';
-                    } else if (i === selectedNum && selectedNum !== correctNum) {
+                    } else if (picked.includes(i)) {
                         btn.className = 'w-full text-left p-4 rounded-xl border-2 border-rose-500 bg-rose-50 text-rose-900 shadow-xs flex items-start gap-3.5';
                         circle.className = 'w-7 h-7 rounded-lg bg-rose-600 text-white font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5';
                     }
@@ -3307,20 +3370,27 @@
                 expSec.classList.remove('hidden');
 
                 ['quizSelfOk', 'quizSelfNg'].forEach(id => { const b = document.getElementById(id); if (b) b.disabled = true; });
-                const isCorrect = (selectedNum === correctNum);
+                const isCorrect = picked.length > 0 && gradeAnswerChoice(q, picked);
+                const multiAnswer = answers.length > 1;
+                const multiSelect = isMultiSelectQuestion(q);
+                const answerLabel = formatAnswerNums(answers);
                 const resultBadge = document.getElementById('qResultStatusBadge');
-                if (selectedNum === 'SELF_OK' || selectedNum === 'SELF_NG') {
-                    const good = selectedNum === 'SELF_OK';
+                if (isSelf) {
+                    const good = selected === 'SELF_OK';
                     resultBadge.textContent = good ? '⭕ 자가채점: 맞음' : '❌ 자가채점: 부족 (오답노트에 고정됨)';
                     resultBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold ' + (good ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800');
-                } else if (selectedNum === null) {
-                    resultBadge.textContent = '💡 해설 바로 보기';
+                } else if (selected === null) {
+                    resultBadge.textContent = multiAnswer
+                        ? `💡 해설 바로 보기 (${multiSelect ? '정답' : '복수정답'}: ${answerLabel})`
+                        : '💡 해설 바로 보기';
                     resultBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-slate-100 text-slate-700';
                 } else if (isCorrect) {
-                    resultBadge.textContent = '🎉 정답입니다!';
+                    resultBadge.textContent = multiAnswer
+                        ? (multiSelect ? `🎉 정답입니다! (${answerLabel} 모두 정확히 선택)` : `🎉 정답입니다! (복수정답 인정: ${answerLabel})`)
+                        : '🎉 정답입니다!';
                     resultBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800';
                 } else {
-                    resultBadge.textContent = `❌ 오답입니다 (선택: ${selectedNum}번, 정답: ${correctNum}번)`;
+                    resultBadge.textContent = `❌ 오답입니다 (선택: ${formatAnswerNums(picked)}, 정답: ${answerLabel}${multiAnswer && !multiSelect ? ' 중 하나' : ''})`;
                     resultBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-rose-100 text-rose-800';
                 }
 
@@ -3852,7 +3922,7 @@
                         <td class="py-3.5 px-3"><span class="px-2 py-1 rounded-md bg-amber-50 text-amber-800 font-bold text-xs">${this.escapeHtml(q.cohort)}</span></td>
                         <td class="py-3.5 px-4 max-w-md">
                             <p class="font-bold text-slate-800 truncate">${(q.images && q.images.length) ? '📷 ' : ''}${this.escapeHtml(q.question)}</p>
-                            <p class="text-[11px] text-emerald-700 font-semibold mt-0.5">${(q.options || []).filter(o => o && o.trim() !== '').length === 0 ? '주관식(서술형) · 모범답안은 해설 참고' : `정답: ${q.answer}번 (${this.escapeHtml(q.options[q.answer - 1] || '')})`}</p>
+                            <p class="text-[11px] text-emerald-700 font-semibold mt-0.5">${(q.options || []).filter(o => o && o.trim() !== '').length === 0 ? '주관식(서술형) · 모범답안은 해설 참고' : this.formatAdminAnswerSummary(q)}</p>
                         </td>
                         <td class="py-3.5 px-4 text-right whitespace-nowrap">
                             <button onclick="app.openAdminQuestionModal('${q.id}')" class="p-1.5 rounded-lg text-slate-500 hover:text-brand-600 hover:bg-brand-50" title="수정">
@@ -3998,7 +4068,7 @@
                     document.getElementById('qFormTopic').value = q.topic || '';
                     document.getElementById('qFormQuestion').value = q.question;
                     this.adminFormImages = Array.isArray(q.images) ? [...q.images] : [];
-                    document.getElementById('qFormAnswer').value = q.answer;
+                    this.setAdminAnswerForm(getAnswerList(q), q.answerMode);
                     document.getElementById('qFormOpt1').value = q.options[0] || '';
                     document.getElementById('qFormOpt2').value = q.options[1] || '';
                     document.getElementById('qFormOpt3').value = q.options[2] || '';
@@ -4011,6 +4081,7 @@
                     document.getElementById('qFormGrade').value = this.selectedGrade || '본과 1학년';
                     document.getElementById('qFormSubject').value = this.selectedSubject || '';
                     document.getElementById('qFormCohort').value = (this.selectedCohort && this.selectedCohort !== 'ALL') ? this.selectedCohort : '23학번 기출';
+                    this.setAdminAnswerForm([1], 'any');
                 }
 
                 this.renderAdminImagePreview();
@@ -4117,6 +4188,39 @@
                     </div>`).join('');
             },
 
+            // ================= [정답 입력: 복수정답] =================
+            setAdminAnswerForm(list, mode) {
+                const set = new Set((list || []).map(Number));
+                document.querySelectorAll('input[name="qFormAnswerChk"]').forEach(chk => { chk.checked = set.has(Number(chk.value)); });
+                document.getElementById('qFormAnswerMode').value = normalizeAnswerMode(mode);
+                this.updateAdminAnswerModeUI();
+            },
+
+            getAdminAnswerFormList() {
+                return [...document.querySelectorAll('input[name="qFormAnswerChk"]:checked')].map(chk => Number(chk.value)).sort((a, b) => a - b);
+            },
+
+            updateAdminAnswerModeUI() {
+                const list = this.getAdminAnswerFormList();
+                const mode = normalizeAnswerMode(document.getElementById('qFormAnswerMode').value);
+                const hint = document.getElementById('qFormAnswerHint');
+                if (!hint) return;
+                if (list.length === 0) hint.textContent = '정답 번호를 하나 이상 선택하세요.';
+                else if (mode === 'all') hint.textContent = `풀이 화면에서 보기를 여러 개 고를 수 있고, ${formatAnswerNums(list)}${list.length > 1 ? '을 모두' : '만'} 정확히 골라야 정답입니다.`;
+                else if (list.length > 1) hint.textContent = `복수정답 인정: ${formatAnswerNums(list)} 중 하나를 고르면 정답입니다.`;
+                else hint.textContent = `정답: ${list[0]}번`;
+            },
+
+            formatAdminAnswerSummary(q) {
+                const answers = getAnswerList(q);
+                const opts = q.options || [];
+                const label = answers.map(n => `${n}번 (${this.escapeHtml(opts[n - 1] || '')})`).join(', ');
+                if (answers.length === 0) return '정답 미지정';
+                if (isMultiSelectQuestion(q)) return `정답(모두 선택): ${label}`;
+                if (answers.length > 1) return `복수정답 인정: ${label}`;
+                return `정답: ${label}`;
+            },
+
             closeAdminQuestionModal() {
                 document.getElementById('adminQuestionModal').classList.add('hidden');
             },
@@ -4130,7 +4234,13 @@
                 const cohort = document.getElementById('qFormCohort').value.trim();
                 const topic = document.getElementById('qFormTopic').value.trim();
                 const question = document.getElementById('qFormQuestion').value.trim();
-                const answer = Number(document.getElementById('qFormAnswer').value);
+                const answerList = this.getAdminAnswerFormList();
+                if (answerList.length === 0) {
+                    this.showToast('정답 번호를 하나 이상 선택해 주세요.', 'error');
+                    return;
+                }
+                const answer = normalizeAnswer(answerList);
+                const answerMode = normalizeAnswerMode(document.getElementById('qFormAnswerMode').value);
                 const options = [
                     document.getElementById('qFormOpt1').value.trim(),
                     document.getElementById('qFormOpt2').value.trim(),
@@ -4152,6 +4262,7 @@
                     const idx = this.questions.findIndex(q => q.id === id);
                     if (idx !== -1) {
                         targetObj = { ...this.questions[idx], grade, subject, cohort, topic, question, images, options, answer, explanation };
+                        if (answerMode === 'all') targetObj.answerMode = 'all'; else delete targetObj.answerMode;
                         this.questions[idx] = targetObj;
                     }
                 } else {
@@ -4165,6 +4276,7 @@
                         images,
                         options,
                         answer,
+                        ...(answerMode === 'all' ? { answerMode: 'all' } : {}),
                         explanation
                     };
                     this.questions.push(targetObj);
@@ -4288,7 +4400,8 @@
                         question: item.question || '무제',
                         images: Array.isArray(item.images) ? item.images.filter(s => typeof s === 'string' && s.trim()) : [],
                         options: Array.isArray(item.options) ? item.options : ['1', '2', '3', '4'],
-                        answer: Number(item.answer ?? 1),
+                        answer: normalizeAnswer(item.answer),
+                        ...(item.answerMode === 'all' ? { answerMode: 'all' } : {}),
                         explanation: item.explanation || '해설 없음'
                     }));
 
