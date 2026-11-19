@@ -388,6 +388,7 @@
                                 </label>
                                 <button onclick="app.undoNoteStroke()" class="px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50" title="되돌리기"><i class="ph-bold ph-arrow-counter-clockwise"></i></button>
                                 <button onclick="app.clearNoteCanvas()" class="px-2.5 py-1.5 rounded-lg border border-rose-200 bg-rose-50 text-xs font-bold text-rose-700 hover:bg-rose-100" title="이 문제의 필기 전체 지우기"><i class="ph-bold ph-trash"></i></button>
+                                <button onclick="app.saveInkDraft()" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-emerald-600 bg-emerald-500 text-xs font-extrabold text-white hover:bg-emerald-600" title="필기 저장"><i class="ph-bold ph-floppy-disk"></i> 저장</button>
                             </div>
                         </div>
                         <span id="inkHint" class="ml-auto text-[11px] font-semibold text-slate-400">필기를 켜면 문제·보기·해설 위에 바로 쓰고 밑줄 칠 수 있어요</span>
@@ -1293,6 +1294,7 @@
             _noteTextTimer: null,
             _noteCloudTimers: {},
             _curStroke: null,
+            _draftStrokes: null,   // 필기 모드 중 아직 저장하지 않은 획 (저장 버튼을 눌러야 반영)
             _penSeen: false,
             _noteBaseCanvas: null,
             _noteCanvasReady: false,
@@ -2822,7 +2824,14 @@
             // 문제 화면이 바뀔 때 해당 문제의 노트를 불러와 표시
             renderNotePanel(questionId) {
                 this.flushNoteText();
+                const sameQ = this._noteQid === questionId;
                 this._noteQid = questionId;
+                // 다른 문제로 이동하면 저장하지 않은 필기는 버림
+                if (this.inkMode && !(sameQ && this._draftStrokes)) {
+                    this._draftStrokes = this.getQuestionNote(questionId).strokes.slice();
+                } else if (!this.inkMode) {
+                    this._draftStrokes = null;
+                }
                 const n = this.getQuestionNote(questionId);
                 const ta = document.getElementById('noteTextArea');
                 if (ta) ta.value = n.text;
@@ -2835,9 +2844,32 @@
                 this.rebuildNoteBase();
             },
 
+            // 필기 켜기: 저장된 획을 복사해 임시(초안)로 편집
+            // 필기 끄기: 저장 버튼을 누르지 않은 필기는 묻지 않고 버림
             toggleInkMode(force) {
                 this.inkMode = (typeof force === 'boolean') ? force : !this.inkMode;
+                this._curStroke = null;
+                this._draftStrokes = (this.inkMode && this._noteQid)
+                    ? this.getQuestionNote(this._noteQid).strokes.slice()
+                    : null;
                 this.applyInkModeUI();
+                this.rebuildNoteBase();
+            },
+
+            // 화면에 그릴 획: 필기 중이면 초안, 아니면 저장된 획
+            getDisplayStrokes() {
+                if (this._draftStrokes) return this._draftStrokes;
+                return this._noteQid ? this.getQuestionNote(this._noteQid).strokes : [];
+            },
+
+            saveInkDraft() {
+                const qid = this._noteQid;
+                if (!qid || !this._draftStrokes) return;
+                const hadNote = this.hasQuestionNote(qid);
+                this.setQuestionNote(qid, { strokes: this._draftStrokes.slice() }, { cloudDelayMs: 0 });
+                this.setNoteStatus('저장됨');
+                if (hadNote !== this.hasQuestionNote(qid)) this.renderQuizPalette();
+                this.showToast('필기를 저장했습니다.', 'success');
             },
 
             // 필기 모드 ON: 캔버스가 터치/펜 입력을 받음 (보기 클릭 불가)
@@ -2861,7 +2893,7 @@
                     ? 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold border border-amber-500 bg-amber-400 text-slate-900 hover:bg-amber-300 transition-colors'
                     : 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-extrabold border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 transition-colors';
                 if (hint) hint.textContent = on
-                    ? '필기 중에는 보기를 누를 수 없어요. 답을 고르려면 필기를 끄세요.'
+                    ? '저장을 눌러야 필기가 남아요. 저장하지 않고 끄면 지워집니다.'
                     : '필기를 켜면 문제·보기·해설 위에 바로 쓰고 형광펜을 칠할 수 있어요';
                 this.syncInkToolUI();
             },
@@ -2952,14 +2984,9 @@
                     delete s.pid;
                     if (s._tail) s.p.push(s._tail);
                     delete s._tail;
-                    const qid = this._noteQid;
-                    if (!qid) return;
-                    const n = this.getQuestionNote(qid);
-                    const hadNote = this.hasQuestionNote(qid);
-                    this.setQuestionNote(qid, { strokes: [...n.strokes, s] }, { cloudDelayMs: 1500 });
-                    this.setNoteStatus('저장됨');
+                    if (!this._noteQid || !this._draftStrokes) return;
+                    this._draftStrokes.push(s);
                     this.rebuildNoteBase();
-                    if (!hadNote) this.renderQuizPalette();
                 };
                 canvas.addEventListener('pointerup', finish);
                 canvas.addEventListener('pointercancel', finish);
@@ -3023,7 +3050,7 @@
                 const ctx = base.getContext('2d');
                 ctx.clearRect(0, 0, base.width, base.height);
                 const scale = canvas.width / 1000;
-                const strokes = this._noteQid ? this.getQuestionNote(this._noteQid).strokes : [];
+                const strokes = this.getDisplayStrokes();
                 strokes.forEach(s => this.drawStrokeOn(ctx, s, scale));
                 this.drawNoteFrame();
             },
@@ -3054,24 +3081,16 @@
             },
 
             undoNoteStroke() {
-                const qid = this._noteQid;
-                if (!qid) return;
-                const n = this.getQuestionNote(qid);
-                if (n.strokes.length === 0) return;
-                this.setQuestionNote(qid, { strokes: n.strokes.slice(0, -1) });
+                if (!this._draftStrokes || this._draftStrokes.length === 0) return;
+                this._draftStrokes.pop();
                 this.rebuildNoteBase();
-                if (!this.hasQuestionNote(qid)) this.renderQuizPalette();
             },
 
             clearNoteCanvas() {
-                const qid = this._noteQid;
-                if (!qid || this.getQuestionNote(qid).strokes.length === 0) return;
-                this.openConfirmDialog('필기 전체 지우기', '이 문제 위에 쓴 필기·형광펜을 모두 지울까요? (메모는 유지됩니다)', () => {
-                    this.setQuestionNote(qid, { strokes: [] }, { cloudDelayMs: 0 });
-                    this.rebuildNoteBase();
-                    this.renderQuizPalette();
-                    this.showToast('필기를 지웠습니다.', 'info');
-                });
+                // 화면에서만 지움 → 저장 버튼을 눌러야 실제로 삭제됨
+                if (!this._draftStrokes || this._draftStrokes.length === 0) return;
+                this._draftStrokes = [];
+                this.rebuildNoteBase();
             },
 
             // ================= [퀴즈 풀이] 로직 =================
@@ -3132,6 +3151,7 @@
             exitQuizToDashboard() {
                 this.flushNoteText();
                 this.inkMode = false;
+                this._draftStrokes = null;
                 document.getElementById('quizSolveView').classList.add('hidden');
                 document.getElementById('userDashboardView').classList.remove('hidden');
                 this.renderUserDashboard();
